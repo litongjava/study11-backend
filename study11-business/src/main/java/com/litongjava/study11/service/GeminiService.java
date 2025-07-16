@@ -16,7 +16,7 @@ public class GeminiService {
     try {
       //GEMINI_2_5_PRO_PREVIEW_03_25
       //GEMINI_2_5_PRO_EXP_03_25 //免费
-      chatResponse = GeminiClient.generate(GoogleGeminiModels.GEMINI_2_5_PRO_EXP_03_25, geminiChatRequestVo);
+      chatResponse = GeminiClient.generate(GoogleGeminiModels.GEMINI_2_5_FLASH, geminiChatRequestVo);
     } catch (Exception e) {
       log.error("Faile to generate code:{}", JsonUtils.toJson(geminiChatRequestVo), e);
       return null;
