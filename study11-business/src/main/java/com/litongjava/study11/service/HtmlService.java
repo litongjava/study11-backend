@@ -28,6 +28,7 @@ public class HtmlService {
   private static final String selectSql = "select id,topic,language,type,elapsed,user_id,is_public,view_count,create_time from study11_html_code";
 
   PlatformAndModelSetService platformAndModelSetService = Aop.get(PlatformAndModelSetService.class);
+  PlanSenceService planSenceService = Aop.get(PlanSenceService.class);
 
   public Long generate(String topic) {
 
@@ -36,10 +37,16 @@ public class HtmlService {
     if (id != null) {
       return id;
     }
-
     id = SnowflakeIdUtils.id();
+    log.info("start with id:{}", id);
+    log.info("start plan:{}", topic);
+    String plan = planSenceService.plan(id, topic, "Chinese");
+    log.info("finish plan:{}", topic);
+
     String prompt = getSystemPrompt();
-    String html = genCode(prompt, topic, id);
+    log.info("start generate code of plan:{}", topic);
+    String html = genCode(prompt, plan, topic, id);
+    log.info("finish generate code of plan:{}", topic);
     Row row = Row.by("id", id).set("topic", topic).set("html", html);
     Db.save("study11_html_code", row);
     return id;
@@ -55,12 +62,22 @@ public class HtmlService {
     return Db.queryStr(sql, id);
   }
 
-  public String genCode(String userPrompt, String question, long id) {
-    question = "the user question is:" + question;
+  public String genCode(String systemPrompt, String plan, String question, long id) {
     List<UniChatMessage> messages = new ArrayList<>();
-    messages.add(UniChatMessage.buildUser(question));
+    question = "the user question is:" + question;
+    plan = "the user scene plan is:" + plan;
 
-    UniChatRequest uniChatRequest = new UniChatRequest(userPrompt, messages, 0f);
+    String userMessage = question + "\r\n" + plan + "\r\n" + " please only output the html code.";
+
+    String prompt = systemPrompt + "\r\n" + userMessage;
+    File file = new File("prompts");
+    if (!file.exists()) {
+      file.mkdirs();
+    }
+    FileUtil.writeString(prompt, "prompts" + File.separator + id + ".txt");
+    messages.add(UniChatMessage.buildUser(userMessage));
+
+    UniChatRequest uniChatRequest = new UniChatRequest(systemPrompt, messages, 0f);
     platformAndModelSetService.configPlatformAndModel(uniChatRequest);
 
     UniChatResponse generate = UniChatClient.generate(uniChatRequest);

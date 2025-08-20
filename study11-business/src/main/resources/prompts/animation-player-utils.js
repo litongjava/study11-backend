@@ -287,7 +287,6 @@ class AnimationPlayer {
             await this.play();
             return true;
         } catch (error) {
-            debugger
             if (error.name === 'NotAllowedError') {
                 console.log('需要用户交互才能播放音频');
                 this.showInteractionRequired();

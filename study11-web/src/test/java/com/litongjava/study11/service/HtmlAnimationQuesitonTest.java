@@ -6,7 +6,7 @@ import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.study11.config.AdminAppConfig;
 import com.litongjava.tio.boot.testing.TioBootTest;
 
-public class QuesitonTest {
+public class HtmlAnimationQuesitonTest {
 
   @Test
   public void test() {
@@ -14,5 +14,4 @@ public class QuesitonTest {
     Long id = Aop.get(HtmlService.class).generate("动量守恒定律");
     System.out.println(id);
   }
-
 }
