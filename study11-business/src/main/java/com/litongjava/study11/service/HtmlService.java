@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.jfinal.kit.Kv;
 import com.litongjava.chat.UniChatClient;
+import com.litongjava.chat.UniChatMessage;
 import com.litongjava.chat.UniChatRequest;
 import com.litongjava.chat.UniChatResponse;
 import com.litongjava.consts.ModelPlatformName;
@@ -27,6 +28,10 @@ public class HtmlService {
 
   private static final String selectSql = "select id,topic,language,type,elapsed,user_id,is_public,view_count,create_time from study11_html_code";
 
+  public void configPlatformAndModel(UniChatRequest uniChatRequest) {
+    uniChatRequest.setPlatform(ModelPlatformName.VOLC_ENGINE).setModel(VolcEngineModels.DEEPSEEK_R1_250528);
+  }
+
   public Long generate(String topic) {
     String sql = "select id from study11_html_code where topic=?";
     Long id = Db.queryLong(sql, topic);
@@ -34,13 +39,17 @@ public class HtmlService {
       return id;
     }
 
-    Kv kv = Kv.by("topic", topic);
-    String prompt = PromptEngine.renderToString("generate_html_code_system_prompt.txt", kv);
-    String html = genCode(prompt);
     id = SnowflakeIdUtils.id();
+    String prompt = getSystemPrompt();
+    String html = genCode(prompt, topic, id);
     Row row = Row.by("id", id).set("topic", topic).set("html", html);
     Db.save("study11_html_code", row);
     return id;
+  }
+
+  public String getSystemPrompt() {
+    String prompt = PromptEngine.renderToString("generate_html_code_system_prompt.txt");
+    return prompt;
   }
 
   public String getCodeById(Long id) {
@@ -48,22 +57,28 @@ public class HtmlService {
     return Db.queryStr(sql, id);
   }
 
-  public String genCode(String userPrompt) {
+  public String genCode(String userPrompt, String question, long id) {
+    question = "the user question is:" + question;
+    List<UniChatMessage> messages = new ArrayList<>();
+    messages.add(UniChatMessage.buildUser(question));
 
-    UniChatRequest uniChatRequest = new UniChatRequest(userPrompt, 0f);
-    uniChatRequest.setPlatform(ModelPlatformName.VOLC_ENGINE).setModel(VolcEngineModels.DEEPSEEK_R1_250528);
+    UniChatRequest uniChatRequest = new UniChatRequest(userPrompt, messages, 0f);
+    configPlatformAndModel(uniChatRequest);
 
     UniChatResponse generate = UniChatClient.generate(uniChatRequest);
     String generatedText = generate.getMessage().getContent();
 
     String code = CodeBlockUtils.parseHtml(generatedText);
-
     if (code != null) {
       code = code.replaceAll("^(\\s*\\R)+", "").replaceAll("(\\R\\s*)+$", "");
       code.trim();
-      new File("html").mkdirs();
+      File htmlFolder = new File("html");
+      if (!htmlFolder.exists()) {
+        htmlFolder.mkdirs();
+      }
+
       try {
-        String path = "html/" + SnowflakeIdUtils.id() + ".html";
+        String path = "html/" + id + ".html";
         log.info("code file:{}", path);
         FileUtil.writeString(code, path, "UTF-8");
       } catch (IOException e) {
