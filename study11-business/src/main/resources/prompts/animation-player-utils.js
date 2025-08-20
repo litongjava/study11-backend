@@ -318,7 +318,6 @@ class AnimationPlayer {
             document.getElementById('manualStartBtn').addEventListener('click', () => {
                 message.remove();
                 try {
-                    debugger
                     this.isPlaying=false;
                     this.play();
                 } catch (e) {
