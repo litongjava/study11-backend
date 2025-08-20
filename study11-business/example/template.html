@@ -1,202 +1,701 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newton's First Law of Motion</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>三角函数</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4eaf5 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .animation-container {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .subtitle-container {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            margin: 5px 0;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .subtitle {
+            color: black;
+            border-radius: 30px;
+            font-size: 1.4rem;
+            max-width: 80%;
+            text-align: center;
+            line-height: 1.5;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .subtitle.active {
+            opacity: 1;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 5px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: #3498db;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .control-btn:hover {
+            background: #2980b9;
+            transform: scale(1.1);
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        .control-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-container {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        .progress-handle {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 3px solid #3498db;
+            border-radius: 50%;
+            cursor: grab;
+            left: 0%;
+        }
+
+        .progress-handle:active {
+            cursor: grabbing;
+        }
+
+        .time-display {
+            min-width: 100px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .loading.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(52, 152, 219, 0.2);
+            border-radius: 50%;
+            border-top-color: #3498db;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 15px;
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            color: #3498db;
+        }
+
+        .cache-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(46, 204, 113, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: none;
+        }
+
+        .cache-indicator.active {
+            display: block;
+        }
+
+        .scene-number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(52, 152, 219, 0.8);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .trig-scene {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .scene-title {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.8rem;
+            color: #2c3e50;
+            font-weight: 300;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .scene-title.active {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .animation-container {
+                padding: 20px;
+                min-height: 300px;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+                padding: 12px 20px;
+            }
+
+            .control-btn {
+                width: 45px;
+                height: 45px;
+            }
+
+            .scene-title {
+                font-size: 1.4rem;
+            }
+
+            .scene-number {
+                width: 35px;
+                height: 35px;
+                font-size: 1.2rem;
+            }
+
+            .time-display {
+                min-width: 80px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="main-container">
-        <div class="animation-container">
-            <div class="loading" id="loading">
-                <div class="loading-spinner"></div>
-                <div class="loading-text">Loading...</div>
-            </div>
-            <div class="cache-indicator" id="cacheIndicator">Using cached audio</div>
-            <div class="scene-number" id="sceneNumber">1</div>
-            
-            <svg class="physics-scene" viewBox="0 0 800 400">
-                <!-- 背景网格 -->
-                <defs>
-                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e0e0e0" stroke-width="1"/>
-                    </pattern>
-                    
-                    <!-- 渐变定义 -->
-                    <linearGradient id="ballGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#3498db;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1" />
-                    </linearGradient>
-                    
-                    <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1" />
-                    </linearGradient>
-                    
-                    <linearGradient id="velocityGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" style="stop-color:#2ecc71;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#27ae60;stop-opacity:1" />
-                    </linearGradient>
-                </defs>
-                
-                <rect width="800" height="400" fill="url(#grid)" />
-                
-                <!-- 地面 -->
-                <rect x="0" y="350" width="800" height="50" fill="#95a5a6" opacity="0.3"/>
-                
-                <!-- 文本面板 -->
-                <foreignObject x="20" y="20" width="350" height="200" class="text-panel" id="textPanel">
-                    <div xmlns="http://www.w3.org/1999/xhtml" style="padding: 10px;">
-                        <p id="textContent"></p>
-                    </div>
-                </foreignObject>
-                
-                <!-- 场景标题 -->
-                <text x="800" y="30" text-anchor="middle" fill="#2c3e50" font-size="24" font-weight="300" class="scene-title" id="sceneTitle">
-                    Introduction to Newton's First Law
-                </text>
-                
-                <!-- 视觉面板 -->
-                <g id="visualPanel">
-                    <!-- Scene 1: Introduction -->
-                    <g id="scene1">
-                        <!-- 静止的小球 -->
-                        <circle cx="550" cy="300" r="30" fill="url(#ballGradient)"/>
-                        <text x="550" y="340" text-anchor="middle" fill="#2c3e50" font-size="16">Object at rest</text>
-                        
-                        <!-- 运动的小球 -->
-                        <circle cx="650" cy="200" r="30" fill="url(#ballGradient)">
-                            <animateTransform attributeName="transform" type="translate" from="0 0" to="100 0" dur="3s" repeatCount="indefinite"/>
-                        </circle>
-                        <text x="700" y="240" text-anchor="middle" fill="#2c3e50" font-size="16">Object in motion</text>
-                        
-                        <!-- 速度矢量 -->
-                        <line x1="680" y1="200" x2="720" y2="200" stroke="url(#velocityGradient)" stroke-width="3" marker-end="url(#velocityArrowhead)"/>
-                        <text x="700" y="185" text-anchor="middle" fill="#2ecc71" font-size="16">v</text>
-                    </g>
-                    
-                    <!-- Scene 2: Understanding Inertia -->
-                    <g id="scene2" style="display: none;">
-                        <!-- 卡车 -->
-                        <rect x="500" y="270" width="120" height="60" fill="#7f8c8d" rx="5"/>
-                        <circle cx="520" cy="330" r="15" fill="#34495e"/>
-                        <circle cx="600" cy="330" r="15" fill="#34495e"/>
-                        <text x="560" y="360" text-anchor="middle" fill="#2c3e50" font-size="16">Truck (high mass)</text>
-                        
-                        <!-- 自行车 -->
-                        <rect x="650" y="290" width="60" height="40" fill="#3498db" rx="5"/>
-                        <circle cx="660" cy="330" r="10" fill="#34495e"/>
-                        <circle cx="700" cy="330" r="10" fill="#34495e"/>
-                        <text x="680" y="360" text-anchor="middle" fill="#2c3e50" font-size="16">Bicycle (low mass)</text>
-                        
-                        <!-- 力的箭头 -->
-                        <line x1="480" y1="300" x2="500" y2="300" stroke="url(#arrowGradient)" stroke-width="5" marker-end="url(#arrowhead)"/>
-                        <line x1="630" y1="310" x2="650" y2="310" stroke="url(#arrowGradient)" stroke-width="5" marker-end="url(#arrowhead)"/>
-                        <text x="440" y="300" text-anchor="middle" fill="#e74c3c" font-size="16">F</text>
-                        <text x="615" y="310" text-anchor="middle" fill="#e74c3c" font-size="16">F</text>
-                    </g>
-                    
-                    <!-- Scene 3: Objects at Rest -->
-                    <g id="scene3" style="display: none;">
-                        <!-- 桌子上的书 -->
-                        <rect x="500" y="250" width="80" height="100" fill="#e74c3c" rx="2"/>
-                        <rect x="480" y="350" width="120" height="10" fill="#8b6f47"/>
-                        <text x="540" y="380" text-anchor="middle" fill="#2c3e50" font-size="16">Book on table</text>
-                        
-                        <!-- 力的箭头 -->
-                        <line x1="540" y1="250" x2="540" y2="220" stroke="url(#arrowGradient)" stroke-width="3" marker-end="url(#arrowhead)"/>
-                        <line x1="540" y1="350" x2="540" y2="380" stroke="url(#arrowGradient)" stroke-width="3" marker-end="url(#arrowhead)"/>
-                        <text x="560" y="235" text-anchor="middle" fill="#e74c3c" font-size="14">Weight</text>
-                        <text x="560" y="375" text-anchor="middle" fill="#e74c3c" font-size="14">Normal</text>
-                    </g>
-                    
-                    <!-- Scene 4: Objects in Motion -->
-                    <g id="scene4" style="display: none;">
-                        <!-- 冰球 -->
-                        <circle cx="550" cy="300" r="20" fill="#34495e">
-                            <animateTransform attributeName="transform" type="translate" from="0 0" to="200 0" dur="5s" repeatCount="indefinite"/>
-                        </circle>
-                        <rect x="500" y="320" width="300" height="30" fill="#ecf0f1" rx="5"/>
-                        <text x="650" y="370" text-anchor="middle" fill="#2c3e50" font-size="16">Hockey puck on ice</text>
-                        
-                        <!-- 速度矢量 -->
-                        <line x1="570" y1="300" x2="610" y2="300" stroke="url(#velocityGradient)" stroke-width="3" marker-end="url(#velocityArrowhead)"/>
-                        <text x="590" y="285" text-anchor="middle" fill="#2ecc71" font-size="16">v</text>
-                    </g>
-                    
-                    <!-- Scene 5: Unbalanced Forces -->
-                    <g id="scene5" style="display: none;">
-                        <!-- 被踢的球 -->
-                        <circle cx="550" cy="300" r="30" fill="url(#ballGradient)"/>
-                        <text x="550" y="340" text-anchor="middle" fill="#2c3e50" font-size="16">Ball being kicked</text>
-                        
-                        <!-- 力的箭头 -->
-                        <line x1="480" y1="300" x2="520" y2="300" stroke="url(#arrowGradient)" stroke-width="5" marker-end="url(#arrowhead)"/>
-                        <text x="450" y="300" text-anchor="middle" fill="#e74c3c" font-size="16">F</text>
-                    </g>
-                    
-                    <!-- Scene 6: Real-World Applications -->
-                    <g id="scene6" style="display: none;">
-                        <!-- 汽车 -->
-                        <rect x="500" y="270" width="100" height="50" fill="#3498db" rx="5"/>
-                        <circle cx="520" cy="320" r="12" fill="#34495e"/>
-                        <circle cx="580" cy="320" r="12" fill="#34495e"/>
-                        <text x="550" y="350" text-anchor="middle" fill="#2c3e50" font-size="16">Car stopping</text>
-                        
-                        <!-- 人 -->
-                        <circle cx="620" cy="260" r="10" fill="#f39c12"/>
-                        <rect x="615" y="270" width="10" height="30" fill="#f39c12"/>
-                        <line x1="615" y1="280" x2="605" y2="290" stroke="#f39c12" stroke-width="3"/>
-                        <line x1="625" y1="280" x2="635" y2="290" stroke="#f39c12" stroke-width="3"/>
-                        
-                        <!-- 力的箭头 -->
-                        <line x1="620" y1="260" x2="650" y2="260" stroke="url(#velocityGradient)" stroke-width="3" marker-end="url(#velocityArrowhead)"/>
-                        <text x="635" y="245" text-anchor="middle" fill="#2ecc71" font-size="14">v</text>
-                    </g>
+<div class="main-container">
+    <div class="animation-container">
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">加载中...</div>
+        </div>
+        <div class="cache-indicator" id="cacheIndicator">使用缓存的音频</div>
+        <div class="scene-number" id="sceneNumber">1</div>
+
+        <svg class="trig-scene" viewBox="0 0 800 400">
+            <!-- 背景网格 -->
+            <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+                </pattern>
+
+                <!-- 渐变定义 -->
+                <linearGradient id="angleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#3498db;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1"/>
+                </linearGradient>
+
+                <linearGradient id="sinGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1"/>
+                </linearGradient>
+
+                <linearGradient id="cosGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#2ecc71;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#27ae60;stop-opacity:1"/>
+                </linearGradient>
+
+                <linearGradient id="tanGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#f39c12;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#d35400;stop-opacity:1"/>
+                </linearGradient>
+            </defs>
+
+            <rect width="800" height="400" fill="url(#grid)"/>
+
+            <!-- 场景标题 -->
+            <text x="800" y="30" text-anchor="middle" fill="#2c3e50" font-size="24" font-weight="300"
+                  class="scene-title" id="sceneTitle">
+                三角函数简介
+            </text>
+
+            <!-- 视觉面板 -->
+            <g id="visualPanel">
+                <!-- 场景1: 三角函数简介 -->
+                <g id="scene1">
+                    <!-- 直角三角形 -->
+                    <path d="M 400 200 L 500 200 L 500 100 Z" fill="rgba(52, 152, 219, 0.2)" stroke="#3498db"
+                          stroke-width="2"/>
+
+                    <!-- 角标记 -->
+                    <path d="M 420 200 A 20 20 0 0 0 414.14 185.86" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                    <text x="410" y="190" fill="#e74c3c" font-size="16">θ</text>
+
+                    <!-- 边标记 -->
+                    <text x="445" y="220" fill="#2c3e50" font-size="16">邻边</text>
+                    <text x="510" y="150" fill="#2c3e50" font-size="16">对边</text>
+                    <text x="440" y="140" fill="#2c3e50" font-size="16">斜边</text>
+
+                    <!-- 函数定义 -->
+                    <text x="300" y="280" fill="#2c3e50" font-size="18">sin θ = 对边 / 斜边</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="18">cos θ = 邻边 / 斜边</text>
+                    <text x="300" y="340" fill="#2c3e50" font-size="18">tan θ = 对边 / 邻边</text>
                 </g>
-                
-                <!-- 箭头标记定义 -->
-                <defs>
-                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                        <polygon points="0 0, 10 3.5, 0 7" fill="url(#arrowGradient)" />
-                    </marker>
-                    
-                    <marker id="velocityArrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                        <polygon points="0 0, 10 3.5, 0 7" fill="url(#velocityGradient)" />
-                    </marker>
-                </defs>
-            </svg>
-        </div>
-        
-        <div class="subtitle-container">
-            <div class="subtitle" id="subtitle"></div>
-        </div>
-        
-        <div class="controls">
-            <button class="control-btn" id="playBtn" title="Play" disabled>
-                <span id="playIcon">▶</span>
-            </button>
-            <button class="control-btn" id="muteBtn" title="Mute">
-                <span id="muteIcon">🔊</span>
-            </button>
-            <div class="progress-container">
-                <div class="progress-bar" id="progressBar">
-                    <div class="progress-fill" id="progressFill"></div>
-                    <div class="progress-handle" id="progressHandle"></div>
-                </div>
-                <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+
+                <!-- 场景2: 单位圆 -->
+                <g id="scene2" style="display: none;">
+                    <!-- 坐标轴 -->
+                    <line x1="300" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
+                    <line x1="500" y1="50" x2="500" y2="350" stroke="#34495e" stroke-width="2"/>
+
+                    <!-- 坐标轴标记 -->
+                    <text x="710" y="205" fill="#34495e" font-size="16">x</text>
+                    <text x="505" y="45" fill="#34495e" font-size="16">y</text>
+
+                    <!-- 单位圆 -->
+                    <circle cx="500" cy="200" r="100" fill="none" stroke="#3498db" stroke-width="2"/>
+
+                    <!-- 旋转的半径 -->
+                    <line id="radius" x1="500" y1="200" x2="600" y2="200" stroke="#3498db" stroke-width="3">
+                        <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200"
+                                          dur="10s" repeatCount="indefinite"/>
+                    </line>
+
+                    <!-- 点 -->
+                    <circle id="point" cx="600" cy="200" r="6" fill="#e74c3c">
+                        <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200"
+                                          dur="10s" repeatCount="indefinite"/>
+                    </circle>
+
+                    <!-- 正弦线 -->
+                    <line id="sinLine" x1="600" y1="200" x2="600" y2="200" stroke="url(#sinGradient)" stroke-width="2">
+                        <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200"
+                                          dur="10s" repeatCount="indefinite"/>
+                    </line>
+
+                    <!-- 余弦线 -->
+                    <line id="cosLine" x1="500" y1="200" x2="600" y2="200" stroke="url(#cosGradient)" stroke-width="2">
+                        <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200"
+                                          dur="10s" repeatCount="indefinite"/>
+                    </line>
+
+                    <!-- 标签 -->
+                    <text x="300" y="280" fill="#2c3e50" font-size="18">单位圆: x² + y² = 1</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="18">cos θ = x, sin θ = y</text>
+                </g>
+
+                <!-- 场景3: 正弦函数图像 -->
+                <g id="scene3" style="display: none;">
+                    <!-- 坐标轴 -->
+                    <line x1="100" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
+                    <line x1="400" y1="50" x2="400" y2="350" stroke="#34495e" stroke-width="2"/>
+
+                    <!-- 坐标轴标记 -->
+                    <text x="710" y="205" fill="#34495e" font-size="16">x</text>
+                    <text x="405" y="45" fill="#34495e" font-size="16">y</text>
+
+                    <!-- 刻度 -->
+                    <line x1="300" y1="195" x2="300" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="295" y="220" fill="#34495e" font-size="14">-π/2</text>
+
+                    <line x1="500" y1="195" x2="500" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="495" y="220" fill="#34495e" font-size="14">π/2</text>
+
+                    <line x1="600" y1="195" x2="600" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="595" y="220" fill="#34495e" font-size="14">π</text>
+
+                    <line x1="200" y1="195" x2="200" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="195" y="220" fill="#34495e" font-size="14">-π</text>
+
+                    <!-- 正弦曲线 -->
+                    <path d="M 100 200
+                                 C 150 200, 200 100, 300 100
+                                 S 500 300, 600 300
+                                 S 700 200, 700 200"
+                          fill="none" stroke="url(#sinGradient)" stroke-width="3"/>
+
+                    <!-- 标签 -->
+                    <text x="300" y="280" fill="#2c3e50" font-size="18">y = sin(x)</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="18">周期: 2π, 振幅: 1</text>
+                </g>
+
+                <!-- 场景4: 余弦函数图像 -->
+                <g id="scene4" style="display: none;">
+                    <!-- 坐标轴 -->
+                    <line x1="100" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
+                    <line x1="400" y1="50" x2="400" y2="350" stroke="#34495e" stroke-width="2"/>
+
+                    <!-- 坐标轴标记 -->
+                    <text x="710" y="205" fill="#34495e" font-size="16">x</text>
+                    <text x="405" y="45" fill="#34495e" font-size="16">y</text>
+
+                    <!-- 刻度 -->
+                    <line x1="300" y1="195" x2="300" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="295" y="220" fill="#34495e" font-size="14">-π/2</text>
+
+                    <line x1="500" y1="195" x2="500" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="495" y="220" fill="#34495e" font-size="14">π/2</text>
+
+                    <line x1="600" y1="195" x2="600" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="595" y="220" fill="#34495e" font-size="14">π</text>
+
+                    <line x1="200" y1="195" x2="200" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="195" y="220" fill="#34495e" font-size="14">-π</text>
+
+                    <!-- 余弦曲线 -->
+                    <path d="M 100 100
+                                 C 150 100, 200 200, 300 200
+                                 S 500 200, 600 200
+                                 S 700 100, 700 100"
+                          fill="none" stroke="url(#cosGradient)" stroke-width="3"/>
+
+                    <!-- 标签 -->
+                    <text x="300" y="280" fill="#2c3e50" font-size="18">y = cos(x)</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="18">周期: 2π, 振幅: 1</text>
+                </g>
+
+                <!-- 场景5: 正切函数图像 -->
+                <g id="scene5" style="display: none;">
+                    <!-- 坐标轴 -->
+                    <line x1="100" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
+                    <line x1="400" y1="50" x2="400" y2="350" stroke="#34495e" stroke-width="2"/>
+
+                    <!-- 坐标轴标记 -->
+                    <text x="710" y="205" fill="#34495e" font-size="16">x</text>
+                    <text x="405" y="45" fill="#34495e" font-size="16">y</text>
+
+                    <!-- 刻度 -->
+                    <line x1="300" y1="195" x2="300" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="295" y="220" fill="#34495e" font-size="14">-π/2</text>
+
+                    <line x1="500" y1="195" x2="500" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="495" y="220" fill="#34495e" font-size="14">π/2</text>
+
+                    <line x1="600" y1="195" x2="600" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="595" y="220" fill="#34495e" font-size="14">π</text>
+
+                    <line x1="200" y1="195" x2="200" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="195" y="220" fill="#34495e" font-size="14">-π</text>
+
+                    <!-- 渐近线 -->
+                    <line x1="300" y1="50" x2="300" y2="350" stroke="#95a5a6" stroke-width="1" stroke-dasharray="5,5"/>
+                    <line x1="500" y1="50" x2="500" y2="350" stroke="#95a5a6" stroke-width="1" stroke-dasharray="5,5"/>
+
+                    <!-- 正切曲线 -->
+                    <path d="M 100 150
+                                 C 150 150, 250 50, 295 50
+                                 M 305 350
+                                 C 350 350, 450 50, 495 50
+                                 M 505 350
+                                 C 550 350, 650 50, 695 50"
+                          fill="none" stroke="url(#tanGradient)" stroke-width="3"/>
+
+                    <!-- 标签 -->
+                    <text x="300" y="280" fill="#2c3e50" font-size="18">y = tan(x)</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="18">周期: π, 渐近线: x = π/2 + kπ</text>
+                </g>
+
+                <!-- 场景6: 三角函数应用 -->
+                <g id="scene6" style="display: none;">
+                    <!-- 建筑物 -->
+                    <rect x="300" y="100" width="100" height="200" fill="#95a5a6"/>
+                    <polygon points="300,100 350,50 400,100" fill="#e74c3c"/>
+
+                    <!-- 太阳 -->
+                    <circle cx="550" cy="100" r="30" fill="#f39c12"/>
+
+                    <!-- 光线 -->
+                    <line x1="520" y1="100" x2="350" y2="100" stroke="#f39c12" stroke-width="2"/>
+
+                    <!-- 影子 -->
+                    <rect x="400" y="300" width="80" height="5" fill="#34495e"/>
+
+                    <!-- 角度标记 -->
+                    <path d="M 400 295 A 10 10 0 0 0 395 285" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                    <text x="385" y="285" fill="#e74c3c" font-size="16">θ</text>
+
+                    <!-- 标签 -->
+                    <text x="300" y="350" fill="#2c3e50" font-size="18">tan θ = 建筑高度 / 影子长度</text>
+                    <text x="300" y="380" fill="#2c3e50" font-size="18">高度 = 影子长度 × tan θ</text>
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <div class="subtitle-container">
+        <div class="subtitle" id="subtitle"></div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn" id="playBtn" title="播放" disabled>
+            <span id="playIcon">▶</span>
+        </button>
+        <button class="control-btn" id="muteBtn" title="静音">
+            <span id="muteIcon">🔊</span>
+        </button>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-handle" id="progressHandle"></div>
             </div>
+            <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
         </div>
     </div>
-    
-    <div class="footer">
-        © 2023 https://study11.ai/
-    </div>
-    
-    <!-- 为每个场景创建一个音频元素 -->
-    <div id="audioContainer"></div>
-    
-    <script src="script.js"></script>
+</div>
+
+<div class="footer">
+    © 2023 https://study11.ai/
+</div>
+
+<!-- 为每个场景创建一个音频元素 -->
+<div id="audioContainer"></div>
+
+<!-- 引入公共模块 -->
+<script src="animation-player-utils.js"></script>
+
+<script>
+    // 定义场景数据
+    const mathScenes = [
+        {
+            title: "三角函数简介",
+            subtitle: "三角函数是数学中重要的函数，它们描述了直角三角形中角度与边长之间的关系。最基本的三角函数是正弦、余弦和正切。",
+            action: () => showScene(1, "三角函数简介")
+        },
+        {
+            title: "单位圆与三角函数",
+            subtitle: "单位圆是半径为1的圆，它在三角函数中扮演着重要角色。在单位圆上，任意角度θ的终边与单位圆的交点坐标为(cos θ, sin θ)。",
+            action: () => showScene(2, "单位圆与三角函数")
+        },
+        {
+            title: "正弦函数图像",
+            subtitle: "正弦函数y=sin(x)是一个周期为2π的函数，其图像在[-1,1]之间波动。正弦函数在x=0时值为0，在x=π/2时达到最大值1，在x=π时回到0。",
+            action: () => showScene(3, "正弦函数图像")
+        },
+        {
+            title: "余弦函数图像",
+            subtitle: "余弦函数y=cos(x)也是一个周期为2π的函数，其图像在[-1,1]之间波动。与正弦函数不同，余弦函数在x=0时达到最大值1，在x=π/2时值为0。",
+            action: () => showScene(4, "余弦函数图像")
+        },
+        {
+            title: "正切函数图像",
+            subtitle: "正切函数y=tan(x)是正弦与余弦的比值，即tan(x)=sin(x)/cos(x)。它的周期是π，并且在cos(x)=0的点上有垂直渐近线，此时函数值趋向于无穷大。",
+            action: () => showScene(5, "正切函数图像")
+        },
+        {
+            title: "三角函数的实际应用",
+            subtitle: "三角函数在现实生活中有广泛的应用，如测量建筑物高度、计算天体距离、分析声波和光波等。通过测量角度和已知边长，我们可以使用三角函数计算出未知量。",
+            action: () => showScene(6, "三角函数的实际应用")
+        }
+    ];
+
+    // 场景显示函数
+    function showScene(sceneNumber, title) {
+        // 隐藏所有场景
+        for (let i = 1; i <= mathScenes.length; i++) {
+            const scene = document.getElementById(`scene${i}`);
+            if (scene) {
+                scene.style.display = 'none';
+            }
+        }
+
+        // 显示当前场景
+        const currentScene = document.getElementById(`scene${sceneNumber}`);
+        if (currentScene) {
+            currentScene.style.display = 'flex';
+        }
+
+        // 更新标题和场景编号
+        const sceneTitle = document.getElementById('sceneTitle');
+        const sceneNumberElement = document.getElementById('sceneNumber');
+
+        if (sceneTitle) {
+            sceneTitle.textContent = title;
+            sceneTitle.classList.add('active');
+        }
+
+        if (sceneNumberElement) {
+            sceneNumberElement.textContent = sceneNumber.toString();
+        }
+    }
+
+    // 初始化动画播放器
+    async function initializePlayer() {
+        // 获取DOM元素
+        const elements = {
+            audioContainer: document.getElementById('audioContainer'),
+            loading: document.getElementById('loading'),
+            playBtn: document.getElementById('playBtn'),
+            playIcon: document.getElementById('playIcon'),
+            muteBtn: document.getElementById('muteBtn'),
+            muteIcon: document.getElementById('muteIcon'),
+            progressBar: document.getElementById('progressBar'),
+            progressFill: document.getElementById('progressFill'),
+            progressHandle: document.getElementById('progressHandle'),
+            subtitle: document.getElementById('subtitle'),
+            timeDisplay: document.getElementById('timeDisplay'),
+            cacheIndicator: document.getElementById('cacheIndicator')
+        };
+
+        const player = new AnimationUtils.AnimationPlayer({
+            scenes: mathScenes,
+            elements: elements,
+        });
+
+        // 初始化播放器
+        await player.init();
+
+        // 预加载音频
+        await player.preloadAllAudio((current, total) => {
+            console.log(`加载进度: ${current}/${total}`);
+        });
+
+        console.log('动画播放器初始化完成');
+
+        await player.playWithErrorHandling()
+
+        window.mathPlayer = player;
+    }
+
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', initializePlayer);
+
+    // 错误处理
+    window.addEventListener('error', (e) => {
+        console.error('页面错误:', e);
+        const loading = document.getElementById('loading');
+        if (loading && loading.classList.contains('active')) {
+            loading.innerHTML = `
+            <div style="color: #e74c3c; text-align: center;">
+                <div style="font-size: 2rem;">⚠️</div>
+                <div>加载失败，请刷新页面重试</div>
+            </div>
+        `;
+        }
+    });
+</script>
 </body>
 </html>
