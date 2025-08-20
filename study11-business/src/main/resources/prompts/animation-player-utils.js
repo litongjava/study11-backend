@@ -282,19 +282,38 @@ class AnimationPlayer {
         if (playBtn) playBtn.disabled = false;
     }
 
-    async playWithErrorHandling() {
+    inIframe() {
         try {
-            await this.play();
+            return window.self !== window.top;
+        } catch (_) {
             return true;
-        } catch (error) {
-            if (error.name === 'NotAllowedError') {
-                console.log('需要用户交互才能播放音频');
-                this.showInteractionRequired();
-                return false;
-            } else {
-                console.error('播放失败:', error);
-                throw error;
+        }
+    }
+    iframeAutoplayAllowedByPolicy() {
+        const p = document.permissionsPolicy || document.featurePolicy;
+        return p?.allowsFeature?.('autoplay') ?? true; // 不支持 API 时默认 true
+    }
+
+
+    async playWithErrorHandling() {
+        const embedded = inIframe();
+        const policyAllows = iframeAutoplayAllowedByPolicy();
+        if (!embedded && policyAllows) {
+            try {
+                await this.play();
+                return true;
+            } catch (error) {
+                if (error.name === 'NotAllowedError') {
+                    console.log('需要用户交互才能播放音频');
+                    this.showInteractionRequired();
+                    return false;
+                } else {
+                    console.error('播放失败:', error);
+                    throw error;
+                }
             }
+        } else {
+            this.showInteractionRequired();
         }
     }
 
@@ -318,7 +337,7 @@ class AnimationPlayer {
             document.getElementById('manualStartBtn').addEventListener('click', () => {
                 message.remove();
                 try {
-                    this.isPlaying=false;
+                    this.isPlaying = false;
                     this.play();
                 } catch (e) {
                     console.error('播放失败:', e);
