@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Tortoise and the Hare</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4eaf5 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px;
+        }
+        .animation-container {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .subtitle-container {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            margin: 5px 0;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .subtitle {
+            color: black;
+            border-radius: 30px;
+            font-size: 1.4rem;
+            max-width: 80%;
+            text-align: center;
+            line-height: 1.5;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .subtitle.active {
+            opacity: 1;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 5px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: #3498db;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+        .control-btn:hover {
+            background: #2980b9;
+            transform: scale(1.1);
+        }
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+        .control-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .progress-container {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 20px;
+            display: flex;
+            align-items: center;
+        }
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+        .progress-handle {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 3px solid #3498db;
+            border-radius: 50%;
+            cursor: grab;
+            left: 0%;
+        }
+        .progress-handle:active {
+            cursor: grabbing;
+        }
+        .time-display {
+            min-width: 100px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .loading.active {
+            display: flex;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(52, 152, 219, 0.2);
+            border-radius: 50%;
+            border-top-color: #3498db;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 15px;
+        }
+        .loading-text {
+            font-size: 1.2rem;
+            color: #3498db;
+        }
+        .cache-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(46, 204, 113, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: none;
+        }
+        .cache-indicator.active {
+            display: block;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .story-scene {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .text-panel {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            width: 40%;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #2c3e50;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .text-panel.active {
+            opacity: 1;
+        }
+        .scene-title {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.8rem;
+            color: #2c3e50;
+            font-weight: 300;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .scene-title.active {
+            opacity: 1;
+        }
+        @media (max-width: 768px) {
+            .animation-container {
+                padding: 20px;
+                min-height: 300px;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+                padding: 12px 20px;
+            }
+            
+            .control-btn {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .text-panel {
+                width: 90%;
+                left: 5%;
+                right: 5%;
+                font-size: 0.9rem;
+            }
+            
+            .time-display {
+                min-width: 80px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="animation-container">
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Loading...</div>
+            </div>
+            <div class="cache-indicator" id="cacheIndicator">Using cached audio</div>
+            
+            <svg class="story-scene" viewBox="0 0 800 400">
+                <!-- 背景渐变 -->
+                <defs>
+                    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#E0F7FA;stop-opacity:1" />
+                    </linearGradient>
+                    
+                    <linearGradient id="grassGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#8BC34A;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#689F38;stop-opacity:1" />
+                    </linearGradient>
+                    
+                    <linearGradient id="tortoiseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#8BC34A;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#689F38;stop-opacity:1" />
+                    </linearGradient>
+                    
+                    <linearGradient id="hareGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#F5F5F5;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#E0E0E0;stop-opacity:1" />
+                    </linearGradient>
+                    
+                    <filter id="shadow">
+                        <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+                    </filter>
+                </defs>
+                
+                <!-- 天空背景 -->
+                <rect width="800" height="300" fill="url(#skyGradient)"/>
+                
+                <!-- 草地背景 -->
+                <rect y="300" width="800" height="100" fill="url(#grassGradient)"/>
+                
+                <!-- 太阳 -->
+                <circle cx="700" cy="80" r="40" fill="#FFEB3B" filter="url(#shadow)"/>
+                
+                <!-- 云朵 -->
+                <g id="cloud1">
+                    <ellipse cx="150" cy="70" rx="30" ry="20" fill="white" opacity="0.8"/>
+                    <ellipse cx="180" cy="65" rx="35" ry="25" fill="white" opacity="0.8"/>
+                    <ellipse cx="210" cy="70" rx="30" ry="20" fill="white" opacity="0.8"/>
+                </g>
+                
+                <g id="cloud2">
+                    <ellipse cx="550" cy="100" rx="25" ry="15" fill="white" opacity="0.8"/>
+                    <ellipse cx="575" cy="95" rx="30" ry="20" fill="white" opacity="0.8"/>
+                    <ellipse cx="600" cy="100" rx="25" ry="15" fill="white" opacity="0.8"/>
+                </g>
+                
+                <!-- 树木 -->
+                <g id="tree1">
+                    <rect x="95" y="250" width="20" height="50" fill="#795548"/>
+                    <circle cx="105" cy="240" r="30" fill="#4CAF50"/>
+                </g>
+                
+                <g id="tree2">
+                    <rect x="695" y="240" width="15" height="60" fill="#795548"/>
+                    <circle cx="702" cy="230" r="25" fill="#4CAF50"/>
+                </g>
+                
+                <!-- 赛道 -->
+                <rect x="100" y="320" width="600" height="5" fill="#FFC107"/>
+                
+                <!-- 起点和终点 -->
+                <line x1="100" y1="315" x2="100" y2="330" stroke="#FF5722" stroke-width="3"/>
+                <text x="100" y="310" text-anchor="middle" fill="#FF5722" font-size="16">START</text>
+                
+                <line x1="700" y1="315" x2="700" y2="330" stroke="#FF5722" stroke-width="3"/>
+                <text x="700" y="310" text-anchor="middle" fill="#FF5722" font-size="16">FINISH</text>
+                
+                <!-- 文本面板 -->
+                <foreignObject x="20" y="20" width="350" height="200" class="text-panel" id="textPanel">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="padding: 10px;">
+                        <p id="textContent"></p>
+                    </div>
+                </foreignObject>
+                
+                <!-- 场景标题 -->
+                <text x="800" y="30" text-anchor="middle" fill="#2c3e50" font-size="24" font-weight="300" class="scene-title" id="sceneTitle">
+                    The Tortoise and the Hare
+                </text>
+                
+                <!-- 故事场景 -->
+                <g id="storyScenes">
+                    <!-- 场景1: 介绍角色 -->
+                    <g id="scene1">
+                        <!-- 乌龟 -->
+                        <g id="tortoise" transform="translate(200, 280)">
+                            <ellipse cx="0" cy="0" rx="40" ry="30" fill="url(#tortoiseGradient)" filter="url(#shadow)"/>
+                            <ellipse cx="0" cy="-5" rx="35" ry="25" fill="#9CCC65"/>
+                            <circle cx="-15" cy="-10" r="5" fill="#4CAF50"/>
+                            <circle cx="15" cy="-10" r="5" fill="#4CAF50"/>
+                            <ellipse cx="0" cy="-5" rx="15" ry="10" fill="#689F38"/>
+                            <rect x="-10" y="5" width="5" height="15" fill="#795548"/>
+                            <rect x="5" y="5" width="5" height="15" fill="#795548"/>
+                            <rect x="-15" y="20" width="5" height="15" fill="#795548"/>
+                            <rect x="10" y="20" width="5" height="15" fill="#795548"/>
+                        </g>
+                        
+                        <!-- 兔子 -->
+                        <g id="hare" transform="translate(500, 280)">
+                            <ellipse cx="0" cy="0" rx="25" ry="35" fill="url(#hareGradient)" filter="url(#shadow)"/>
+                            <ellipse cx="-10" cy="-30" rx="8" ry="20" fill="url(#hareGradient)"/>
+                            <ellipse cx="10" cy="-30" rx="8" ry="20" fill="url(#hareGradient)"/>
+                            <circle cx="-8" cy="-5" r="5" fill="#E0E0E0"/>
+                            <circle cx="8" cy="-5" r="5" fill="#E0E0E0"/>
+                            <circle cx="-8" cy="-5" r="2" fill="#212121"/>
+                            <circle cx="8" cy="-5" r="2" fill="#212121"/>
+                            <circle cx="0" cy="5" r="5" fill="#FFCDD2"/>
+                            <ellipse cx="-15" cy="15" rx="5" ry="15" fill="url(#hareGradient)"/>
+                            <ellipse cx="15" cy="15" rx="5" ry="15" fill="url(#hareGradient)"/>
+                        </g>
+                        
+                        <!-- 角色标签 -->
+                        <text x="200" y="340" text-anchor="middle" fill="#2c3e50" font-size="16">Tortoise</text>
+                        <text x="500" y="340" text-anchor="middle" fill="#2c3e50" font-size="16">Hare</text>
+                    </g>
+                    
+                    <!-- 场景2: 兔子嘲笑乌龟 -->
+                    <g id="scene2" style="display: none;">
+                        <!-- 乌龟 -->
+                        <g id="tortoise2" transform="translate(200, 280)">
+                            <ellipse cx="0" cy="0" rx="40" ry="30" fill="url(#tortoiseGradient)" filter="url(#shadow)"/>
+                            <ellipse cx="0" cy="-5" rx="35" ry="25" fill="#9CCC65"/>
+                            <circle cx="-15" cy="-10" r="5" fill="#4CAF50"/>
+                            <circle cx="15" cy="-10" r="5" fill="#4CAF50"/>
+                            <ellipse cx="0" cy="-5" rx="15" ry="10" fill="#689F38"/>
+                            <rect x="-10" y="5" width="5" height="15" fill="#795548"/>
+                            <rect x="5" y="5" width="5" height="15" fill="#795548"/>
+                            <rect x="-15" y="20" width="5" height="15" fill="#795548"/>
+                            <rect x="10" y="20" width="5" height="15" fill="#795548"/>
+                        </g>
+                        
+                        <!-- 兔子 -->
+                        <g id="hare2" transform="translate(500, 280)">
+                            <ellipse cx="0" cy="0" rx="25" ry="35" fill="url(#hareGradient)" filter="url(#shadow)"/>
+                            <ellipse cx="-10" cy="-30" rx="8" ry="20" fill="url(#hareGradient)"/>
+                            <ellipse cx="10" cy="-30" rx="8" ry="20" fill="url(#hareGradient)"/>
+                            <circle cx="-8" cy="-5" r="5" fill="#E0E0E0"/>
+                            <circle cx="8" cy="-5" r="5" fill="#E0E0E0"/>
+                            <circle cx="-8" cy="-5" r="2" fill="#212121"/>
+                            <circle cx="8" cy="-5" r="2" fill="#212121"/>
+                            <circle cx="0" cy="5" r="5" fill="#FFCDD2"/>
+                            <ellipse cx="-15" cy="15" rx="5" ry="15" fill="url(#hareGradient)"/>
+                            <ellipse cx="15" cy="15" rx="5" ry="15" fill="url(#hareGradient)"/>
+                            <!-- 兔子的嘴，表示嘲笑 -->
+                            <path d="M -5,10 Q 0,15 5,10" stroke="#212121" stroke-width="2" fill="none"/>
+                        </g>
+                        
+                        <!-- 对话气泡 -->
+                        <g id="speechBubble">
+                            <ellipse cx="500" cy="220" rx="80" ry="40" fill="white" stroke="#212121" stroke-width="2"/>
+                            <path d="M 480,250 L 490,270 L 510,250" fill="white" stroke="#212121" stroke-width="2"/>
+                            <text x="500" y="225" text-anchor="middle" fill="#212121" font-size="14">You're so slow!</text>
+                        </g>
+                    </g>
+                    
+                    <!-- 场景3: 比赛开始 -->
+                    <g id="scene3" style="display: none;">
+                        <!-- 乌龟在起点 -->
+                        <g id="tortoise3" transform="translate(100, 280)">
+                            <ellipse cx="0" cy="0" rx="40" ry="30" fill="url(#tortoiseGradient)" filter="url(#shadow)"/>
+                            <ellipse cx="0" cy="-5" rx="35" ry="25" fill="#9CCC65"/>
+                            <circle cx="-15" cy="-10" r="5" fill="#4CAF50"/>
+                            <circle cx="15" cy="-10" r="5" fill="#4CAF50"/>
+                            <ellipse cx="0" cy="-5" rx="15" ry="10" fill="#689F38"/>
+                            <rect x="-10" y="5" width="5" height="15" fill="#795548"/>
+                            <rect x="5" y="5" width="5" height="15" fill="#795548"/>
+                            <rect x="-15" y="20" width="5" height="15" fill="#795548"/>
+                            <rect x="10" y="20" width="5" height="15" fill="#795548"/>
+                        </g>
+                        
+                        <!-- 兔子在起点 -->
+                        <g id="hare3" transform="translate(100, 280)">
+                            <ellipse cx="0" cy="0" rx="25" ry="35" fill="url(#hareGradient)" filter="url(#shadow)"/>
+                            <ellipse cx="-10" cy="-30" rx="8" ry="20" fill="url(#hareGradient)"/>
+                            <ellipse cx="10" cy="-30" rx="8" ry="20" fill="url(#hareGradient)"/>
+                            <circle cx="-8" cy="-5" r="5" fill="#E0E0E0"/>
+                            <circle cx="8" cy="-5" r="5" fill="#E0E0E0"/>
+                            <circle cx="-8" cy="-5" r="2" fill="#212121"/>
+                            <circle cx="8" cy="-5" r="2" fill="#212121"/>
+                            <circle cx="0" cy="5" r="5" fill="#FFCDD2"/>
+                            <ellipse cx="-15" cy="15" rx="5" ry="15" fill="url(#hareGradient)"/>
+                            <ellipse cx="15" cy="15" rx="5" ry="15" fill="url(#hareGradient)"/>
+                        </g>
+                        
+                        <!-- 发令枪 -->
+                        <g id="startingGun" transform="translate(400, 200)">
+                            <rect x="-5" y="-20" width="10" height="40" fill="#212121"/>
+                            <rect x="-15" y="-30" width="30" height="15" fill="#212121"/>
+                            <circle cx="0" cy="-30" r="5" fill="#FF5722"/>
+                        </g>
+                    </g>
+                    
+                    <!-- 场景4: 兔子领先并睡觉 -->
+                    <g id="scene4" style="display: none;">
+                        <!-- 乌龟在中间 -->
+                        <g id="tortoise4" transform="translate(300, 280)">
+                            <ellipse cx="0" cy="0" rx="40" ry="30" fill="url(#tortoiseGradient)" filter="url(#shadow)"/>
+                            <ellipse cx="0" cy="-5" rx="35" ry="25" fill="#9CCC65"/>
+                            <circle cx="-15" cy="-10" r="5" fill="#4CAF50"/>
+                            <circle cx="15" cy="-10" r="5" fill="#4CAF50"/>
+                            <ellipse cx="0" cy="-5" rx="15" ry="10" fill="#689F38"/>
+                            <rect x="-10" y="5" width="5" height="15" fill="#795548"/>
+                            <rect x="5" y="5" width="5" height="15" fill="#795548"/>
+                            <rect x="-15" y="20" width="5" height="15" fill="#795548"/>
+                            <rect x="10" y="20" width="5" height="15" fill="#795548"/>
+                        </g>
+                        
+                        <!-- 兔子在前面睡觉 -->
+                        <g id="hare4" transform="translate(500, 280)">
+                            <ellipse cx="0" cy="0" rx="25" ry="35" fill="url(#hareGradient)" filter="url(#shadow)"/>
+                            <ellipse cx="-10" cy="-30" rx="8" ry="20" fill="url(#hareGradient)"/>
+                            <ellipse cx="10" cy="-30" rx="8" ry="20" fill="url(#hareGradient)"/>
+                            <circle cx="-8" cy="-5" r="5" fill="#E0E0E0"/>
+                            <circle cx="8" cy="-5" r="5" fill="#E0E0E0"/>
+                            <!-- 闭着的眼睛 -->
+                            <path d="M -10,-5 L -6,-5" stroke="#212121" stroke-width="2"/>
+                            <path d="M 6,-5 L 10,-5" stroke="#212121" stroke-width="2"/>
+                            <circle cx="0" cy="5" r="5" fill="#FFCDD2"/>
+                            <ellipse cx="-15" cy="15" rx="5" ry="15" fill="url(#hareGradient)"/>
+                            <ellipse cx="15" cy="15" rx="5" ry="15" fill="url(#hareGradient)"/>
+                            <!-- Z 表示睡觉 -->
+                            <text x="30" y="-10" fill="#212121" font-size="20">Z</text>
+                            <text x="45" y="-20" fill="#212121" font-size="16">z</text>
+                            <text x="55" y="-30" fill="#212121" font-size="12">z</text>
+                        </g>
+                    </g>
+                    
+                    <!-- 场景5: 乌龟超过兔子 -->
+                    <g id="scene5" style="display: none;">
+                        <!-- 乌龟在前面 -->
+                        <g id="tortoise5" transform="translate(550, 280)">
+                            <ellipse cx="0" cy="0" rx="40" ry="30" fill="url(#tortoiseGradient)" filter="url(#shadow)"/>
+                            <ellipse cx="0" cy="-5" rx="35" ry="25" fill="#9CCC65"/>
+                            <circle cx="-15" cy="-10" r="5" fill="#4CAF50"/>
+                            <circle cx="15" cy="-10" r="5" fill="#4CAF50"/>
+                            <ellipse cx="0" cy="-5" rx="15" ry="10" fill="#689F38"/>
+                            <rect x="-10" y="5" width="5" height="15" fill="#795548"/>
+                            <rect x="5" y="5" width="5" height="15" fill="#795548"/>
+                            <rect x="-15" y="20" width="5" height="15" fill="#795548"/>
+                            <rect x="10" y="20" width="5" height="15" fill="#795548"/>
+                        </g>
+                        
+                        <!-- 兔子还在睡觉 -->
+                        <g id="hare5" transform="translate(500, 280)">
+                            <ellipse cx="0" cy="0" rx="25" ry="35" fill="url(#hareGradient)" filter="url(#shadow)"/>
+                            <ellipse cx="-10" cy="-30" rx="8" ry="20" fill="url(#hareGradient)"/>
+                            <ellipse cx="10" cy="-30" rx="8" ry="20" fill="url(#hareGradient)"/>
+                            <circle cx="-8" cy="-5" r="5" fill="#E0E0E0"/>
+                            <circle cx="8" cy="-5" r="5" fill="#E0E0E0"/>
+                            <!-- 闭着的眼睛 -->
+                            <path d="M -10,-5 L -6,-5" stroke="#212121" stroke-width="2"/>
+                            <path d="M 6,-5 L 10,-5" stroke="#212121" stroke-width="2"/>
+                            <circle cx="0" cy="5" r="5" fill="#FFCDD2"/>
+                            <ellipse cx="-15" cy="15" rx="5" ry="15" fill="url(#hareGradient)"/>
+                            <ellipse cx="15" cy="15" rx="5" ry="15" fill="url(#hareGradient)"/>
+                            <!-- Z 表示睡觉 -->
+                            <text x="30" y="-10" fill="#212121" font-size="20">Z</text>
+                            <text x="45" y="-20" fill="#212121" font-size="16">z</text>
+                            <text x="55" y="-30" fill="#212121" font-size="12">z</text>
+                        </g>
+                    </g>
+                    
+                    <!-- 场景6: 乌龟到达终点 -->
+                    <g id="scene6" style="display: none;">
+                        <!-- 乌龟在终点 -->
+                        <g id="tortoise6" transform="translate(700, 280)">
+                            <ellipse cx="0" cy="0" rx="40" ry="30" fill="url(#tortoiseGradient)" filter="url(#shadow)"/>
+                            <ellipse cx="0" cy="-5" rx="35" ry="25" fill="#9CCC65"/>
+                            <circle cx="-15" cy="-10" r="5" fill="#4CAF50"/>
+                            <circle cx="15" cy="-10" r="5" fill="#4CAF50"/>
+                            <ellipse cx="0" cy="-5" rx="15" ry="10" fill="#689F38"/>
+                            <rect x="-10" y="5" width="5" height="15" fill="#795548"/>
+                            <rect x="5" y="5" width="5" height="15" fill="#795548"/>
+                            <rect x="-15" y="20" width="5" height="15" fill="#795548"/>
+                            <rect x="10" y="20" width="5" height="15" fill="#795548"/>
+                        </g>
+                        
+                        <!-- 兔子醒来 -->
+                        <g id="hare6" transform="translate(600, 280)">
+                            <ellipse cx="0" cy="0" rx="25" ry="35" fill="url(#hareGradient)" filter="url(#shadow)"/>
+                            <ellipse cx="-10" cy="-30" rx="8" ry="20" fill="url(#hareGradient)"/>
+                            <ellipse cx="10" cy="-30" rx="8" ry="20" fill="url(#hareGradient)"/>
+                            <circle cx="-8" cy="-5" r="5" fill="#E0E0E0"/>
+                            <circle cx="8" cy="-5" r="5" fill="#E0E0E0"/>
+                            <circle cx="-8" cy="-5" r="2" fill="#212121"/>
+                            <circle cx="8" cy="-5" r="2" fill="#212121"/>
+                            <circle cx="0" cy="5" r="5" fill="#FFCDD2"/>
+                            <ellipse cx="-15" cy="15" rx="5" ry="15" fill="url(#hareGradient)"/>
+                            <ellipse cx="15" cy="15" rx="5" ry="15" fill="url(#hareGradient)"/>
+                            <!-- 惊讶的嘴 -->
+                            <circle cx="0" cy="15" r="5" fill="#212121"/>
+                        </g>
+                        
+                        <!-- 奖杯 -->
+                        <g id="trophy" transform="translate(700, 230)">
+                            <path d="M -15,0 L -15,20 L 15,20 L 15,0 L 10,0 L 10,-10 C 10,-20 -10,-20 -10,-10 L -10,0 Z" fill="#FFD700" stroke="#FFA000" stroke-width="2"/>
+                            <rect x="-5" y="20" width="10" height="15" fill="#FFD700"/>
+                            <rect x="-10" y="35" width="20" height="5" fill="#FFD700"/>
+                        </g>
+                    </g>
+                    
+                    <!-- 场景7: 故事寓意 -->
+                    <g id="scene7" style="display: none;">
+                        <!-- 乌龟和兔子在一起 -->
+                        <g id="tortoise7" transform="translate(350, 280)">
+                            <ellipse cx="0" cy="0" rx="40" ry="30" fill="url(#tortoiseGradient)" filter="url(#shadow)"/>
+                            <ellipse cx="0" cy="-5" rx="35" ry="25" fill="#9CCC65"/>
+                            <circle cx="-15" cy="-10" r="5" fill="#4CAF50"/>
+                            <circle cx="15" cy="-10" r="5" fill="#4CAF50"/>
+                            <ellipse cx="0" cy="-5" rx="15" ry="10" fill="#689F38"/>
+                            <rect x="-10" y="5" width="5" height="15" fill="#795548"/>
+                            <rect x="5" y="5" width="5" height="15" fill="#795548"/>
+                            <rect x="-15" y="20" width="5" height="15" fill="#795548"/>
+                            <rect x="10" y="20" width="5" height="15" fill="#795548"/>
+                        </g>
+                        
+                        <g id="hare7" transform="translate(450, 280)">
+                            <ellipse cx="0" cy="0" rx="25" ry="35" fill="url(#hareGradient)" filter="url(#shadow)"/>
+                            <ellipse cx="-10" cy="-30" rx="8" ry="20" fill="url(#hareGradient)"/>
+                            <ellipse cx="10" cy="-30" rx="8" ry="20" fill="url(#hareGradient)"/>
+                            <circle cx="-8" cy="-5" r="5" fill="#E0E0E0"/>
+                            <circle cx="8" cy="-5" r="5" fill="#E0E0E0"/>
+                            <circle cx="-8" cy="-5" r="2" fill="#212121"/>
+                            <circle cx="8" cy="-5" r="2" fill="#212121"/>
+                            <circle cx="0" cy="5" r="5" fill="#FFCDD2"/>
+                            <ellipse cx="-15" cy="15" rx="5" ry="15" fill="url(#hareGradient)"/>
+                            <ellipse cx="15" cy="15" rx="5" ry="15" fill="url(#hareGradient)"/>
+                            <!-- 后悔的表情 -->
+                            <path d="M -5,10 Q 0,5 5,10" stroke="#212121" stroke-width="2" fill="none"/>
+                        </g>
+                        
+                        <!-- 寓意文本框 -->
+                        <rect x="250" y="150" width="300" height="80" rx="10" fill="white" stroke="#212121" stroke-width="2" filter="url(#shadow)"/>
+                        <text x="400" y="180" text-anchor="middle" fill="#212121" font-size="18" font-weight="bold">Moral of the Story:</text>
+                        <text x="400" y="210" text-anchor="middle" fill="#212121" font-size="16">Slow and steady wins the race!</text>
+                    </g>
+                </g>
+            </svg>
+        </div>
+        
+        <div class="subtitle-container">
+            <div class="subtitle" id="subtitle"></div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn" id="playBtn" title="Play" disabled>
+                <span id="playIcon">▶</span>
+            </button>
+            <button class="control-btn" id="muteBtn" title="Mute">
+                <span id="muteIcon">🔊</span>
+            </button>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <div class="progress-handle" id="progressHandle"></div>
+                </div>
+                <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        © 2023 https://study11.ai/
+    </div>
+    
+    <!-- 为每个场景创建一个音频元素 -->
+    <div id="audioContainer"></div>
+    
+    <script>
+        // 动画场景数据
+        const scenes = [
+            {
+                title: "The Tortoise and the Hare",
+                subtitle: "Once upon a time, there was a tortoise who was known for being slow but steady, and a hare who was famous for being very fast.",
+                text: "This classic fable by Aesop tells the story of a race between a tortoise and a hare. The tortoise is known for being slow but persistent, while the hare is famous for his incredible speed but also for his arrogance.",
+                action: () => {
+                    document.getElementById('sceneTitle').textContent = "The Tortoise and the Hare";
+                    document.getElementById('textContent').textContent = "This classic fable by Aesop tells the story of a race between a tortoise and a hare. The tortoise is known for being slow but persistent, while the hare is famous for his incredible speed but also for his arrogance.";
+                    
+                    // 显示场景1，隐藏其他场景
+                    for (let i = 1; i <= 7; i++) {
+                        document.getElementById(`scene${i}`).style.display = i === 1 ? 'block' : 'none';
+                    }
+                    
+                    document.getElementById('textPanel').classList.add('active');
+                    document.getElementById('sceneTitle').classList.add('active');
+                }
+            },
+            {
+                title: "The Hare's Arrogance",
+                subtitle: "The hare often mocked the tortoise for being so slow. 'You'll never get anywhere moving at that pace!' he would laugh.",
+                text: "The hare was very proud of his speed and frequently made fun of the tortoise for being slow. He believed that his natural abilities made him superior and couldn't imagine ever losing to someone as slow as the tortoise.",
+                action: () => {
+                    document.getElementById('sceneTitle').textContent = "The Hare's Arrogance";
+                    document.getElementById('textContent').textContent = "The hare was very proud of his speed and frequently made fun of the tortoise for being slow. He believed that his natural abilities made him superior and couldn't imagine ever losing to someone as slow as the tortoise.";
+                    
+                    // 显示场景2，隐藏其他场景
+                    for (let i = 1; i <= 7; i++) {
+                        document.getElementById(`scene${i}`).style.display = i === 2 ? 'block' : 'none';
+                    }
+                }
+            },
+            {
+                title: "The Challenge",
+                subtitle: "One day, tired of the hare's teasing, the tortoise challenged him to a race. The hare, confident of victory, immediately accepted.",
+                text: "After enduring the hare's mockery for too long, the tortoise finally challenged him to a race. The hare found this hilarious and eagerly accepted, certain that he would win easily and further prove his superiority.",
+                action: () => {
+                    document.getElementById('sceneTitle').textContent = "The Challenge";
+                    document.getElementById('textContent').textContent = "After enduring the hare's mockery for too long, the tortoise finally challenged him to a race. The hare found this hilarious and eagerly accepted, certain that he would win easily and further prove his superiority.";
+                    
+                    // 显示场景3，隐藏其他场景
+                    for (let i = 1; i <= 7; i++) {
+                        document.getElementById(`scene${i}`).style.display = i === 3 ? 'block' : 'none';
+                    }
+                }
+            },
+            {
+                title: "The Race Begins",
+                subtitle: "At the starting line, the animals gathered to watch. When the race began, the hare quickly sprinted ahead, leaving the tortoise far behind.",
+                text: "The day of the race arrived, and many forest animals came to watch. When the signal was given, the hare immediately dashed forward at top speed, quickly leaving the tortoise far behind in the dust.",
+                action: () => {
+                    document.getElementById('sceneTitle').textContent = "The Race Begins";
+                    document.getElementById('textContent').textContent = "The day of the race arrived, and many forest animals came to watch. When the signal was given, the hare immediately dashed forward at top speed, quickly leaving the tortoise far behind in the dust.";
+                    
+                    // 显示场景4，隐藏其他场景
+                    for (let i = 1; i <= 7; i++) {
+                        document.getElementById(`scene${i}`).style.display = i === 4 ? 'block' : 'none';
+                    }
+                }
+            },
+            {
+                title: "The Hare's Nap",
+                subtitle: "Seeing how far ahead he was, the hare decided to take a nap under a tree. 'I have plenty of time to rest and still win,' he thought.",
+                text: "After running a significant distance, the hare looked back and saw the tortoise was barely visible in the distance. Overconfident, the hare decided to take a nap, believing he had more than enough time to rest and still easily win the race.",
+                action: () => {
+                    document.getElementById('sceneTitle').textContent = "The Hare's Nap";
+                    document.getElementById('textContent').textContent = "After running a significant distance, the hare looked back and saw the tortoise was barely visible in the distance. Overconfident, the hare decided to take a nap, believing he had more than enough time to rest and still easily win the race.";
+                    
+                    // 显示场景5，隐藏其他场景
+                    for (let i = 1; i <= 7; i++) {
+                        document.getElementById(`scene${i}`).style.display = i === 5 ? 'block' : 'none';
+                    }
+                }
+            },
+            {
+                title: "The Tortoise's Persistence",
+                subtitle: "Meanwhile, the tortoise continued moving forward slowly but steadily. He passed the sleeping hare without stopping and kept going toward the finish line.",
+                text: "While the hare slept, the tortoise continued his journey at his slow but steady pace. He didn't let the sleeping hare distract him. Instead, he maintained his focus and determination, passing the sleeping hare without a second thought.",
+                action: () => {
+                    document.getElementById('sceneTitle').textContent = "The Tortoise's Persistence";
+                    document.getElementById('textContent').textContent = "While the hare slept, the tortoise continued his journey at his slow but steady pace. He didn't let the sleeping hare distract him. Instead, he maintained his focus and determination, passing the sleeping hare without a second thought.";
+                    
+                    // 显示场景6，隐藏其他场景
+                    for (let i = 1; i <= 7; i++) {
+                        document.getElementById(`scene${i}`).style.display = i === 6 ? 'block' : 'none';
+                    }
+                }
+            },
+            {
+                title: "The Surprise Victory",
+                subtitle: "When the hare finally woke up, he saw the tortoise approaching the finish line. He ran as fast as he could, but it was too late. The tortoise had already won!",
+                text: "The hare overslept and when he finally woke up, he was shocked to see the tortoise near the finish line. He ran with all his might, but his efforts were in vain. The tortoise crossed the finish line first, winning the race to everyone's amazement.",
+                action: () => {
+                    document.getElementById('sceneTitle').textContent = "The Surprise Victory";
+                    document.getElementById('textContent').textContent = "The hare overslept and when he finally woke up, he was shocked to see the tortoise near the finish line. He ran with all his might, but his efforts were in vain. The tortoise crossed the finish line first, winning the race to everyone's amazement.";
+                    
+                    // 显示场景7，隐藏其他场景
+                    for (let i = 1; i <= 7; i++) {
+                        document.getElementById(`scene${i}`).style.display = i === 7 ? 'block' : 'none';
+                    }
+                }
+            },
+            {
+                title: "The Moral of the Story",
+                subtitle: "The tortoise taught everyone an important lesson that day: 'Slow and steady wins the race.' Persistence and determination can overcome natural advantages.",
+                text: "The tortoise's victory taught everyone present a valuable lesson: consistent effort and determination often triumph over natural talent when that talent is accompanied by arrogance and laziness. The phrase 'Slow and steady wins the race' has become a famous proverb reminding us of the power of persistence.",
+                action: () => {
+                    document.getElementById('sceneTitle').textContent = "The Moral of the Story";
+                    document.getElementById('textContent').textContent = "The tortoise's victory taught everyone present a valuable lesson: consistent effort and determination often triumph over natural talent when that talent is accompanied by arrogance and laziness. The phrase 'Slow and steady wins the race' has become a famous proverb reminding us of the power of persistence.";
+                    
+                    // 显示场景7，隐藏其他场景
+                    for (let i = 1; i <= 7; i++) {
+                        document.getElementById(`scene${i}`).style.display = i === 7 ? 'block' : 'none';
+                    }
+                }
+            }
+        ];
+        
+        // 全局变量
+        let currentScene = 0;
+        let isPlaying = false;
+        let isMuted = false;
+        let audioElements = [];
+        let sceneStartTime = 0;
+        let totalDuration = 0;
+        let sceneTimestamps = []; // 记录每个场景的开始时间戳
+        let isDragging = false;
+        let audioCache = {}; // 音频缓存对象
+        let cacheExpiry = 7 * 24 * 60 * 60 * 1000; // 缓存有效期：7天
+        
+        // DOM元素
+        const playBtn = document.getElementById('playBtn');
+        const playIcon = document.getElementById('playIcon');
+        const muteBtn = document.getElementById('muteBtn');
+        const muteIcon = document.getElementById('muteIcon');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const progressHandle = document.getElementById('progressHandle');
+        const subtitle = document.getElementById('subtitle');
+        const loading = document.getElementById('loading');
+        const audioContainer = document.getElementById('audioContainer');
+        const cacheIndicator = document.getElementById('cacheIndicator');
+        const timeDisplay = document.getElementById('timeDisplay');
+        
+        // 初始化音频缓存
+        function initAudioCache() {
+            try {
+                // 尝试从localStorage加载缓存
+                const cachedData = localStorage.getItem('ttsAudioCache');
+                if (cachedData) {
+                    const parsedCache = JSON.parse(cachedData);
+                    
+                    // 检查缓存是否过期
+                    const now = Date.now();
+                    for (const key in parsedCache) {
+                        if (parsedCache[key].timestamp + cacheExpiry < now) {
+                            delete parsedCache[key]; // 删除过期缓存
+                        }
+                    }
+                    
+                    audioCache = parsedCache;
+                    // 保存更新后的缓存
+                    localStorage.setItem('ttsAudioCache', JSON.stringify(audioCache));
+                }
+            } catch (e) {
+                console.error('初始化音频缓存失败:', e);
+                audioCache = {};
+            }
+        }
+        
+        // 将Blob转换为Base64
+        function blobToBase64(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+        
+        // 将Base64转换为Blob
+        function base64ToBlob(base64) {
+            // 分离Base64数据和MIME类型
+            const parts = base64.split(';base64,');
+            const contentType = parts[0].split(':')[1];
+            const raw = window.atob(parts[1]);
+            
+            // 转换为ArrayBuffer
+            const uInt8Array = new Uint8Array(raw.length);
+            for (let i = 0; i < raw.length; ++i) {
+                uInt8Array[i] = raw.charCodeAt(i);
+            }
+            
+            // 创建Blob
+            return new Blob([uInt8Array], { type: contentType });
+        }
+        
+        // 保存音频到缓存
+        async function saveAudioToCache(text, blob) {
+            try {
+                // 将Blob转换为Base64字符串
+                const base64Data = await blobToBase64(blob);
+                
+                audioCache[text] = {
+                    data: base64Data,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('ttsAudioCache', JSON.stringify(audioCache));
+            } catch (e) {
+                console.error('保存音频缓存失败:', e);
+            }
+        }
+        
+        // 从缓存获取音频
+        function getAudioFromCache(text) {
+            if (audioCache[text] && audioCache[text].timestamp + cacheExpiry > Date.now()) {
+                try {
+                    // 将Base64转换回Blob
+                    const blob = base64ToBlob(audioCache[text].data);
+                    return URL.createObjectURL(blob);
+                } catch (e) {
+                    console.error('从缓存恢复音频失败:', e);
+                    return null;
+                }
+            }
+            return null;
+        }
+        
+        // 初始化音频元素
+        function initializeAudioElements() {
+            // 清空容器
+            audioContainer.innerHTML = '';
+            audioElements = [];
+            
+            // 为每个场景创建音频元素
+            scenes.forEach((scene, index) => {
+                const audio = document.createElement('audio');
+                audio.id = `audio-${index}`;
+                audio.preload = 'auto';
+                audioContainer.appendChild(audio);
+                audioElements.push(audio);
+            });
+        }
+        
+        // 合成单个场景的语音
+        async function synthesizeSceneSpeech(index) {
+            const text = scenes[index].subtitle;
+            const encodedText = encodeURIComponent(text);
+            
+            // 检查缓存
+            const cachedAudioUrl = getAudioFromCache(text);
+            if (cachedAudioUrl) {
+                // 显示缓存指示器
+                cacheIndicator.classList.add('active');
+                setTimeout(() => {
+                    cacheIndicator.classList.remove('active');
+                }, 2000);
+                
+                // 使用缓存的音频
+                audioElements[index].src = cachedAudioUrl;
+                
+                // 等待音频加载完成以获取时长
+                return new Promise((resolve) => {
+                    audioElements[index].onloadedmetadata = () => {
+                        scenes[index].duration = audioElements[index].duration * 1000; // 转换为毫秒
+                        resolve();
+                    };
+                });
+            }
+            
+            // 缓存中没有，请求TTS服务
+            try {
+                const response = await fetch(`https://javalinux.explanation.fun/tts?input=${encodedText}`);
+                const blob = await response.blob();
+                const audioUrl = URL.createObjectURL(blob);
+                
+                // 保存到缓存
+                await saveAudioToCache(text, blob);
+                
+                audioElements[index].src = audioUrl;
+                
+                // 等待音频加载完成以获取时长
+                return new Promise((resolve) => {
+                    audioElements[index].onloadedmetadata = () => {
+                        scenes[index].duration = audioElements[index].duration * 1000; // 转换为毫秒
+                        resolve();
+                    };
+                });
+            } catch (error) {
+                console.error(`场景 ${index} TTS合成失败:`, error);
+                // 使用默认持续时间
+                scenes[index].duration = 5000;
+                resolve();
+            }
+        }
+        
+        // 格式化时间显示
+        function formatTime(milliseconds) {
+            const totalSeconds = Math.floor(milliseconds / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // 更新时间显示
+        function updateTimeDisplay(currentTime, totalTime) {
+            const currentTimeStr = formatTime(currentTime);
+            const totalTimeStr = formatTime(totalTime);
+            timeDisplay.textContent = `${currentTimeStr} / ${totalTimeStr}`;
+        }
+        
+        // 预加载所有音频
+        async function preloadAllAudio() {
+            loading.classList.add('active');
+            playBtn.disabled = true;
+            
+            // 初始化音频缓存
+            initAudioCache();
+            
+            initializeAudioElements();
+            
+            // 顺序合成每个场景的语音
+            for (let i = 0; i < scenes.length; i++) {
+                await synthesizeSceneSpeech(i);
+            }
+            
+            // 计算时间戳
+            calculateTimestamps();
+            
+            // 初始化时间显示
+            updateTimeDisplay(0, totalDuration);
+            
+            loading.classList.remove('active');
+            playBtn.disabled = false;
+        }
+        
+        // 计算每个场景的时间戳
+        function calculateTimestamps() {
+            sceneTimestamps = [];
+            let accumulatedTime = 0;
+            
+            scenes.forEach((scene) => {
+                sceneTimestamps.push(accumulatedTime);
+                accumulatedTime += scene.duration;
+            });
+            
+            totalDuration = accumulatedTime;
+        }
+        
+        // 更新进度条
+        function updateProgress() {
+            if (!isPlaying) return;
+            
+            const currentAudio = audioElements[currentScene];
+            if (!currentAudio) return;
+            
+            // 计算当前时间点
+            const sceneStartTime = sceneTimestamps[currentScene];
+            const currentTime = sceneStartTime + (currentAudio.currentTime * 1000);
+            const progress = Math.min((currentTime / totalDuration) * 100, 100);
+            
+            progressFill.style.width = progress + '%';
+            progressHandle.style.left = progress + '%';
+            
+            // 更新时间显示
+            updateTimeDisplay(currentTime, totalDuration);
+            
+            if (progress >= 100) {
+                stopAnimation();
+            } else {
+                requestAnimationFrame(updateProgress);
+            }
+        }
+        
+        // 播放指定场景
+        function playScene(sceneIndex) {
+            if (sceneIndex >= scenes.length) {
+                stopAnimation();
+                return;
+            }
+            
+            // 停止当前音频
+            if (currentScene < audioElements.length && audioElements[currentScene]) {
+                audioElements[currentScene].pause();
+            }
+            
+            currentScene = sceneIndex;
+            const scene = scenes[sceneIndex];
+            const audio = audioElements[sceneIndex];
+            
+            // 更新字幕和动画
+            subtitle.textContent = scene.subtitle;
+            subtitle.classList.add('active');
+            scene.action();
+            
+            // 播放音频
+            if (audio && !isMuted) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log('音频播放失败:', e));
+                
+                // 音频结束时播放下一个场景
+                audio.onended = () => {
+                    subtitle.classList.remove('active');
+                    playScene(currentScene + 1);
+                };
+            } else {
+                // 如果静音或没有音频，使用定时器
+                setTimeout(() => {
+                    subtitle.classList.remove('active');
+                    playScene(currentScene + 1);
+                }, scene.duration);
+            }
+        }
+        
+        // 开始动画
+        function startAnimation() {
+            if (isPlaying) return;
+            
+            isPlaying = true;
+            playIcon.textContent = '⏸';
+            currentScene = 0;
+            
+            // 开始播放第一个场景
+            playScene(0);
+            updateProgress();
+        }
+        
+        // 暂停动画
+        function pauseAnimation() {
+            isPlaying = false;
+            playIcon.textContent = '▶';
+            
+            // 暂停当前音频
+            if (currentScene < audioElements.length && audioElements[currentScene]) {
+                audioElements[currentScene].pause();
+            }
+        }
+        
+        // 停止动画
+        function stopAnimation() {
+            pauseAnimation();
+            currentScene = 0;
+            progressFill.style.width = '0%';
+            progressHandle.style.left = '0%';
+            subtitle.textContent = '';
+            
+            // 重置时间显示
+            updateTimeDisplay(0, totalDuration);
+            
+            // 重置场景
+            document.getElementById('textPanel').classList.remove('active');
+            document.getElementById('sceneTitle').classList.remove('active');
+            
+            // 隐藏所有场景
+            for (let i = 1; i <= 7; i++) {
+                document.getElementById(`scene${i}`).style.display = 'none';
+            }
+        }
+        
+        // 切换静音
+        function toggleMute() {
+            isMuted = !isMuted;
+            muteIcon.textContent = isMuted ? '🔇' : '🔊';
+            
+            // 设置所有音频元素的静音状态
+            audioElements.forEach(audio => {
+                audio.muted = isMuted;
+            });
+        }
+        
+        // 进度条控制
+        function handleProgressClick(e) {
+            const rect = progressBar.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+            
+            progressFill.style.width = percentage + '%';
+            progressHandle.style.left = percentage + '%';
+            
+            // 计算对应的时间点
+            const targetTime = (percentage / 100) * totalDuration;
+            
+            // 更新时间显示
+            updateTimeDisplay(targetTime, totalDuration);
+            
+            // 找到对应的场景
+            let targetScene = 0;
+            for (let i = 0; i < sceneTimestamps.length; i++) {
+                if (targetTime >= sceneTimestamps[i]) {
+                    targetScene = i;
+                } else {
+                    break;
+                }
+            }
+            
+            // 如果正在播放，跳转到目标场景
+            if (isPlaying) {
+                // 停止当前音频
+                if (currentScene < audioElements.length && audioElements[currentScene]) {
+                    audioElements[currentScene].pause();
+                }
+                
+                // 计算在目标场景中的时间偏移
+                const sceneOffset = targetTime - sceneTimestamps[targetScene];
+                
+                // 播放目标场景
+                currentScene = targetScene;
+                const scene = scenes[targetScene];
+                const audio = audioElements[targetScene];
+                
+                // 更新字幕和动画
+                subtitle.textContent = scene.subtitle;
+                subtitle.classList.add('active');
+                scene.action();
+                
+                // 播放音频（从指定时间点开始）
+                if (audio && !isMuted) {
+                    audio.currentTime = sceneOffset / 1000; // 转换为秒
+                    audio.play().catch(e => console.log('音频播放失败:', e));
+                    
+                    // 音频结束时播放下一个场景
+                    audio.onended = () => {
+                        subtitle.classList.remove('active');
+                        playScene(currentScene + 1);
+                    };
+                } else {
+                    // 如果静音或没有音频，使用定时器
+                    setTimeout(() => {
+                        subtitle.classList.remove('active');
+                        playScene(currentScene + 1);
+                    }, scene.duration - sceneOffset);
+                }
+            }
+        }
+        
+        // 事件监听
+        playBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                pauseAnimation();
+            } else {
+                startAnimation();
+            }
+        });
+        
+        muteBtn.addEventListener('click', toggleMute);
+        progressBar.addEventListener('click', handleProgressClick);
+        
+        // 进度条拖动
+        progressHandle.addEventListener('mousedown', () => isDragging = true);
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                handleProgressClick(e);
+            }
+        });
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+            }
+        });
+        
+        // 初始化
+        window.addEventListener('load', () => {
+            preloadAllAudio();
+        });
+    </script>
+</body>
+</html>

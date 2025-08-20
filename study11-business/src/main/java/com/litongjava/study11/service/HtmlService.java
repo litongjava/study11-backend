@@ -9,7 +9,7 @@ import com.jfinal.kit.Kv;
 import com.litongjava.chat.UniChatClient;
 import com.litongjava.chat.UniChatRequest;
 import com.litongjava.chat.UniChatResponse;
-import com.litongjava.consts.AiProviderName;
+import com.litongjava.consts.ModelPlatformName;
 import com.litongjava.db.SqlPara;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
@@ -51,7 +51,7 @@ public class HtmlService {
   public String genCode(String userPrompt) {
 
     UniChatRequest uniChatRequest = new UniChatRequest(userPrompt, 0f);
-    uniChatRequest.setProvider(AiProviderName.VOLC_ENGINE).setModel(VolcEngineModels.DEEPSEEK_R1_250528);
+    uniChatRequest.setPlatform(ModelPlatformName.VOLC_ENGINE).setModel(VolcEngineModels.DEEPSEEK_R1_250528);
 
     UniChatResponse generate = UniChatClient.generate(uniChatRequest);
     String generatedText = generate.getMessage().getContent();

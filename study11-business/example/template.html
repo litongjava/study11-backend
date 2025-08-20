@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newton's First Law of Motion</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="animation-container">
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Loading...</div>
+            </div>
+            <div class="cache-indicator" id="cacheIndicator">Using cached audio</div>
+            <div class="scene-number" id="sceneNumber">1</div>
+            
+            <svg class="physics-scene" viewBox="0 0 800 400">
+                <!-- 背景网格 -->
+                <defs>
+                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+                    </pattern>
+                    
+                    <!-- 渐变定义 -->
+                    <linearGradient id="ballGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#3498db;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1" />
+                    </linearGradient>
+                    
+                    <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1" />
+                    </linearGradient>
+                    
+                    <linearGradient id="velocityGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#2ecc71;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#27ae60;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                
+                <rect width="800" height="400" fill="url(#grid)" />
+                
+                <!-- 地面 -->
+                <rect x="0" y="350" width="800" height="50" fill="#95a5a6" opacity="0.3"/>
+                
+                <!-- 文本面板 -->
+                <foreignObject x="20" y="20" width="350" height="200" class="text-panel" id="textPanel">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="padding: 10px;">
+                        <p id="textContent"></p>
+                    </div>
+                </foreignObject>
+                
+                <!-- 场景标题 -->
+                <text x="800" y="30" text-anchor="middle" fill="#2c3e50" font-size="24" font-weight="300" class="scene-title" id="sceneTitle">
+                    Introduction to Newton's First Law
+                </text>
+                
+                <!-- 视觉面板 -->
+                <g id="visualPanel">
+                    <!-- Scene 1: Introduction -->
+                    <g id="scene1">
+                        <!-- 静止的小球 -->
+                        <circle cx="550" cy="300" r="30" fill="url(#ballGradient)"/>
+                        <text x="550" y="340" text-anchor="middle" fill="#2c3e50" font-size="16">Object at rest</text>
+                        
+                        <!-- 运动的小球 -->
+                        <circle cx="650" cy="200" r="30" fill="url(#ballGradient)">
+                            <animateTransform attributeName="transform" type="translate" from="0 0" to="100 0" dur="3s" repeatCount="indefinite"/>
+                        </circle>
+                        <text x="700" y="240" text-anchor="middle" fill="#2c3e50" font-size="16">Object in motion</text>
+                        
+                        <!-- 速度矢量 -->
+                        <line x1="680" y1="200" x2="720" y2="200" stroke="url(#velocityGradient)" stroke-width="3" marker-end="url(#velocityArrowhead)"/>
+                        <text x="700" y="185" text-anchor="middle" fill="#2ecc71" font-size="16">v</text>
+                    </g>
+                    
+                    <!-- Scene 2: Understanding Inertia -->
+                    <g id="scene2" style="display: none;">
+                        <!-- 卡车 -->
+                        <rect x="500" y="270" width="120" height="60" fill="#7f8c8d" rx="5"/>
+                        <circle cx="520" cy="330" r="15" fill="#34495e"/>
+                        <circle cx="600" cy="330" r="15" fill="#34495e"/>
+                        <text x="560" y="360" text-anchor="middle" fill="#2c3e50" font-size="16">Truck (high mass)</text>
+                        
+                        <!-- 自行车 -->
+                        <rect x="650" y="290" width="60" height="40" fill="#3498db" rx="5"/>
+                        <circle cx="660" cy="330" r="10" fill="#34495e"/>
+                        <circle cx="700" cy="330" r="10" fill="#34495e"/>
+                        <text x="680" y="360" text-anchor="middle" fill="#2c3e50" font-size="16">Bicycle (low mass)</text>
+                        
+                        <!-- 力的箭头 -->
+                        <line x1="480" y1="300" x2="500" y2="300" stroke="url(#arrowGradient)" stroke-width="5" marker-end="url(#arrowhead)"/>
+                        <line x1="630" y1="310" x2="650" y2="310" stroke="url(#arrowGradient)" stroke-width="5" marker-end="url(#arrowhead)"/>
+                        <text x="440" y="300" text-anchor="middle" fill="#e74c3c" font-size="16">F</text>
+                        <text x="615" y="310" text-anchor="middle" fill="#e74c3c" font-size="16">F</text>
+                    </g>
+                    
+                    <!-- Scene 3: Objects at Rest -->
+                    <g id="scene3" style="display: none;">
+                        <!-- 桌子上的书 -->
+                        <rect x="500" y="250" width="80" height="100" fill="#e74c3c" rx="2"/>
+                        <rect x="480" y="350" width="120" height="10" fill="#8b6f47"/>
+                        <text x="540" y="380" text-anchor="middle" fill="#2c3e50" font-size="16">Book on table</text>
+                        
+                        <!-- 力的箭头 -->
+                        <line x1="540" y1="250" x2="540" y2="220" stroke="url(#arrowGradient)" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <line x1="540" y1="350" x2="540" y2="380" stroke="url(#arrowGradient)" stroke-width="3" marker-end="url(#arrowhead)"/>
+                        <text x="560" y="235" text-anchor="middle" fill="#e74c3c" font-size="14">Weight</text>
+                        <text x="560" y="375" text-anchor="middle" fill="#e74c3c" font-size="14">Normal</text>
+                    </g>
+                    
+                    <!-- Scene 4: Objects in Motion -->
+                    <g id="scene4" style="display: none;">
+                        <!-- 冰球 -->
+                        <circle cx="550" cy="300" r="20" fill="#34495e">
+                            <animateTransform attributeName="transform" type="translate" from="0 0" to="200 0" dur="5s" repeatCount="indefinite"/>
+                        </circle>
+                        <rect x="500" y="320" width="300" height="30" fill="#ecf0f1" rx="5"/>
+                        <text x="650" y="370" text-anchor="middle" fill="#2c3e50" font-size="16">Hockey puck on ice</text>
+                        
+                        <!-- 速度矢量 -->
+                        <line x1="570" y1="300" x2="610" y2="300" stroke="url(#velocityGradient)" stroke-width="3" marker-end="url(#velocityArrowhead)"/>
+                        <text x="590" y="285" text-anchor="middle" fill="#2ecc71" font-size="16">v</text>
+                    </g>
+                    
+                    <!-- Scene 5: Unbalanced Forces -->
+                    <g id="scene5" style="display: none;">
+                        <!-- 被踢的球 -->
+                        <circle cx="550" cy="300" r="30" fill="url(#ballGradient)"/>
+                        <text x="550" y="340" text-anchor="middle" fill="#2c3e50" font-size="16">Ball being kicked</text>
+                        
+                        <!-- 力的箭头 -->
+                        <line x1="480" y1="300" x2="520" y2="300" stroke="url(#arrowGradient)" stroke-width="5" marker-end="url(#arrowhead)"/>
+                        <text x="450" y="300" text-anchor="middle" fill="#e74c3c" font-size="16">F</text>
+                    </g>
+                    
+                    <!-- Scene 6: Real-World Applications -->
+                    <g id="scene6" style="display: none;">
+                        <!-- 汽车 -->
+                        <rect x="500" y="270" width="100" height="50" fill="#3498db" rx="5"/>
+                        <circle cx="520" cy="320" r="12" fill="#34495e"/>
+                        <circle cx="580" cy="320" r="12" fill="#34495e"/>
+                        <text x="550" y="350" text-anchor="middle" fill="#2c3e50" font-size="16">Car stopping</text>
+                        
+                        <!-- 人 -->
+                        <circle cx="620" cy="260" r="10" fill="#f39c12"/>
+                        <rect x="615" y="270" width="10" height="30" fill="#f39c12"/>
+                        <line x1="615" y1="280" x2="605" y2="290" stroke="#f39c12" stroke-width="3"/>
+                        <line x1="625" y1="280" x2="635" y2="290" stroke="#f39c12" stroke-width="3"/>
+                        
+                        <!-- 力的箭头 -->
+                        <line x1="620" y1="260" x2="650" y2="260" stroke="url(#velocityGradient)" stroke-width="3" marker-end="url(#velocityArrowhead)"/>
+                        <text x="635" y="245" text-anchor="middle" fill="#2ecc71" font-size="14">v</text>
+                    </g>
+                </g>
+                
+                <!-- 箭头标记定义 -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="url(#arrowGradient)" />
+                    </marker>
+                    
+                    <marker id="velocityArrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="url(#velocityGradient)" />
+                    </marker>
+                </defs>
+            </svg>
+        </div>
+        
+        <div class="subtitle-container">
+            <div class="subtitle" id="subtitle"></div>
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn" id="playBtn" title="Play" disabled>
+                <span id="playIcon">▶</span>
+            </button>
+            <button class="control-btn" id="muteBtn" title="Mute">
+                <span id="muteIcon">🔊</span>
+            </button>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <div class="progress-handle" id="progressHandle"></div>
+                </div>
+                <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        © 2023 https://study11.ai/
+    </div>
+    
+    <!-- 为每个场景创建一个音频元素 -->
+    <div id="audioContainer"></div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

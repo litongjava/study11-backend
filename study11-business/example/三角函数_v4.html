@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三角函数</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4eaf5 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px;
+        }
+        .animation-container {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .subtitle-container {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            margin: 5px 0;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .subtitle {
+            color: black;
+            border-radius: 30px;
+            font-size: 1.4rem;
+            max-width: 80%;
+            text-align: center;
+            line-height: 1.5;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .subtitle.active {
+            opacity: 1;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 5px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            background: #3498db;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+        .control-btn:hover {
+            background: #2980b9;
+            transform: scale(1.1);
+        }
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+        .control-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .progress-container {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 20px;
+            display: flex;
+            align-items: center;
+        }
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+        .progress-handle {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 3px solid #3498db;
+            border-radius: 50%;
+            cursor: grab;
+            left: 0%;
+        }
+        .progress-handle:active {
+            cursor: grabbing;
+        }
+        .time-display {
+            min-width: 100px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .loading.active {
+            display: flex;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(52, 152, 219, 0.2);
+            border-radius: 50%;
+            border-top-color: #3498db;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 15px;
+        }
+        .loading-text {
+            font-size: 1.2rem;
+            color: #3498db;
+        }
+        .cache-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(46, 204, 113, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: none;
+        }
+        .cache-indicator.active {
+            display: block;
+        }
+        .scene-number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(52, 152, 219, 0.8);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .trig-scene {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .scene-title {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.8rem;
+            color: #2c3e50;
+            font-weight: 300;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .scene-title.active {
+            opacity: 1;
+        }
+        @media (max-width: 768px) {
+            .animation-container {
+                padding: 20px;
+                min-height: 300px;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+                padding: 12px 20px;
+            }
+
+            .control-btn {
+                width: 45px;
+                height: 45px;
+            }
+
+            .scene-title {
+                font-size: 1.4rem;
+            }
+
+            .scene-number {
+                width: 35px;
+                height: 35px;
+                font-size: 1.2rem;
+            }
+
+            .time-display {
+                min-width: 80px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    <div class="animation-container">
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">加载中...</div>
+        </div>
+        <div class="cache-indicator" id="cacheIndicator">使用缓存的音频</div>
+        <div class="scene-number" id="sceneNumber">1</div>
+
+        <svg class="trig-scene" viewBox="0 0 800 400">
+            <!-- 背景网格 -->
+            <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e0e0e0" stroke-width="1"/>
+                </pattern>
+
+                <!-- 渐变定义 -->
+                <linearGradient id="angleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#3498db;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1" />
+                </linearGradient>
+
+                <linearGradient id="sinGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1" />
+                </linearGradient>
+
+                <linearGradient id="cosGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#2ecc71;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#27ae60;stop-opacity:1" />
+                </linearGradient>
+
+                <linearGradient id="tanGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#f39c12;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#d35400;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+
+            <rect width="800" height="400" fill="url(#grid)" />
+
+            <!-- 场景标题 -->
+            <text x="800" y="30" text-anchor="middle" fill="#2c3e50" font-size="24" font-weight="300" class="scene-title" id="sceneTitle">
+                三角函数简介
+            </text>
+
+            <!-- 视觉面板 -->
+            <g id="visualPanel">
+                <!-- 场景1: 三角函数简介 -->
+                <g id="scene1">
+                    <!-- 直角三角形 -->
+                    <path d="M 400 200 L 500 200 L 500 100 Z" fill="rgba(52, 152, 219, 0.2)" stroke="#3498db" stroke-width="2"/>
+
+                    <!-- 角标记 -->
+                    <path d="M 420 200 A 20 20 0 0 0 414.14 185.86" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                    <text x="410" y="190" fill="#e74c3c" font-size="16">θ</text>
+
+                    <!-- 边标记 -->
+                    <text x="445" y="220" fill="#2c3e50" font-size="16">邻边</text>
+                    <text x="510" y="150" fill="#2c3e50" font-size="16">对边</text>
+                    <text x="440" y="140" fill="#2c3e50" font-size="16">斜边</text>
+
+                    <!-- 函数定义 -->
+                    <text x="300" y="280" fill="#2c3e50" font-size="18">sin θ = 对边 / 斜边</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="18">cos θ = 邻边 / 斜边</text>
+                    <text x="300" y="340" fill="#2c3e50" font-size="18">tan θ = 对边 / 邻边</text>
+                </g>
+
+                <!-- 场景2: 单位圆 -->
+                <g id="scene2" style="display: none;">
+                    <!-- 坐标轴 -->
+                    <line x1="300" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
+                    <line x1="500" y1="50" x2="500" y2="350" stroke="#34495e" stroke-width="2"/>
+
+                    <!-- 坐标轴标记 -->
+                    <text x="710" y="205" fill="#34495e" font-size="16">x</text>
+                    <text x="505" y="45" fill="#34495e" font-size="16">y</text>
+
+                    <!-- 单位圆 -->
+                    <circle cx="500" cy="200" r="100" fill="none" stroke="#3498db" stroke-width="2"/>
+
+                    <!-- 旋转的半径 -->
+                    <line id="radius" x1="500" y1="200" x2="600" y2="200" stroke="#3498db" stroke-width="3">
+                        <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200" dur="10s" repeatCount="indefinite"/>
+                    </line>
+
+                    <!-- 点 -->
+                    <circle id="point" cx="600" cy="200" r="6" fill="#e74c3c">
+                        <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200" dur="10s" repeatCount="indefinite"/>
+                    </circle>
+
+                    <!-- 正弦线 -->
+                    <line id="sinLine" x1="600" y1="200" x2="600" y2="200" stroke="url(#sinGradient)" stroke-width="2">
+                        <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200" dur="10s" repeatCount="indefinite"/>
+                    </line>
+
+                    <!-- 余弦线 -->
+                    <line id="cosLine" x1="500" y1="200" x2="600" y2="200" stroke="url(#cosGradient)" stroke-width="2">
+                        <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200" dur="10s" repeatCount="indefinite"/>
+                    </line>
+
+                    <!-- 标签 -->
+                    <text x="300" y="280" fill="#2c3e50" font-size="18">单位圆: x² + y² = 1</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="18">cos θ = x, sin θ = y</text>
+                </g>
+
+                <!-- 场景3: 正弦函数图像 -->
+                <g id="scene3" style="display: none;">
+                    <!-- 坐标轴 -->
+                    <line x1="100" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
+                    <line x1="400" y1="50" x2="400" y2="350" stroke="#34495e" stroke-width="2"/>
+
+                    <!-- 坐标轴标记 -->
+                    <text x="710" y="205" fill="#34495e" font-size="16">x</text>
+                    <text x="405" y="45" fill="#34495e" font-size="16">y</text>
+
+                    <!-- 刻度 -->
+                    <line x1="300" y1="195" x2="300" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="295" y="220" fill="#34495e" font-size="14">-π/2</text>
+
+                    <line x1="500" y1="195" x2="500" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="495" y="220" fill="#34495e" font-size="14">π/2</text>
+
+                    <line x1="600" y1="195" x2="600" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="595" y="220" fill="#34495e" font-size="14">π</text>
+
+                    <line x1="200" y1="195" x2="200" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="195" y="220" fill="#34495e" font-size="14">-π</text>
+
+                    <!-- 正弦曲线 -->
+                    <path d="M 100 200
+                                 C 150 200, 200 100, 300 100
+                                 S 500 300, 600 300
+                                 S 700 200, 700 200"
+                          fill="none" stroke="url(#sinGradient)" stroke-width="3"/>
+
+                    <!-- 标签 -->
+                    <text x="300" y="280" fill="#2c3e50" font-size="18">y = sin(x)</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="18">周期: 2π, 振幅: 1</text>
+                </g>
+
+                <!-- 场景4: 余弦函数图像 -->
+                <g id="scene4" style="display: none;">
+                    <!-- 坐标轴 -->
+                    <line x1="100" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
+                    <line x1="400" y1="50" x2="400" y2="350" stroke="#34495e" stroke-width="2"/>
+
+                    <!-- 坐标轴标记 -->
+                    <text x="710" y="205" fill="#34495e" font-size="16">x</text>
+                    <text x="405" y="45" fill="#34495e" font-size="16">y</text>
+
+                    <!-- 刻度 -->
+                    <line x1="300" y1="195" x2="300" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="295" y="220" fill="#34495e" font-size="14">-π/2</text>
+
+                    <line x1="500" y1="195" x2="500" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="495" y="220" fill="#34495e" font-size="14">π/2</text>
+
+                    <line x1="600" y1="195" x2="600" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="595" y="220" fill="#34495e" font-size="14">π</text>
+
+                    <line x1="200" y1="195" x2="200" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="195" y="220" fill="#34495e" font-size="14">-π</text>
+
+                    <!-- 余弦曲线 -->
+                    <path d="M 100 100
+                                 C 150 100, 200 200, 300 200
+                                 S 500 200, 600 200
+                                 S 700 100, 700 100"
+                          fill="none" stroke="url(#cosGradient)" stroke-width="3"/>
+
+                    <!-- 标签 -->
+                    <text x="300" y="280" fill="#2c3e50" font-size="18">y = cos(x)</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="18">周期: 2π, 振幅: 1</text>
+                </g>
+
+                <!-- 场景5: 正切函数图像 -->
+                <g id="scene5" style="display: none;">
+                    <!-- 坐标轴 -->
+                    <line x1="100" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
+                    <line x1="400" y1="50" x2="400" y2="350" stroke="#34495e" stroke-width="2"/>
+
+                    <!-- 坐标轴标记 -->
+                    <text x="710" y="205" fill="#34495e" font-size="16">x</text>
+                    <text x="405" y="45" fill="#34495e" font-size="16">y</text>
+
+                    <!-- 刻度 -->
+                    <line x1="300" y1="195" x2="300" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="295" y="220" fill="#34495e" font-size="14">-π/2</text>
+
+                    <line x1="500" y1="195" x2="500" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="495" y="220" fill="#34495e" font-size="14">π/2</text>
+
+                    <line x1="600" y1="195" x2="600" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="595" y="220" fill="#34495e" font-size="14">π</text>
+
+                    <line x1="200" y1="195" x2="200" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="195" y="220" fill="#34495e" font-size="14">-π</text>
+
+                    <!-- 渐近线 -->
+                    <line x1="300" y1="50" x2="300" y2="350" stroke="#95a5a6" stroke-width="1" stroke-dasharray="5,5"/>
+                    <line x1="500" y1="50" x2="500" y2="350" stroke="#95a5a6" stroke-width="1" stroke-dasharray="5,5"/>
+
+                    <!-- 正切曲线 -->
+                    <path d="M 100 150
+                                 C 150 150, 250 50, 295 50
+                                 M 305 350
+                                 C 350 350, 450 50, 495 50
+                                 M 505 350
+                                 C 550 350, 650 50, 695 50"
+                          fill="none" stroke="url(#tanGradient)" stroke-width="3"/>
+
+                    <!-- 标签 -->
+                    <text x="300" y="280" fill="#2c3e50" font-size="18">y = tan(x)</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="18">周期: π, 渐近线: x = π/2 + kπ</text>
+                </g>
+
+                <!-- 场景6: 三角函数应用 -->
+                <g id="scene6" style="display: none;">
+                    <!-- 建筑物 -->
+                    <rect x="300" y="100" width="100" height="200" fill="#95a5a6"/>
+                    <polygon points="300,100 350,50 400,100" fill="#e74c3c"/>
+
+                    <!-- 太阳 -->
+                    <circle cx="550" cy="100" r="30" fill="#f39c12"/>
+
+                    <!-- 光线 -->
+                    <line x1="520" y1="100" x2="350" y2="100" stroke="#f39c12" stroke-width="2"/>
+
+                    <!-- 影子 -->
+                    <rect x="400" y="300" width="80" height="5" fill="#34495e"/>
+
+                    <!-- 角度标记 -->
+                    <path d="M 400 295 A 10 10 0 0 0 395 285" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                    <text x="385" y="285" fill="#e74c3c" font-size="16">θ</text>
+
+                    <!-- 标签 -->
+                    <text x="300" y="350" fill="#2c3e50" font-size="18">tan θ = 建筑高度 / 影子长度</text>
+                    <text x="300" y="380" fill="#2c3e50" font-size="18">高度 = 影子长度 × tan θ</text>
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <div class="subtitle-container">
+        <div class="subtitle" id="subtitle"></div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn" id="playBtn" title="播放" disabled>
+            <span id="playIcon">▶</span>
+        </button>
+        <button class="control-btn" id="muteBtn" title="静音">
+            <span id="muteIcon">🔊</span>
+        </button>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-handle" id="progressHandle"></div>
+            </div>
+            <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    © 2023 https://study11.ai/
+</div>
+
+<!-- 为每个场景创建一个音频元素 -->
+<div id="audioContainer"></div>
+
+<script>
+    // 动画场景数据
+    const scenes = [
+        {
+            title: "三角函数简介",
+            subtitle: "三角函数是数学中重要的函数，它们描述了直角三角形中角度与边长之间的关系。最基本的三角函数是正弦、余弦和正切。",
+            action: () => {
+                // 显示场景1，隐藏其他场景
+                for (let i = 1; i <= 6; i++) {
+                    document.getElementById(`scene${i}`).style.display = i === 1 ? 'block' : 'none';
+                }
+                // 更新标题
+                document.getElementById('sceneTitle').textContent = "三角函数简介";
+                document.getElementById('sceneTitle').classList.add('active');
+                // 更新场景编号
+                document.getElementById('sceneNumber').textContent = '1';
+            }
+        },
+        {
+            title: "单位圆与三角函数",
+            subtitle: "单位圆是半径为1的圆，它在三角函数中扮演着重要角色。在单位圆上，任意角度θ的终边与单位圆的交点坐标为(cos θ, sin θ)。",
+            action: () => {
+                // 显示场景2，隐藏其他场景
+                for (let i = 1; i <= 6; i++) {
+                    document.getElementById(`scene${i}`).style.display = i === 2 ? 'block' : 'none';
+                }
+                // 更新标题
+                document.getElementById('sceneTitle').textContent = "单位圆与三角函数";
+                document.getElementById('sceneTitle').classList.add('active');
+                // 更新场景编号
+                document.getElementById('sceneNumber').textContent = '2';
+            }
+        },
+        {
+            title: "正弦函数图像",
+            subtitle: "正弦函数y=sin(x)是一个周期为2π的函数，其图像在[-1,1]之间波动。正弦函数在x=0时值为0，在x=π/2时达到最大值1，在x=π时回到0。",
+            action: () => {
+                // 显示场景3，隐藏其他场景
+                for (let i = 1; i <= 6; i++) {
+                    document.getElementById(`scene${i}`).style.display = i === 3 ? 'block' : 'none';
+                }
+                // 更新标题
+                document.getElementById('sceneTitle').textContent = "正弦函数图像";
+                document.getElementById('sceneTitle').classList.add('active');
+                // 更新场景编号
+                document.getElementById('sceneNumber').textContent = '3';
+            }
+        },
+        {
+            title: "余弦函数图像",
+            subtitle: "余弦函数y=cos(x)也是一个周期为2π的函数，其图像在[-1,1]之间波动。与正弦函数不同，余弦函数在x=0时达到最大值1，在x=π/2时值为0。",
+            action: () => {
+                // 显示场景4，隐藏其他场景
+                for (let i = 1; i <= 6; i++) {
+                    document.getElementById(`scene${i}`).style.display = i === 4 ? 'block' : 'none';
+                }
+                // 更新标题
+                document.getElementById('sceneTitle').textContent = "余弦函数图像";
+                document.getElementById('sceneTitle').classList.add('active');
+                // 更新场景编号
+                document.getElementById('sceneNumber').textContent = '4';
+            }
+        },
+        {
+            title: "正切函数图像",
+            subtitle: "正切函数y=tan(x)是正弦与余弦的比值，即tan(x)=sin(x)/cos(x)。它的周期是π，并且在cos(x)=0的点上有垂直渐近线，此时函数值趋向于无穷大。",
+            action: () => {
+                // 显示场景5，隐藏其他场景
+                for (let i = 1; i <= 6; i++) {
+                    document.getElementById(`scene${i}`).style.display = i === 5 ? 'block' : 'none';
+                }
+                // 更新标题
+                document.getElementById('sceneTitle').textContent = "正切函数图像";
+                document.getElementById('sceneTitle').classList.add('active');
+                // 更新场景编号
+                document.getElementById('sceneNumber').textContent = '5';
+            }
+        },
+        {
+            title: "三角函数的实际应用",
+            subtitle: "三角函数在现实生活中有广泛的应用，如测量建筑物高度、计算天体距离、分析声波和光波等。通过测量角度和已知边长，我们可以使用三角函数计算出未知量。",
+            action: () => {
+                // 显示场景6，隐藏其他场景
+                for (let i = 1; i <= 6; i++) {
+                    document.getElementById(`scene${i}`).style.display = i === 6 ? 'block' : 'none';
+                }
+                // 更新标题
+                document.getElementById('sceneTitle').textContent = "三角函数的实际应用";
+                document.getElementById('sceneTitle').classList.add('active');
+                // 更新场景编号
+                document.getElementById('sceneNumber').textContent = '6';
+            }
+        }
+    ];
+
+    // 全局变量
+    let currentScene = 0;
+    let isPlaying = false;
+    let isMuted = false;
+    let audioElements = [];
+    let sceneStartTime = 0;
+    let totalDuration = 0;
+    let sceneTimestamps = []; // 记录每个场景的开始时间戳
+    let isDragging = false;
+    let audioCache = null; // Cache Storage 实例
+    let cacheExpiry = 7 * 24 * 60 * 60 * 1000; // 缓存有效期：7天
+    let pausedScene = 0;
+    let pausedTime = 0;
+    let wasPausedByUser = false;
+
+    // DOM元素
+    const playBtn = document.getElementById('playBtn');
+    const playIcon = document.getElementById('playIcon');
+    const muteBtn = document.getElementById('muteBtn');
+    const muteIcon = document.getElementById('muteIcon');
+    const progressBar = document.getElementById('progressBar');
+    const progressFill = document.getElementById('progressFill');
+    const progressHandle = document.getElementById('progressHandle');
+    const subtitle = document.getElementById('subtitle');
+    const loading = document.getElementById('loading');
+    const audioContainer = document.getElementById('audioContainer');
+    const cacheIndicator = document.getElementById('cacheIndicator');
+    const timeDisplay = document.getElementById('timeDisplay');
+    const sceneTitle = document.getElementById('sceneTitle');
+    const sceneNumber = document.getElementById('sceneNumber');
+
+    // 初始化 Cache Storage
+    async function initCacheStorage() {
+        try {
+            audioCache = await caches.open('tts-audio-v1');
+            console.log('Cache Storage 初始化成功');
+        } catch (error) {
+            console.error('Cache Storage 初始化失败:', error);
+            audioCache = null;
+        }
+    }
+
+    // 生成缓存键名
+    function getCacheKey(text) {
+        // 使用简单的哈希函数生成一致的键名
+        let hash = 0;
+        for (let i = 0; i < text.length; i++) {
+            const char = text.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // 转换为32位整数
+        }
+        return `tts-${Math.abs(hash)}`;
+    }
+
+    // 检查缓存是否过期
+    function isCacheExpired(timestamp) {
+        return Date.now() - timestamp > cacheExpiry;
+    }
+
+    // 从Cache Storage获取音频
+    async function getAudioFromCache(text) {
+        if (!audioCache) return null;
+
+        try {
+            const cacheKey = getCacheKey(text);
+            const response = await audioCache.match(cacheKey);
+
+            if (response) {
+                // 检查缓存时间戳
+                const timestamp = response.headers.get('X-Cache-Timestamp');
+                if (timestamp && isCacheExpired(parseInt(timestamp))) {
+                    // 缓存已过期，删除并返回null
+                    await audioCache.delete(cacheKey);
+                    return null;
+                }
+
+                const blob = await response.blob();
+                return URL.createObjectURL(blob);
+            }
+        } catch (error) {
+            console.error('从Cache Storage获取音频失败:', error);
+        }
+
+        return null;
+    }
+
+    // 保存音频到Cache Storage
+    async function saveAudioToCache(text, blob) {
+        if (!audioCache) return;
+
+        try {
+            const cacheKey = getCacheKey(text);
+
+            // 创建带有时间戳的响应
+            const response = new Response(blob, {
+                headers: {
+                    'Content-Type': blob.type || 'audio/mpeg',
+                    'X-Cache-Timestamp': Date.now().toString()
+                }
+            });
+
+            await audioCache.put(cacheKey, response);
+            console.log('音频已保存到Cache Storage');
+        } catch (error) {
+            console.error('保存音频到Cache Storage失败:', error);
+        }
+    }
+
+    // 初始化音频元素
+    function initializeAudioElements() {
+        // 清空容器
+        audioContainer.innerHTML = '';
+        audioElements = [];
+
+        // 为每个场景创建音频元素
+        scenes.forEach((scene, index) => {
+            const audio = document.createElement('audio');
+            audio.id = `audio-${index}`;
+            audio.preload = 'auto';
+            audioContainer.appendChild(audio);
+            audioElements.push(audio);
+        });
+    }
+
+    // 合成单个场景的语音
+    async function synthesizeSceneSpeech(index) {
+        const text = scenes[index].subtitle;
+
+        // 检查缓存
+        const cachedAudioUrl = await getAudioFromCache(text);
+        if (cachedAudioUrl) {
+            // 显示缓存指示器
+            cacheIndicator.classList.add('active');
+            setTimeout(() => {
+                cacheIndicator.classList.remove('active');
+            }, 2000);
+
+            // 使用缓存的音频
+            audioElements[index].src = cachedAudioUrl;
+
+            // 等待音频加载完成以获取时长
+            return new Promise((resolve) => {
+                audioElements[index].onloadedmetadata = () => {
+                    scenes[index].duration = audioElements[index].duration * 1000; // 转换为毫秒
+                    resolve();
+                };
+            });
+        }
+
+        // 缓存中没有，请求TTS服务
+        try {
+            const encodedText = encodeURIComponent(text);
+            const response = await fetch(`https://javalinux.explanation.fun/tts?input=${encodedText}`);
+            const blob = await response.blob();
+            const audioUrl = URL.createObjectURL(blob);
+
+            // 保存到缓存
+            await saveAudioToCache(text, blob);
+
+            audioElements[index].src = audioUrl;
+
+            // 等待音频加载完成以获取时长
+            return new Promise((resolve) => {
+                audioElements[index].onloadedmetadata = () => {
+                    scenes[index].duration = audioElements[index].duration * 1000; // 转换为毫秒
+                    resolve();
+                };
+            });
+        } catch (error) {
+            console.error(`场景 ${index} TTS合成失败:`, error);
+            // 使用默认持续时间
+            scenes[index].duration = 5000;
+            return Promise.resolve();
+        }
+    }
+
+    // 格式化时间显示
+    function formatTime(milliseconds) {
+        const totalSeconds = Math.floor(milliseconds / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    // 更新时间显示
+    function updateTimeDisplay(currentTime, totalTime) {
+        const currentTimeStr = formatTime(currentTime);
+        const totalTimeStr = formatTime(totalTime);
+        timeDisplay.textContent = `${currentTimeStr} / ${totalTimeStr}`;
+    }
+
+    // 预加载所有音频
+    async function preloadAllAudio() {
+        loading.classList.add('active');
+        playBtn.disabled = true;
+
+        // 初始化Cache Storage
+        await initCacheStorage();
+
+        initializeAudioElements();
+
+        // 顺序合成每个场景的语音
+        for (let i = 0; i < scenes.length; i++) {
+            await synthesizeSceneSpeech(i);
+        }
+
+        // 计算时间戳
+        calculateTimestamps();
+
+        // 初始化时间显示
+        updateTimeDisplay(0, totalDuration);
+
+        loading.classList.remove('active');
+        playBtn.disabled = false;
+    }
+
+    // 计算每个场景的时间戳
+    function calculateTimestamps() {
+        sceneTimestamps = [];
+        let accumulatedTime = 0;
+
+        scenes.forEach((scene) => {
+            sceneTimestamps.push(accumulatedTime);
+            accumulatedTime += scene.duration;
+        });
+
+        totalDuration = accumulatedTime;
+    }
+
+    // 更新进度条
+    function updateProgress() {
+        if (!isPlaying) return;
+
+        const currentAudio = audioElements[currentScene];
+        if (!currentAudio) return;
+
+        // 计算当前时间点
+        const sceneStartTime = sceneTimestamps[currentScene];
+        const currentTime = sceneStartTime + (currentAudio.currentTime * 1000);
+        const progress = Math.min((currentTime / totalDuration) * 100, 100);
+
+        progressFill.style.width = progress + '%';
+        progressHandle.style.left = progress + '%';
+
+        // 更新时间显示
+        updateTimeDisplay(currentTime, totalDuration);
+
+        if (progress >= 100) {
+            stopAnimation();
+        } else {
+            requestAnimationFrame(updateProgress);
+        }
+    }
+
+    // 播放指定场景
+    function playScene(sceneIndex) {
+        if (sceneIndex >= scenes.length) {
+            stopAnimation();
+            return;
+        }
+
+        // 停止当前音频
+        if (currentScene < audioElements.length && audioElements[currentScene]) {
+            audioElements[currentScene].pause();
+        }
+
+        currentScene = sceneIndex;
+        const scene = scenes[sceneIndex];
+        const audio = audioElements[sceneIndex];
+
+        // 更新字幕和动画
+        subtitle.textContent = scene.subtitle;
+        subtitle.classList.add('active');
+        scene.action();
+
+        // 播放音频
+        if (audio && !isMuted) {
+            audio.currentTime = 0;
+            audio.play().catch(e => console.log('音频播放失败:', e));
+
+            // 音频结束时播放下一个场景
+            audio.onended = () => {
+                subtitle.classList.remove('active');
+                playScene(currentScene + 1);
+            };
+        } else {
+            // 如果静音或没有音频，使用定时器
+            setTimeout(() => {
+                subtitle.classList.remove('active');
+                playScene(currentScene + 1);
+            }, scene.duration);
+        }
+    }
+
+    // 开始动画
+    function startAnimation() {
+        if (isPlaying) return;
+
+        isPlaying = true;
+        playIcon.textContent = '⏸';
+
+        if (wasPausedByUser && pausedScene < scenes.length) {
+            // 从暂停的状态恢复播放
+            const scene = scenes[pausedScene];
+            const audio = audioElements[pausedScene];
+
+            // 更新字幕和动画
+            subtitle.textContent = scene.subtitle;
+            subtitle.classList.add('active');
+            scene.action();
+
+            // 设置当前场景
+            currentScene = pausedScene;
+
+            // 播放音频（从暂停的时间点开始）
+            if (audio && !isMuted) {
+                audio.currentTime = pausedTime / 1000; // 转换为秒
+                audio.play().catch(e => console.log('音频播放失败:', e));
+
+                // 音频结束时播放下一个场景
+                audio.onended = () => {
+                    subtitle.classList.remove('active');
+                    playScene(currentScene + 1);
+                };
+            } else {
+                // 如果静音或没有音频，使用定时器
+                setTimeout(() => {
+                    subtitle.classList.remove('active');
+                    playScene(currentScene + 1);
+                }, scene.duration - pausedTime);
+            }
+
+            wasPausedByUser = false;
+        } else {
+            // 从头开始播放
+            currentScene = 0;
+            playScene(0);
+        }
+
+        updateProgress();
+    }
+
+    // 暂停动画
+    function pauseAnimation() {
+        isPlaying = false;
+        playIcon.textContent = '▶';
+        wasPausedByUser = true;
+
+        // 保存当前播放状态
+        if (currentScene < audioElements.length && audioElements[currentScene]) {
+            const audio = audioElements[currentScene];
+            pausedScene = currentScene;
+            pausedTime = audio.currentTime * 1000; // 转换为毫秒
+
+            // 暂停当前音频
+            audio.pause();
+        }
+    }
+
+    // 停止动画
+    function stopAnimation() {
+        pauseAnimation();
+        currentScene = 0;
+        pausedScene = 0;
+        pausedTime = 0;
+        wasPausedByUser = false;
+        progressFill.style.width = '0%';
+        progressHandle.style.left = '0%';
+        subtitle.textContent = '';
+
+        // 重置时间显示
+        updateTimeDisplay(0, totalDuration);
+
+        // 隐藏所有场景
+        for (let i = 1; i <= 6; i++) {
+            document.getElementById(`scene${i}`).style.display = 'none';
+        }
+
+        // 隐藏标题
+        sceneTitle.classList.remove('active');
+        // 重置场景编号
+        sceneNumber.textContent = '1';
+    }
+
+    // 切换静音
+    function toggleMute() {
+        isMuted = !isMuted;
+        muteIcon.textContent = isMuted ? '🔇' : '🔊';
+
+        // 设置所有音频元素的静音状态
+        audioElements.forEach(audio => {
+            audio.muted = isMuted;
+        });
+    }
+
+    // 进度条控制
+    function handleProgressClick(e) {
+        const rect = progressBar.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+
+        progressFill.style.width = percentage + '%';
+        progressHandle.style.left = percentage + '%';
+
+        // 计算对应的时间点
+        const targetTime = (percentage / 100) * totalDuration;
+
+        // 更新时间显示
+        updateTimeDisplay(targetTime, totalDuration);
+
+        // 找到对应的场景
+        let targetScene = 0;
+        for (let i = 0; i < sceneTimestamps.length; i++) {
+            if (targetTime >= sceneTimestamps[i]) {
+                targetScene = i;
+            } else {
+                break;
+            }
+        }
+
+        // 更新暂停状态
+        pausedScene = targetScene;
+        pausedTime = targetTime - sceneTimestamps[targetScene];
+
+        // 如果正在播放，跳转到目标场景
+        if (isPlaying) {
+            // 停止当前音频
+            if (currentScene < audioElements.length && audioElements[currentScene]) {
+                audioElements[currentScene].pause();
+            }
+
+            // 计算在目标场景中的时间偏移
+            const sceneOffset = targetTime - sceneTimestamps[targetScene];
+
+            // 播放目标场景
+            currentScene = targetScene;
+            const scene = scenes[targetScene];
+            const audio = audioElements[targetScene];
+
+            // 更新字幕和动画
+            subtitle.textContent = scene.subtitle;
+            subtitle.classList.add('active');
+            scene.action();
+
+            // 播放音频（从指定时间点开始）
+            if (audio && !isMuted) {
+                audio.currentTime = sceneOffset / 1000; // 转换为秒
+                audio.play().catch(e => console.log('音频播放失败:', e));
+
+                // 音频结束时播放下一个场景
+                audio.onended = () => {
+                    subtitle.classList.remove('active');
+                    playScene(currentScene + 1);
+                };
+            } else {
+                // 如果静音或没有音频，使用定时器
+                setTimeout(() => {
+                    subtitle.classList.remove('active');
+                    playScene(currentScene + 1);
+                }, scene.duration - sceneOffset);
+            }
+        } else if (wasPausedByUser) {
+            // 如果是暂停状态，更新场景显示但不播放
+            currentScene = targetScene;
+            const scene = scenes[targetScene];
+
+            // 更新字幕和动画
+            subtitle.textContent = scene.subtitle;
+            subtitle.classList.add('active');
+            scene.action();
+        }
+    }
+
+    // 事件监听
+    playBtn.addEventListener('click', () => {
+        if (isPlaying) {
+            pauseAnimation();
+        } else {
+            startAnimation();
+        }
+    });
+
+    muteBtn.addEventListener('click', toggleMute);
+    progressBar.addEventListener('click', handleProgressClick);
+
+    // 进度条拖动
+    progressHandle.addEventListener('mousedown', () => isDragging = true);
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            handleProgressClick(e);
+        }
+    });
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+        }
+    });
+
+    // 初始化
+    window.addEventListener('load', () => {
+        preloadAllAudio();
+    });
+</script>
+</body>
+</html>
