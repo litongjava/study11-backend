@@ -10,16 +10,15 @@ import com.litongjava.chat.UniChatClient;
 import com.litongjava.chat.UniChatMessage;
 import com.litongjava.chat.UniChatRequest;
 import com.litongjava.chat.UniChatResponse;
-import com.litongjava.consts.ModelPlatformName;
 import com.litongjava.db.SqlPara;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
+import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.page.Page;
 import com.litongjava.template.PromptEngine;
 import com.litongjava.tio.utils.hutool.FileUtil;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 import com.litongjava.utils.CodeBlockUtils;
-import com.litongjava.volcengine.VolcEngineModels;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,11 +27,10 @@ public class HtmlService {
 
   private static final String selectSql = "select id,topic,language,type,elapsed,user_id,is_public,view_count,create_time from study11_html_code";
 
-  public void configPlatformAndModel(UniChatRequest uniChatRequest) {
-    uniChatRequest.setPlatform(ModelPlatformName.VOLC_ENGINE).setModel(VolcEngineModels.DEEPSEEK_R1_250528);
-  }
+  PlatformAndModelSetService platformAndModelSetService = Aop.get(PlatformAndModelSetService.class);
 
   public Long generate(String topic) {
+
     String sql = "select id from study11_html_code where topic=?";
     Long id = Db.queryLong(sql, topic);
     if (id != null) {
@@ -63,7 +61,7 @@ public class HtmlService {
     messages.add(UniChatMessage.buildUser(question));
 
     UniChatRequest uniChatRequest = new UniChatRequest(userPrompt, messages, 0f);
-    configPlatformAndModel(uniChatRequest);
+    platformAndModelSetService.configPlatformAndModel(uniChatRequest);
 
     UniChatResponse generate = UniChatClient.generate(uniChatRequest);
     String generatedText = generate.getMessage().getContent();

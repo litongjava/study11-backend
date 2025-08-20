@@ -1,26 +1,8 @@
 package com.litongjava.study11.service;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.jfinal.kit.Kv;
-import com.litongjava.bailian.BaiLianAiModels;
-import com.litongjava.chat.ChatFile;
-import com.litongjava.chat.UniChatClient;
-import com.litongjava.chat.UniChatMessage;
-import com.litongjava.chat.UniChatRequest;
-import com.litongjava.chat.UniChatResponse;
-import com.litongjava.consts.ModelPlatformName;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.study11.consts.EfTableName;
-import com.litongjava.template.PromptEngine;
-import com.litongjava.tio.utils.base64.Base64Utils;
-import com.litongjava.tio.utils.crypto.Md5Utils;
-import com.litongjava.tio.utils.http.ContentTypeUtils;
-import com.litongjava.tio.utils.http.HttpDownloadUtils;
-import com.litongjava.tio.utils.hutool.FilenameUtils;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
 import lombok.extern.slf4j.Slf4j;

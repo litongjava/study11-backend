@@ -11,5 +11,6 @@ public class AdminAppConfig {
   public void config() {
     // 配置数据库相关
     new TioAdminDbConfiguration().config();
+    new Study11ControllerConfiguration().config();
   }
 }

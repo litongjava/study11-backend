@@ -6,7 +6,7 @@ import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.study11.config.AdminAppConfig;
 import com.litongjava.tio.boot.testing.TioBootTest;
 
-public class HtmlServiceTest {
+public class QuesitonTest {
 
   @Test
   public void test() {
