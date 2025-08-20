@@ -15,10 +15,10 @@ import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.page.Page;
+import com.litongjava.study11.utils.HtmlCodeUtils;
 import com.litongjava.template.PromptEngine;
 import com.litongjava.tio.utils.hutool.FileUtil;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
-import com.litongjava.utils.CodeBlockUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -83,7 +83,7 @@ public class HtmlService {
     UniChatResponse generate = UniChatClient.generate(uniChatRequest);
     String generatedText = generate.getMessage().getContent();
 
-    String code = CodeBlockUtils.parseHtml(generatedText);
+    String code = HtmlCodeUtils.parseHtml(generatedText);
     if (code != null) {
       code = code.replaceAll("^(\\s*\\R)+", "").replaceAll("(\\R\\s*)+$", "");
       code.trim();
