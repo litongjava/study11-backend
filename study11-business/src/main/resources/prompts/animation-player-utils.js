@@ -113,13 +113,18 @@ class TTSManager {
         try {
             const encodedText = encodeURIComponent(text);
             const response = await fetch(`${this.apiUrl}${encodedText}`);
-            const blob = await response.blob();
-            const audioUrl = URL.createObjectURL(blob);
+            if(response.status===200){
+               const blob = await response.blob();
+               const audioUrl = URL.createObjectURL(blob);
 
-            // 保存到缓存
-            await this.cacheManager.saveAudioToCache(text, blob);
+              // 保存到缓存
+              await this.cacheManager.saveAudioToCache(text, blob);
 
-            return audioUrl;
+              return audioUrl;            
+            }else{
+                console.error(`TTS合成失败:`, response.status);
+            }
+
         } catch (error) {
             console.error(`TTS合成失败:`, error);
             throw error;
@@ -296,8 +301,8 @@ class AnimationPlayer {
 
 
     async playWithErrorHandling() {
-        const embedded = inIframe();
-        const policyAllows = iframeAutoplayAllowedByPolicy();
+        const embedded = this.inIframe();
+        const policyAllows = this.iframeAutoplayAllowedByPolicy();
         if (!embedded && policyAllows) {
             try {
                 await this.play();
