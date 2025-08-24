@@ -11,9 +11,16 @@
     <div class="animation-container">
         <div class="loading" id="loading">
             <div class="loading-spinner"></div>
-            <div class="loading-text">加载中...</div>
+            <div class="loading-text">Loading...</div>
+            <div class="loading-progress">
+                <div class="loading-progress-bar">
+                    <div class="loading-progress-fill" id="loadingProgressFill"></div>
+                </div>
+                <div class="loading-progress-text" id="loadingProgressText">Progress: 0 / 0（0%）</div>
+            </div>
         </div>
-        <div class="cache-indicator" id="cacheIndicator">使用缓存的音频</div>
+
+        <div class="cache-indicator" id="cacheIndicator">Use cached audio</div>
         <div class="scene-number" id="sceneNumber">1</div>
 
         <svg class="trig-scene" viewBox="0 0 800 400">

@@ -11,7 +11,7 @@ public class HtmlAnimationQuesitonTest {
   @Test
   public void test() {
     TioBootTest.runWith(AdminAppConfig.class);
-    Long id = Aop.get(HtmlService.class).generate("动量守恒定律");
+    Long id = Aop.get(HtmlService.class).generate("什么是SVG");
     System.out.println(id);
   }
 }
