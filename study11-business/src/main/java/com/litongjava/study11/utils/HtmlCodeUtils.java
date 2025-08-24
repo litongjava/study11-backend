@@ -18,9 +18,10 @@ public class HtmlCodeUtils {
     int indexOf = generatedText.indexOf("```html");
     if (indexOf == -1) {
       generatedText = generatedText.trim();
-      if (generatedText.toLowerCase().startsWith("<html")) {
+      String lowerCase = generatedText.toLowerCase();
+      if (lowerCase.startsWith("<html")) {
         return generatedText;
-      } else if (generatedText.toLowerCase().startsWith("<!DOCTYPE html")) {
+      } else if (lowerCase.startsWith("<!doctype html")) {
         return generatedText;
       } else {
         log.error("No HTML data found in the output:{}", generatedText);
