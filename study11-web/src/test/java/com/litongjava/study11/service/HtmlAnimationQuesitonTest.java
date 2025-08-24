@@ -11,7 +11,7 @@ public class HtmlAnimationQuesitonTest {
   @Test
   public void test() {
     TioBootTest.runWith(AdminAppConfig.class);
-    Long id = Aop.get(HtmlService.class).generate("什么是黎曼函数");
+    Long id = Aop.get(HtmlService.class).generate("在python中,什么是manim");
     System.out.println(id);
   }
 }
