@@ -6,7 +6,9 @@ import com.litongjava.annotation.RequestPath;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.study11.service.HtmlAnimationService;
+import com.litongjava.study11.service.QuestionBatchTestService;
 import com.litongjava.tio.http.common.HttpRequest;
+import com.litongjava.tio.utils.thread.TioThreadUtils;
 
 @EnableCORS
 @RequestPath("/v1/api/html")
@@ -19,11 +21,22 @@ public class HtmlController {
     if (language == null) {
       language = "Chinese";
     }
-    Long id = htmlService.generate(topic,language);
+    Long id = htmlService.generate(topic, language);
     String host = request.getHost();
     String url = "//" + host + "/preview/" + id;
     Kv by = Kv.by("url", url);
     return RespBodyVo.ok(by);
+  }
+
+  public RespBodyVo batch() {
+    TioThreadUtils.execute(() -> {
+      try {
+        Aop.get(QuestionBatchTestService.class).batchTest();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    });
+    return RespBodyVo.ok();
   }
 
   public RespBodyVo detail(Long id, HttpRequest request) {

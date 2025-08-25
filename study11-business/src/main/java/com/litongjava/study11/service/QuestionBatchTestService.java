@@ -19,19 +19,25 @@ public class QuestionBatchTestService {
   private HtmlAnimationService htmlAnimationService = Aop.get(HtmlAnimationService.class);
 
   public void initData() {
-    // URL resource =
-    // ResourceUtil.getResource("questions/basic_test_question_en.txt");
-    // List<String> questions = FileUtil.readURLAsLines(resource);
-    // int count = 0;
-    // for (String q : questions) {
-    // long id = SnowflakeIdUtils.id();
-    // boolean save = Db.save(EfTableName.ef_question_test, Row.by("id",
-    // id).set("question", q).set("language", "English"));
-    // if (save) {
-    // count++;
-    // }
-    // }
+    insertEnglishQuestion();
+    // insertChineseQuestion();
+  }
 
+  public void insertEnglishQuestion() {
+    URL resource = ResourceUtil.getResource("questions/basic_test_question_en.txt");
+    List<String> questions = FileUtil.readURLAsLines(resource);
+    List<Row> rows = new ArrayList<>();
+    for (String q : questions) {
+      long id = SnowflakeIdUtils.id();
+      Row row = Row.by("id", id).set("question", q).set("language", "English");
+      rows.add(row);
+
+    }
+    Db.batchSave(EfTableName.ef_question_test, rows, 200);
+    log.info("size:{}", questions.size());
+  }
+
+  public void insertChineseQuestion() {
     URL resource = ResourceUtil.getResource("questions/basic_test_question_cn.txt");
     List<String> questions = FileUtil.readURLAsLines(resource);
     List<Row> rows = new ArrayList<>();

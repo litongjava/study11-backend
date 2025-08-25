@@ -9,6 +9,12 @@ import com.litongjava.tio.boot.testing.TioBootTest;
 public class QuestionBatchTestServiceTest {
 
   @Test
+  public void initData() {
+    TioBootTest.runWith(AdminAppConfig.class);
+    Aop.get(QuestionBatchTestService.class).initData();
+  }
+
+  @Test
   public void test() {
     TioBootTest.runWith(AdminAppConfig.class);
     Aop.get(QuestionBatchTestService.class).batchTest();
