@@ -5,18 +5,21 @@ import com.litongjava.annotation.EnableCORS;
 import com.litongjava.annotation.RequestPath;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
-import com.litongjava.study11.service.HtmlService;
+import com.litongjava.study11.service.HtmlAnimationService;
 import com.litongjava.tio.http.common.HttpRequest;
 
 @EnableCORS
 @RequestPath("/v1/api/html")
 public class HtmlController {
 
-  HtmlService htmlService = Aop.get(HtmlService.class);
+  HtmlAnimationService htmlService = Aop.get(HtmlAnimationService.class);
 
   @RequestPath("/generate")
-  public RespBodyVo generate(String topic, HttpRequest request) {
-    Long id = htmlService.generate(topic);
+  public RespBodyVo generate(String topic, String language, HttpRequest request) {
+    if (language == null) {
+      language = "Chinese";
+    }
+    Long id = htmlService.generate(topic,language);
     String host = request.getHost();
     String url = "//" + host + "/preview/" + id;
     Kv by = Kv.by("url", url);

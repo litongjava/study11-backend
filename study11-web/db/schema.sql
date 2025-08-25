@@ -18,8 +18,8 @@ CREATE TABLE study11_html_code (
 );
 
 
-drop table if exists ef_generated_answer;
-CREATE TABLE ef_generated_answer (
+drop table if exists study11_sence_plan;
+CREATE TABLE study11_sence_plan (
   id BIGINT PRIMARY KEY,
   md5 varchar,
   question VARCHAR,

@@ -23,14 +23,14 @@ import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class HtmlService {
+public class HtmlAnimationService {
 
   private static final String selectSql = "select id,topic,language,type,elapsed,user_id,is_public,view_count,create_time from study11_html_code";
 
   PlatformAndModelSetService platformAndModelSetService = Aop.get(PlatformAndModelSetService.class);
   PlanSenceService planSenceService = Aop.get(PlanSenceService.class);
 
-  public Long generate(String topic) {
+  public Long generate(String topic, String language) {
 
     String sql = "select id from study11_html_code where topic=?";
     Long id = Db.queryLong(sql, topic);
@@ -40,12 +40,12 @@ public class HtmlService {
     id = SnowflakeIdUtils.id();
     log.info("start with id:{}", id);
     log.info("start plan:{}", topic);
-    String plan = planSenceService.plan(id, topic, "Chinese");
+    String plan = planSenceService.plan(id, topic, language);
     log.info("finish plan:{}", topic);
 
     String prompt = getSystemPrompt();
     log.info("start generate code of plan:{}", topic);
-    String html = genCode(prompt, plan, topic, id);
+    String html = genCode(prompt, plan, topic, language, id);
     log.info("finish generate code of plan:{}", topic);
     Row row = Row.by("id", id).set("topic", topic).set("html", html);
     Db.save("study11_html_code", row);
@@ -62,12 +62,12 @@ public class HtmlService {
     return Db.queryStr(sql, id);
   }
 
-  public String genCode(String systemPrompt, String plan, String question, long id) {
+  public String genCode(String systemPrompt, String plan, String question, String language, long id) {
     List<UniChatMessage> messages = new ArrayList<>();
-    question = "the user question is:" + question;
-    plan = "the user scene plan is:" + plan;
+    question = "The user question is:" + question+" .The generated subtitles and narration must use the "+language;
+    plan = "The user scene plan is:" + plan;
 
-    String userMessage = question + "\r\n" + plan + "\r\n" + " please only output the html code.";
+    String userMessage = question + ".\r\n" + plan + ".\r\n" + "Please only output the html code.";
 
     String prompt = systemPrompt + "\r\n" + userMessage;
     File file = new File("prompts");

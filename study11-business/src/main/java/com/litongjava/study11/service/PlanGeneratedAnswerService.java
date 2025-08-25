@@ -16,7 +16,7 @@ public class PlanGeneratedAnswerService {
       Row row = Row.by("id", id).set("md5", md5).set("question", topic)
           //
           .set("language", language).set("answer", answer).set("urls", urlString).set("video_id", videoId);
-      Db.save(EfTableName.ef_generated_answer, row);
+      Db.save(EfTableName.study11_sence_plan, row);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -24,14 +24,14 @@ public class PlanGeneratedAnswerService {
 
   public String queryAnswer(String md5, String language) {
     String sql = "select answer from %s where md5=? and language=?";
-    sql = String.format(sql, EfTableName.ef_generated_answer);
+    sql = String.format(sql, EfTableName.study11_sence_plan);
     String answer = Db.queryStr(sql, md5, language);
     return answer;
   }
 
   public String queryAnserById(Long gruopId) {
     String sql = "select answer from %s where video_id=?";
-    sql = String.format(sql, EfTableName.ef_generated_answer);
+    sql = String.format(sql, EfTableName.study11_sence_plan);
     String answer = Db.queryStr(sql, gruopId);
     return answer;
   }

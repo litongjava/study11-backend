@@ -8,7 +8,7 @@ public class HtmlServiceTest {
 
   @Test
   public void test() {
-    String systemPrompt = Aop.get(HtmlService.class).getSystemPrompt();
+    String systemPrompt = Aop.get(HtmlAnimationService.class).getSystemPrompt();
     System.out.println(systemPrompt);
   }
 }

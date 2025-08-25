@@ -6,12 +6,11 @@ import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.study11.config.AdminAppConfig;
 import com.litongjava.tio.boot.testing.TioBootTest;
 
-public class HtmlAnimationQuesitonTest {
+public class QuestionBatchTestServiceTest {
 
   @Test
   public void test() {
     TioBootTest.runWith(AdminAppConfig.class);
-    Long id = Aop.get(HtmlAnimationService.class).generate("在python中,什么是manim","Chinese");
-    System.out.println(id);
+    Aop.get(QuestionBatchTestService.class).batchTest();
   }
 }
