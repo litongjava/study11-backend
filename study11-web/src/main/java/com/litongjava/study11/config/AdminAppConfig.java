@@ -2,7 +2,10 @@ package com.litongjava.study11.config;
 
 import com.litongjava.annotation.AConfiguration;
 import com.litongjava.annotation.Initialization;
+import com.litongjava.study11.handler.IndexHandler;
 import com.litongjava.tio.boot.admin.config.TioAdminDbConfiguration;
+import com.litongjava.tio.boot.server.TioBootServer;
+import com.litongjava.tio.http.server.router.HttpRequestRouter;
 
 @AConfiguration
 public class AdminAppConfig {
@@ -12,5 +15,12 @@ public class AdminAppConfig {
     // 配置数据库相关
     new TioAdminDbConfiguration().config();
     new Study11ControllerConfiguration().config();
+    new StudyEnjoyEngineConfig().config();
+    HttpRequestRouter r = TioBootServer.me().getRequestRouter();
+    if(r!=null) {
+      IndexHandler indexHandler = new IndexHandler();
+      r.add("/", indexHandler::index);
+    }
+    
   }
 }

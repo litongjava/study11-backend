@@ -119,7 +119,6 @@ class TTSManager {
 
                 // 保存到缓存
                 await this.cacheManager.saveAudioToCache(text, blob);
-
                 return audioUrl;
             } else {
                 console.error(`TTS合成失败:`, response.status);
@@ -135,13 +134,17 @@ class TTSManager {
     async synthesizeMultipleSpeech(texts, onProgress = null, showCacheIndicator = null) {
         const results = [];
 
+        let hasError = false;
         for (let i = 0; i < texts.length; i++) {
             try {
                 const audioUrl = await this.synthesizeSpeech(texts[i], showCacheIndicator);
-                results.push({success: true, audioUrl, text: texts[i]});
-
-                if (onProgress) {
-                    onProgress(i + 1, texts.length);
+                if (audioUrl) {
+                    results.push({success: true, audioUrl, text: texts[i]});
+                    if (onProgress) {
+                        onProgress(i + 1, texts.length);
+                    }
+                } else {
+                    hasError = true;
                 }
             } catch (error) {
                 results.push({success: false, error, text: texts[i]});

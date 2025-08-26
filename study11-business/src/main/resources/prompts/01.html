@@ -591,6 +591,7 @@
         elements.loading?.classList.remove('active');
         elements.playBtn.disabled = false;
 
+        player.setSceneButtons(document.getElementById('sceneButtons'));
         console.log('动画播放器初始化完成');
 
         await player.playWithErrorHandling()
