@@ -113,15 +113,15 @@ class TTSManager {
         try {
             const encodedText = encodeURIComponent(text);
             const response = await fetch(`${this.apiUrl}${encodedText}`);
-            if(response.status===200){
-               const blob = await response.blob();
-               const audioUrl = URL.createObjectURL(blob);
+            if (response.status === 200) {
+                const blob = await response.blob();
+                const audioUrl = URL.createObjectURL(blob);
 
-              // 保存到缓存
-              await this.cacheManager.saveAudioToCache(text, blob);
+                // 保存到缓存
+                await this.cacheManager.saveAudioToCache(text, blob);
 
-              return audioUrl;            
-            }else{
+                return audioUrl;
+            } else {
                 console.error(`TTS合成失败:`, response.status);
             }
 
@@ -232,6 +232,31 @@ class AnimationPlayer {
         });
     }
 
+    waitForMetadata(audio, timeoutMs = 5000) {
+        return new Promise((resolve, reject) => {
+            if ((audio.readyState >= 1 && isFinite(audio.duration)) || audio.duration > 0) return resolve();
+            let to;
+            const done = () => {
+                cleanup();
+                resolve();
+            };
+            const fail = (e) => {
+                cleanup();
+                reject(e || new Error('metadata error'));
+            };
+            const cleanup = () => {
+                audio.removeEventListener('loadedmetadata', done);
+                audio.removeEventListener('error', fail);
+                clearTimeout(to);
+            };
+            audio.addEventListener('loadedmetadata', done, {once: true});
+            audio.addEventListener('error', fail, {once: true});
+            audio.load();                    // 关键：确保触发元数据加载
+            to = setTimeout(() => fail(new Error('metadata timeout')), timeoutMs);
+        });
+    }
+
+
     // 预加载所有音频
     async preloadAllAudio(onProgress = null) {
         const {loading, playBtn, cacheIndicator} = this.elements;
@@ -240,51 +265,60 @@ class AnimationPlayer {
         if (loading) loading.classList.add('active');
         if (playBtn) playBtn.disabled = true;
 
-        // 缓存指示器显示函数
-        const showCacheIndicator = () => {
-            if (cacheIndicator) {
-                cacheIndicator.classList.add('active');
-                setTimeout(() => {
-                    cacheIndicator.classList.remove('active');
-                }, 2000);
-            }
-        };
+        try {
+            // 缓存指示器显示函数
+            const showCacheIndicator = () => {
+                if (cacheIndicator) {
+                    cacheIndicator.classList.add('active');
+                    setTimeout(() => {
+                        cacheIndicator.classList.remove('active');
+                    }, 2000);
+                }
+            };
 
-        // 合成所有语音
-        const texts = this.scenes.map(scene => scene.subtitle);
-        const results = await this.ttsManager.synthesizeMultipleSpeech(
-            texts,
-            onProgress,
-            showCacheIndicator
-        );
+            // 合成所有语音
+            const texts = this.scenes.map(scene => scene.subtitle);
+            const results = await this.ttsManager.synthesizeMultipleSpeech(
+                texts,
+                onProgress,
+                showCacheIndicator
+            );
 
-        // 设置音频源并获取时长
-        for (let i = 0; i < results.length; i++) {
-            const result = results[i];
-            if (result.success) {
-                this.audioElements[i].src = result.audioUrl;
-                // 等待音频加载完成以获取时长
-                await new Promise((resolve) => {
-                    this.audioElements[i].onloadedmetadata = () => {
-                        this.scenes[i].duration = this.audioElements[i].duration * 1000;
-                        resolve();
-                    };
-                });
-            } else {
-                // 使用默认持续时间
-                this.scenes[i].duration = 5000;
+            // 设置音频源并获取时长
+            for (let i = 0; i < results.length; i++) {
+                const r = results[i];
+                if (!r.success) {
+                    this.scenes[i].duration = 5000;
+                    continue;
+                }
+
+                const audio = this.audioElements[i];
+
+                // 先绑定等待，再赋 src
+                const wait = this.waitForMetadata(audio, 5000);
+                audio.src = r.audioUrl;
+                try {
+                    await wait;
+                    const d = audio.duration;
+                    this.scenes[i].duration = (isFinite(d) && d > 0 ? d : 5) * 1000;
+                } catch {
+                    this.scenes[i].duration = 5000;
+                }
             }
+
+
+            // 计算时间戳和总时长
+            this.calculateTimestamps();
+
+            // 更新时间显示
+            this.updateTimeDisplay(0, this.totalDuration);
+
+        } finally {
+            // 隐藏加载状态
+            if (loading) loading.classList.remove('active');
+            if (playBtn) playBtn.disabled = false;
         }
 
-        // 计算时间戳和总时长
-        this.calculateTimestamps();
-
-        // 更新时间显示
-        this.updateTimeDisplay(0, this.totalDuration);
-
-        // 隐藏加载状态
-        if (loading) loading.classList.remove('active');
-        if (playBtn) playBtn.disabled = false;
     }
 
     inIframe() {
@@ -294,6 +328,7 @@ class AnimationPlayer {
             return true;
         }
     }
+
     iframeAutoplayAllowedByPolicy() {
         const p = document.permissionsPolicy || document.featurePolicy;
         return p?.allowsFeature?.('autoplay') ?? true; // 不支持 API 时默认 true
