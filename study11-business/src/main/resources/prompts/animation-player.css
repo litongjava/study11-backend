@@ -10,7 +10,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .main-container {
@@ -73,6 +73,7 @@ body {
     background: rgba(255, 255, 255, 0.8);
     border-radius: 15px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    flex-wrap: wrap;
 }
 
 .control-btn {
@@ -320,3 +321,45 @@ body {
     color: #2c3e50;
     font-weight: 500;
 }
+
+.scene-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.scene-btn {
+    padding: 5px 10px;
+    border: 1px solid #3498db;
+    border-radius: 5px;
+    background: #ecf0f1;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.scene-btn:hover {
+    background: #3498db;
+    color: #fff;
+}
+
+.scene-btn.active {
+    background: #3498db;
+    color: #fff;
+    border-color: #2980b9;
+}
+
+@media (max-width: 768px) {
+    .controls > *:not(.scene-buttons) {
+        order: 1; /* 第一行：播放、静音、进度条 */
+    }
+
+    .scene-buttons {
+        order: 2; /* 第二行：场景按钮 */
+        flex: 1 0 100%; /* 占满整行 */
+        justify-content: center; /* 居中 */
+        display: flex;
+        gap: 8px;
+    }
+}
+

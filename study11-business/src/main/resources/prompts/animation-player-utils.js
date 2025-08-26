@@ -338,12 +338,15 @@ class AnimationPlayer {
     async playWithErrorHandling() {
         const embedded = this.inIframe();
         const policyAllows = this.iframeAutoplayAllowedByPolicy();
+        // 播放前高亮当前场景（通常是 0）
+        this.highlightActiveSceneButton(this.currentScene || 0);
+
         if (!embedded && policyAllows) {
             try {
                 await this.play();
                 return true;
             } catch (error) {
-                if (error.name === 'NotAllowedError') {
+                if (error?.name === 'NotAllowedError') {
                     console.log('需要用户交互才能播放音频');
                     this.showInteractionRequired();
                     return false;
@@ -484,6 +487,7 @@ class AnimationPlayer {
                 this.playScene(this.currentScene + 1);
             }, scene.duration || 5000);
         }
+        this.highlightActiveSceneButton(this.currentScene);
     }
 
     // 开始播放
@@ -677,6 +681,7 @@ class AnimationPlayer {
                 this.playScene(this.currentScene + 1);
             }, (scene.duration || 5000) - timeOffset);
         }
+        this.highlightActiveSceneButton(this.currentScene);
     }
 
     // 更新场景显示（暂停状态下）
@@ -693,6 +698,7 @@ class AnimationPlayer {
         if (scene.action) {
             scene.action();
         }
+        this.highlightActiveSceneButton(this.currentScene);
     }
 
     // 鼠标移动事件处理
@@ -754,6 +760,52 @@ class AnimationPlayer {
                 URL.revokeObjectURL(audio.src);
             }
         });
+    }
+
+
+    setSceneButtons(container) {
+        this.sceneButtonsContainer = container || null;
+        if (!this.sceneButtonsContainer) return;
+
+        // 清空并生成按钮
+        this.sceneButtonsContainer.innerHTML = '';
+        this.scenes.forEach((scene, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'scene-btn';
+            btn.textContent = String(idx + 1); // 或 scene.title 更直观
+            btn.addEventListener('click', () => {
+                // 画面与字幕
+                const sceneNo = idx + 1;
+                if (scene.action) scene.action();
+                // 同步内部状态（暂停/播放两种情况）
+                if (this.isPlaying) {
+                    this.jumpToScene(idx, 0); // 立刻切音频到场景起点
+                } else {
+                    this.pausedScene = idx;
+                    this.pausedTime = 0;
+                    this.updateSceneDisplay(idx);
+                }
+                // 同步进度 & 时间
+                const t0 = this.sceneTimestamps?.[idx] ?? 0;
+                const percent = this.totalDuration ? Math.min(100, (t0 / this.totalDuration) * 100) : 0;
+                this.elements.progressFill && (this.elements.progressFill.style.width = percent + '%');
+                this.elements.progressHandle && (this.elements.progressHandle.style.left = percent + '%');
+                this.updateTimeDisplay(t0, this.totalDuration);
+
+                // 高亮
+                this.highlightActiveSceneButton(idx);
+            });
+            this.sceneButtonsContainer.appendChild(btn);
+        });
+
+        // 初始高亮（第一个场景）
+        this.highlightActiveSceneButton(0);
+    }
+
+    highlightActiveSceneButton(index) {
+        if (!this.sceneButtonsContainer) return;
+        const buttons = this.sceneButtonsContainer.querySelectorAll('.scene-btn');
+        buttons.forEach((b, i) => b.classList.toggle('active', i === index));
     }
 }
 

@@ -237,6 +237,7 @@
     </div>
 
     <div class="controls">
+
         <button class="control-btn" id="playBtn" title="播放" disabled>
             <span id="playIcon">▶</span>
         </button>
@@ -250,6 +251,7 @@
             </div>
             <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
         </div>
+        <div class="scene-buttons" id="sceneButtons"></div>
     </div>
 </div>
 
@@ -328,6 +330,7 @@
         }
     }
 
+
     // 初始化动画播放器
     async function initializePlayer() {
         // 获取DOM元素
@@ -379,8 +382,8 @@
         elements.loading?.classList.remove('active');
         elements.playBtn.disabled = false;
 
+        player.setSceneButtons(document.getElementById('sceneButtons'));
         console.log('动画播放器初始化完成');
-
         await player.playWithErrorHandling()
 
         window.mathPlayer = player;
