@@ -11,7 +11,7 @@ public class HtmlAnimationQuesitonTest {
   @Test
   public void test() {
     TioBootTest.runWith(AdminAppConfig.class);
-    Long id = Aop.get(HtmlAnimationService.class).generate("在python中,什么是manim","Chinese");
+    Long id = Aop.get(HtmlAnimationService.class).generate("If two vectors have the same magnitude, do their components have to be the same?","Chinese");
     System.out.println(id);
   }
 }

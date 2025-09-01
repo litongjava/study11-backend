@@ -170,8 +170,11 @@ class TimeUtils {
 }
 
 // ===== 动画场景播放器 =====
+//let ttsTargetUrl = 'https://javalinux.explanation.fun/tts?use_local=true&input=';
+let ttsTargetUrl = 'http://127.0.0.1/tts?use_local=true&input=';
+
 class AnimationPlayer {
-    constructor(config = {apiUrl: 'https://javalinux.explanation.fun/tts?input='}) {
+    constructor(config = {apiUrl: ttsTargetUrl}) {
         // 基本配置
         this.scenes = config.scenes || [];
         this.audioElements = [];

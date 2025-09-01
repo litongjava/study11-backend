@@ -7,7 +7,7 @@ import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.server.util.Resps;
 
-public class IndexHandler {
+public class HtmlPageHandler {
 
   public HttpResponse index(HttpRequest request) {
     HttpResponse response = TioRequestContext.getResponse();
