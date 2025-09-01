@@ -4,6 +4,7 @@ import com.litongjava.annotation.AConfiguration;
 import com.litongjava.annotation.Initialization;
 import com.litongjava.study11.handler.HtmlPageHandler;
 import com.litongjava.tio.boot.admin.config.TioAdminDbConfiguration;
+import com.litongjava.tio.boot.admin.config.TioBootAdminEnjoyEngineConfig;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.http.server.router.HttpRequestRouter;
 
@@ -15,12 +16,12 @@ public class AdminAppConfig {
     // 配置数据库相关
     new TioAdminDbConfiguration().config();
     new Study11ControllerConfiguration().config();
-    new StudyEnjoyEngineConfig().config();
+    new TioBootAdminEnjoyEngineConfig().config();
     HttpRequestRouter r = TioBootServer.me().getRequestRouter();
-    if(r!=null) {
+    if (r != null) {
       HtmlPageHandler indexHandler = new HtmlPageHandler();
       r.add("/", indexHandler::index);
     }
-    
+
   }
 }
