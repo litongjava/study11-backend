@@ -361,6 +361,9 @@
         // 显示 loading 层
         elements.loading?.classList.add('active');
 
+
+        player.setSceneButtons(document.getElementById('sceneButtons'));
+        
         await player.preloadAllAudio((current, total) => {
             // 百分比（防止 total 为 0）
             const percent = total ? Math.round((current / total) * 100) : 0;
@@ -382,7 +385,6 @@
         elements.loading?.classList.remove('active');
         elements.playBtn.disabled = false;
 
-        player.setSceneButtons(document.getElementById('sceneButtons'));
         console.log('动画播放器初始化完成');
         await player.playWithErrorHandling()
 
