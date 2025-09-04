@@ -19,8 +19,8 @@ public class QuestionBatchTestService {
   private HtmlAnimationService htmlAnimationService = Aop.get(HtmlAnimationService.class);
 
   public void initData() {
-    insertEnglishQuestion();
-    // insertChineseQuestion();
+//    insertEnglishQuestion();
+    insertChineseQuestion();
   }
 
   public void insertEnglishQuestion() {
