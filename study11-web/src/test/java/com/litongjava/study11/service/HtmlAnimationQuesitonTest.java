@@ -11,7 +11,9 @@ public class HtmlAnimationQuesitonTest {
   @Test
   public void test() {
     TioBootTest.runWith(AdminAppConfig.class);
-    Long id = Aop.get(HtmlAnimationService.class).generate("If two vectors have the same magnitude, do their components have to be the same?","Chinese");
+    //String topic = "If two vectors have the same magnitude, do their components have to be the same?";
+    String topic = "为什么天空是蓝色?";
+    Long id = Aop.get(HtmlAnimationService.class).generate(topic,"Chinese");
     System.out.println(id);
   }
 }

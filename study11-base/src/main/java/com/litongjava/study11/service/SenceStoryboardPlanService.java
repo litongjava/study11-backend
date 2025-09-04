@@ -8,10 +8,13 @@ import com.litongjava.chat.UniChatMessage;
 import com.litongjava.chat.UniChatRequest;
 import com.litongjava.chat.UniChatResponse;
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.openai.chat.ChatResponseFormatType;
 import com.litongjava.template.PromptEngine;
 import com.litongjava.tio.utils.crypto.Md5Utils;
 import com.litongjava.tio.utils.json.FastJson2Utils;
 import com.litongjava.utils.CodeBlockUtils;
+
+import dev.langchain4j.model.chat.request.ResponseFormatType;
 
 public class SenceStoryboardPlanService {
 
@@ -36,7 +39,7 @@ public class SenceStoryboardPlanService {
     request.setMessages(messages);
     request.setCacheSystemPrompt(true);
     request.setMax_tokens(32000);
-    request.setResponseFormat("json");
+    request.setResponseFormat(ChatResponseFormatType.json_object);
 
     while (parsedJson == null) {
       UniChatResponse resposne = UniChatClient.generate(request);
