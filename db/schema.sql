@@ -2,12 +2,14 @@ drop table if exists study11_html_code;
 CREATE TABLE study11_html_code (
   id BIGINT PRIMARY KEY,
   topic VARCHAR,
-  html VARCHAR,
   "language" VARCHAR,
+  html VARCHAR,
+  "cover_svg" VARCHAR,
   view_count int4 DEFAULT 0 NULL,
   user_id VARCHAR,
   "type" VARCHAR,
   "elapsed" bigint,
+  
   is_public bool DEFAULT FALSE,
   "creator" VARCHAR ( 64 ) DEFAULT '',
   "create_time" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,

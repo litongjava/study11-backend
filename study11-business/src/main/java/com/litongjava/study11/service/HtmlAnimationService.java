@@ -17,6 +17,7 @@ import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.page.Page;
+import com.litongjava.study11.utils.CoverSvgUtils;
 import com.litongjava.template.PromptEngine;
 import com.litongjava.tio.utils.hutool.FileUtil;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
@@ -50,7 +51,13 @@ public class HtmlAnimationService {
     log.info("start generate code of plan:{}", topic);
     String html = genCode(prompt, plan, topic, language, id);
     log.info("finish generate code of plan:{}", topic);
-    Row row = Row.by("id", id).set("topic", topic).set("html", html);
+    Row row = Row.by("id", id).set("topic", topic).set("language", language).set("html", html);
+    try {
+      String svg = CoverSvgUtils.parseFirstSvg(html);
+      row.set("cover_svg", svg);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     Db.save("study11_html_code", row);
     return id;
   }
