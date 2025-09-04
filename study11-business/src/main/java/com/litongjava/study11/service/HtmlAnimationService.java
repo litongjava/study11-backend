@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jfinal.kit.Kv;
+import com.litongjava.bailian.BaiLianAiModels;
 import com.litongjava.chat.UniChatClient;
 import com.litongjava.chat.UniChatMessage;
 import com.litongjava.chat.UniChatRequest;
 import com.litongjava.chat.UniChatResponse;
+import com.litongjava.consts.ModelPlatformName;
 import com.litongjava.db.SqlPara;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
@@ -28,10 +30,9 @@ public class HtmlAnimationService {
   private static final String selectSql = "select id,topic,language,type,elapsed,user_id,is_public,view_count,create_time from study11_html_code";
 
   PlatformAndModelSetService platformAndModelSetService = Aop.get(PlatformAndModelSetService.class);
-  PlanSenceService planSenceService = Aop.get(PlanSenceService.class);
+  SenceStoryboardPlanService senceStoryboardPlanService = Aop.get(SenceStoryboardPlanService.class);
 
   public Long generate(String topic, String language) {
-
     String sql = "select id from study11_html_code where topic=?";
     Long id = Db.queryLong(sql, topic);
     if (id != null) {
@@ -40,7 +41,9 @@ public class HtmlAnimationService {
     id = SnowflakeIdUtils.id();
     log.info("start with id:{}", id);
     log.info("start plan:{}", topic);
-    String plan = planSenceService.plan(id, topic, language);
+    String plan = senceStoryboardPlanService.plan(id, topic, language, ModelPlatformName.BAILIAN,
+        BaiLianAiModels.QWEN3_CODER_PLUS);
+
     log.info("finish plan:{}", topic);
 
     String prompt = getSystemPrompt();
@@ -64,7 +67,7 @@ public class HtmlAnimationService {
 
   public String genCode(String systemPrompt, String plan, String question, String language, long id) {
     List<UniChatMessage> messages = new ArrayList<>();
-    question = "The user question is:" + question+" .The generated subtitles and narration must use the "+language;
+    question = "The user question is:" + question + " .The generated subtitles and narration must use the " + language;
     plan = "The user scene plan is:" + plan;
 
     String userMessage = question + ".\r\n" + plan + ".\r\n" + "Please only output the html code.";
