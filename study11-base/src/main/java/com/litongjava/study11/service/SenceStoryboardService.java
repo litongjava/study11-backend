@@ -13,7 +13,7 @@ public class SenceStoryboardService {
     long id = SnowflakeIdUtils.id();
     DbJsonObject dbJsonObject = new DbJsonObject(storyboard);
     try {
-      Row row = Row.by("id", id).set("md5", md5).set("question", topic)
+      Row row = Row.by("id", id).set("md5", md5).set("topic", topic)
           //
           .set("language", language).set("storyboard", dbJsonObject).set("urls", urlString).set("video_id", videoId);
 

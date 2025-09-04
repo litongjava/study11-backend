@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import com.litongjava.tio.utils.hutool.FileUtil;
 import com.litongjava.tio.utils.hutool.ResourceUtil;
+import com.litongjava.utils.CodeBlockUtils;
 
 public class HtmlCodeUtilsTest {
 
@@ -13,7 +14,7 @@ public class HtmlCodeUtilsTest {
   public void test() {
     URL url = ResourceUtil.getResource("prompts/01.html");
     String html = FileUtil.readString(url);
-    String parseHtml = HtmlCodeUtils.parseHtml(html);
+    String parseHtml = CodeBlockUtils.parseHtml(html);
     System.out.println(parseHtml);
   }
 
