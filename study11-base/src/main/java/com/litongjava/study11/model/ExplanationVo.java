@@ -38,7 +38,14 @@ public class ExplanationVo {
     this.question = text;
   }
 
+  public ExplanationVo(String user_id, String topic, String language) {
+    this.user_id = user_id;
+    this.question = topic;
+    this.language = language;
+  }
+
   public String getPlatform() {
     return provider;
   }
+
 }

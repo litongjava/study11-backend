@@ -4,10 +4,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.litongjava.consts.ModelPlatformName;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.study11.consts.Study11TableName;
+import com.litongjava.study11.model.ExplanationVo;
 import com.litongjava.tio.utils.hutool.FileUtil;
 import com.litongjava.tio.utils.hutool.ResourceUtil;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
@@ -59,7 +61,11 @@ public class QuestionBatchTestService {
       Long id = row.getLong("id");
       String question = row.getString("question");
       String language = row.getStr("language");
-      Long videoId = htmlAnimationService.generate(question, language);
+
+      ExplanationVo explanationVo = new ExplanationVo("1", question, language);
+      explanationVo.setProvider(ModelPlatformName.BAILIAN);
+
+      Long videoId = htmlAnimationService.generate(explanationVo);
       String video_url = "https://preview.study11.ai/preview/" + videoId;
       try {
         Db.update(Study11TableName.ef_question_test, Row.by("id", id).set("url", video_url));

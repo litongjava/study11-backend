@@ -19,6 +19,7 @@ import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.page.Page;
 import com.litongjava.study11.consts.Study11TableName;
+import com.litongjava.study11.model.ExplanationVo;
 import com.litongjava.study11.utils.CoverSvgUtils;
 import com.litongjava.template.PromptEngine;
 import com.litongjava.tio.utils.hutool.FileUtil;
@@ -35,7 +36,10 @@ public class HtmlAnimationService {
   PlatformAndModelSetService platformAndModelSetService = Aop.get(PlatformAndModelSetService.class);
   SenceStoryboardPlanService senceStoryboardPlanService = Aop.get(SenceStoryboardPlanService.class);
 
-  public Long generate(String topic, String language) {
+  public Long generate(ExplanationVo explanationVo) {
+    String topic = explanationVo.getQuestion();
+    String language = explanationVo.getLanguage();
+
     String sql = "select id from study11_html_code where topic=?";
     Long id = Db.queryLong(sql, topic);
     if (id != null) {

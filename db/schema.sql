@@ -52,3 +52,20 @@ CREATE TABLE ef_question_test (
   tenant_id BIGINT NOT NULL DEFAULT 0, -- 租户ID
   PRIMARY KEY (id) -- 主键
 );
+
+drop table if exists study11_question_test_for_k12;
+CREATE TABLE study11_question_test_for_k12 (
+  id BIGINT NOT NULL,
+  grade varchar,
+  no varchar,
+  question VARCHAR NOT NULL,
+  language VARCHAR(64) NOT NULL,
+  url varchar,  
+  creator VARCHAR(64) DEFAULT '', -- 创建者
+  create_time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 创建时间
+  updater VARCHAR(64) DEFAULT '', -- 更新者
+  update_time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 更新时间
+  deleted SMALLINT NOT NULL DEFAULT 0, -- 删除标志
+  tenant_id BIGINT NOT NULL DEFAULT 0, -- 租户ID
+  PRIMARY KEY (id) -- 主键
+);

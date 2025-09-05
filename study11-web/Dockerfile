@@ -5,7 +5,7 @@ WORKDIR /app
 
 # 复制 jar 文件到容器中
 COPY .env /app/.env
-COPY target/study11-backend-1.0.0.jar /app/
+COPY target/study11-web-1.0.0.jar /app/
 
 # 运行 jar 文件
-CMD ["java", "-jar", "study11-backend-1.0.0.jar", "--app.env=prod"]
+CMD ["java", "-jar", "study11-web-1.0.0.jar", "--app.env=prod"]

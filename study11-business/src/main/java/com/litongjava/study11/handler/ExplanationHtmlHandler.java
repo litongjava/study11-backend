@@ -1,6 +1,8 @@
 package com.litongjava.study11.handler;
 
 import com.jfinal.kit.Kv;
+import com.litongjava.bailian.BaiLianAiModels;
+import com.litongjava.consts.ModelPlatformName;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.study11.model.ExplanationVo;
 import com.litongjava.study11.service.HtmlAnimationService;
@@ -30,11 +32,12 @@ public class ExplanationHtmlHandler {
     response.setSend(false);
     request.channelContext.setAttribute("type", "SSE");
     String bodyString = request.getBodyString();
-    ExplanationVo xplanationVo = JsonUtils.parse(bodyString, ExplanationVo.class);
+    ExplanationVo explanationVo = JsonUtils.parse(bodyString, ExplanationVo.class);
+    explanationVo.setProvider(ModelPlatformName.BAILIAN);
 
     TioThreadUtils.execute(() -> {
       try {
-        Long id = htmlService.generate(xplanationVo.getQuestion(), xplanationVo.getLanguage());
+        Long id = htmlService.generate(explanationVo);
         String url = htmlService.appendPreviewUrl(host, id);
 
         Kv done = Kv.by("url", url);
@@ -47,7 +50,7 @@ public class ExplanationHtmlHandler {
           SseEmitter.closeSeeConnection(request.channelContext);
         }
         e.printStackTrace();
-        reportError(xplanationVo.getUser_id(), request, e);
+        reportError(explanationVo.getUser_id(), request, e);
       }
     });
     return response;

@@ -3,8 +3,10 @@ package com.litongjava.study11.controller;
 import com.jfinal.kit.Kv;
 import com.litongjava.annotation.EnableCORS;
 import com.litongjava.annotation.RequestPath;
+import com.litongjava.consts.ModelPlatformName;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
+import com.litongjava.study11.model.ExplanationVo;
 import com.litongjava.study11.service.HtmlAnimationService;
 import com.litongjava.study11.service.QuestionBatchTestService;
 import com.litongjava.tio.http.common.HttpRequest;
@@ -21,7 +23,10 @@ public class HtmlController {
     if (language == null) {
       language = "Chinese";
     }
-    Long id = htmlService.generate(topic, language);
+    ExplanationVo explanationVo = new ExplanationVo("1", topic, language);
+    explanationVo.setProvider(ModelPlatformName.BAILIAN);
+
+    Long id = htmlService.generate(explanationVo);
     String host = request.getHost();
     String url = "//" + host + "/preview/" + id;
     Kv by = Kv.by("url", url);
