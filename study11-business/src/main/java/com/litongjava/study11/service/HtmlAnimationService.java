@@ -15,6 +15,7 @@ import com.litongjava.consts.ModelPlatformName;
 import com.litongjava.db.SqlPara;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
+import com.litongjava.exception.GenerateException;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.page.Page;
@@ -56,6 +57,9 @@ public class HtmlAnimationService {
     String prompt = getSystemPrompt();
     log.info("start generate code of plan:{}", topic);
     String html = genCode(prompt, plan, topic, language, id);
+    if (html == null) {
+      return null;
+    }
     log.info("finish generate code of plan:{}", topic);
     Row row = Row.by("id", id).set("topic", topic).set("language", language).set("html", html);
     try {
@@ -100,8 +104,20 @@ public class HtmlAnimationService {
 
     UniChatRequest uniChatRequest = new UniChatRequest(systemPrompt, messages, 0f);
     platformAndModelSetService.configPlatformAndModel(uniChatRequest);
+    UniChatResponse generate = null;
+    for (int i = 0; i < 3; i++) {
+      try {
+        generate = UniChatClient.generate(uniChatRequest);
+        break;
+      } catch (GenerateException e) {
+        log.error(e.getMessage(), e);
+        continue;
+      }
+    }
 
-    UniChatResponse generate = UniChatClient.generate(uniChatRequest);
+    if (generate == null) {
+      return null;
+    }
     String generatedText = generate.getMessage().getContent();
 
     String code = CodeBlockUtils.parseHtml(generatedText);
