@@ -20,7 +20,7 @@ public class PreviewController {
   @RequestPath("/{id}")
   public HttpResponse preview(Long id) {
     HttpResponse response = TioRequestContext.getResponse();
-    String html = htmlService.getCodeById(id);
+    String html = htmlService.getHtmlCodeById(id);
     return Resps.html(response, html);
   }
 

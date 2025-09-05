@@ -7,7 +7,7 @@ import java.util.List;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.study11.consts.EfTableName;
+import com.litongjava.study11.consts.Study11TableName;
 import com.litongjava.tio.utils.hutool.FileUtil;
 import com.litongjava.tio.utils.hutool.ResourceUtil;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
@@ -33,7 +33,7 @@ public class QuestionBatchTestService {
       rows.add(row);
 
     }
-    Db.batchSave(EfTableName.ef_question_test, rows, 200);
+    Db.batchSave(Study11TableName.ef_question_test, rows, 200);
     log.info("size:{}", questions.size());
   }
 
@@ -46,13 +46,13 @@ public class QuestionBatchTestService {
       Row row = Row.by("id", id).set("question", q).set("language", "Chinese");
       rows.add(row);
     }
-    Db.batchSave(EfTableName.ef_question_test, rows, 2000);
+    Db.batchSave(Study11TableName.ef_question_test, rows, 2000);
     log.info("finish insert:{}", rows.size());
   }
 
   public void batchTest() {
     String sql = "select * from %s where url is null order by id";
-    sql = String.format(sql, EfTableName.ef_question_test);
+    sql = String.format(sql, Study11TableName.ef_question_test);
     List<Row> rows = Db.find(sql);
     log.info("size:{}", rows.size());
     for (Row row : rows) {
@@ -62,7 +62,7 @@ public class QuestionBatchTestService {
       Long videoId = htmlAnimationService.generate(question, language);
       String video_url = "https://preview.study11.ai/preview/" + videoId;
       try {
-        Db.update(EfTableName.ef_question_test, Row.by("id", id).set("url", video_url));
+        Db.update(Study11TableName.ef_question_test, Row.by("id", id).set("url", video_url));
       } catch (Exception e) {
         e.printStackTrace();
       }

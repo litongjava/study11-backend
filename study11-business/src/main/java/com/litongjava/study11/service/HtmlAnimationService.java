@@ -16,7 +16,9 @@ import com.litongjava.db.SqlPara;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.page.Page;
+import com.litongjava.study11.consts.Study11TableName;
 import com.litongjava.study11.utils.CoverSvgUtils;
 import com.litongjava.template.PromptEngine;
 import com.litongjava.tio.utils.hutool.FileUtil;
@@ -28,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HtmlAnimationService {
 
-  private static final String selectSql = "select id,topic,language,type,elapsed,user_id,is_public,view_count,create_time from study11_html_code";
+  private static final String selectSql = "select id,topic as title,language,type,elapsed,user_id,is_public,view_count,create_time from study11_html_code";
 
   PlatformAndModelSetService platformAndModelSetService = Aop.get(PlatformAndModelSetService.class);
   SenceStoryboardPlanService senceStoryboardPlanService = Aop.get(SenceStoryboardPlanService.class);
@@ -67,8 +69,13 @@ public class HtmlAnimationService {
     return prompt;
   }
 
-  public String getCodeById(Long id) {
+  public String getHtmlCodeById(Long id) {
     String sql = "select html from study11_html_code where id=?";
+    return Db.queryStr(sql, id);
+  }
+
+  public String getSvgById(Long id) {
+    String sql = "select cover_svg from study11_html_code where id=?";
     return Db.queryStr(sql, id);
   }
 
@@ -131,8 +138,11 @@ public class HtmlAnimationService {
     for (Row row : list) {
       Kv kv = row.toKv();
       Long id = kv.getLong("id");
-      String url = append(host, id);
-      kv.set("url", url);
+      String url = appendPreviewUrl(host, id);
+      String coverUrl = appendCoverUrl(host, id);
+      kv.set("video_url", url);
+      kv.set("cover_url", coverUrl);
+
       kvs.add(kv);
     }
     Kv result = Kv.by("total", totalRow).set("videos", kvs);
@@ -144,15 +154,40 @@ public class HtmlAnimationService {
     Row row = Db.findFirst(sql, id);
     if (row != null) {
       Kv kv = row.toKv();
-      String url = append(host, id);
+      String url = appendPreviewUrl(host, id);
       kv.set("url", url);
       return kv;
     }
     return null;
   }
 
-  private String append(String host, Long id) {
+  public RespBodyVo parseSvg() {
+    String sql = "select id,html from %s where cover_svg is null";
+    sql = String.format(sql, Study11TableName.study11_html_code);
+    List<Row> rows = Db.find(sql);
+    int size = rows.size();
+    for (Row row : rows) {
+      String html = row.popString("html");
+      try {
+        String svg = CoverSvgUtils.parseFirstSvg(html);
+        row.set("cover_svg", svg);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    Db.batchUpdate(Study11TableName.study11_html_code, rows, size);
+    return RespBodyVo.ok(size);
+  }
+
+  private String appendCoverUrl(String host, Long id) {
+    String url = "//" + host + "/cover/" + id;
+    return url;
+  }
+
+  private String appendPreviewUrl(String host, Long id) {
     String url = "//" + host + "/preview/" + id;
     return url;
   }
+
 }

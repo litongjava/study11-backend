@@ -11,7 +11,7 @@ import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.utils.thread.TioThreadUtils;
 
 @EnableCORS
-@RequestPath("/v1/api/html")
+@RequestPath("/api/v1/html")
 public class HtmlController {
 
   HtmlAnimationService htmlService = Aop.get(HtmlAnimationService.class);
