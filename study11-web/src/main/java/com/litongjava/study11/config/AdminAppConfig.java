@@ -2,6 +2,7 @@ package com.litongjava.study11.config;
 
 import com.litongjava.annotation.AConfiguration;
 import com.litongjava.annotation.Initialization;
+import com.litongjava.study11.handler.ExplanationHtmlHandler;
 import com.litongjava.study11.handler.HtmlPageHandler;
 import com.litongjava.tio.boot.admin.config.TioAdminDbConfiguration;
 import com.litongjava.tio.boot.admin.config.TioBootAdminEnjoyEngineConfig;
@@ -21,6 +22,8 @@ public class AdminAppConfig {
     if (r != null) {
       HtmlPageHandler indexHandler = new HtmlPageHandler();
       r.add("/", indexHandler::index);
+      ExplanationHtmlHandler explanationHtmlHandler = new ExplanationHtmlHandler();
+      r.add("/api/explanation/html", explanationHtmlHandler::index);
     }
 
   }

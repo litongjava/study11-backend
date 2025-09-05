@@ -185,7 +185,7 @@ public class HtmlAnimationService {
     return url;
   }
 
-  private String appendPreviewUrl(String host, Long id) {
+  public String appendPreviewUrl(String host, Long id) {
     String url = "//" + host + "/preview/" + id;
     return url;
   }
