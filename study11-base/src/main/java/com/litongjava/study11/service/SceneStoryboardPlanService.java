@@ -23,7 +23,7 @@ public class SceneStoryboardPlanService {
 
   private SceneStoryboardService sceneStoryboardService = Aop.get(SceneStoryboardService.class);
 
-  public String plan(SceneStoryboardInput input, String platform, String model) {
+  public String planJson(SceneStoryboardInput input, String platform, String model) {
     Long videoId = input.getVideoId();
     String topic = input.getTopic();
     String language = input.getLanguage();
@@ -61,6 +61,7 @@ public class SceneStoryboardPlanService {
       if (parsedJson != null) {
         try {
           FastJson2Utils.parseObject(parsedJson);
+          sceneStoryboardService.saveStoryboard(videoId, md5, topic, language, parsedJson, null);
           break;
         } catch (Exception e) {
           messages.add(UniChatMessage.buildUser("Failed to parse Json:" + e.getMessage()));
@@ -69,8 +70,47 @@ public class SceneStoryboardPlanService {
       }
     }
 
-    sceneStoryboardService.saveStoryboard(videoId, md5, topic, language, parsedJson, null);
-
     return parsedJson;
+  }
+
+  public String planXML(SceneStoryboardInput input, String platform, String model) {
+    Long videoId = input.getVideoId();
+    String topic = input.getTopic();
+    String language = input.getLanguage();
+    int min = input.getMin();
+    int max = input.getMax();
+
+    String md5 = Md5Utils.md5Hex(topic);
+    String planedXML = sceneStoryboardService.queryStoryboardXML(md5, language);
+
+    if (planedXML != null) {
+      return planedXML;
+    }
+    Kv kv = Kv.by("min", min).set("max", max);
+    String prompt = PromptEngine.renderToString("scene_storyboard_prompt_xml_format.txt", kv);
+    String userPrompt = "topic:" + topic + ". Please respond in " + language;
+
+    List<UniChatMessage> messages = new ArrayList<>();
+    messages.add(UniChatMessage.buildUser(userPrompt));
+
+    UniChatRequest request = new UniChatRequest();
+    request.setPlatform(platform).setModel(model);
+
+    request.setTemperature(0f);
+    request.setSystemPrompt(prompt);
+    request.setMessages(messages);
+    request.setCacheSystemPrompt(true);
+    request.setMax_tokens(32000);
+
+    UniChatResponse resposne = UniChatClient.generate(request);
+    planedXML = resposne.getMessage().getContent();
+    planedXML = CodeBlockUtils.parseXml(planedXML);
+    try {
+      planedXML = planedXML.replace("<SCENE_OUTLINE>", "").replace("</SCENE_OUTLINE>", "");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    sceneStoryboardService.saveStoryboardXML(videoId, md5, topic, language, planedXML, null);
+    return planedXML;
   }
 }

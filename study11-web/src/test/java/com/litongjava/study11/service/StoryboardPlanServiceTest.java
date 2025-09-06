@@ -16,7 +16,7 @@ public class StoryboardPlanServiceTest {
     TioBootTest.runWith(AdminAppConfig.class);
 
     SceneStoryboardInput input = new SceneStoryboardInput(1L, "三角函数", "Chinese", 10, 15);
-    String html = Aop.get(SceneStoryboardPlanService.class).plan(input, ModelPlatformName.OPENROUTER,
+    String html = Aop.get(SceneStoryboardPlanService.class).planJson(input, ModelPlatformName.OPENROUTER,
         OpenRouterModels.QWEN_QWEN3_CODER);
     System.out.println(html);
   }

@@ -51,7 +51,7 @@ public class HtmlAnimationService {
     log.info("start with id:{}", id);
     log.info("start plan:{}", topic);
     SceneStoryboardInput sceneStoryboardInput = new SceneStoryboardInput(id, topic, language, 10, 15);
-    String plan = sceneStoryboardPlanService.plan(sceneStoryboardInput, ModelPlatformName.BAILIAN,
+    String plan = sceneStoryboardPlanService.planJson(sceneStoryboardInput, ModelPlatformName.BAILIAN,
         BaiLianAiModels.QWEN3_CODER_PLUS);
 
     log.info("finish plan:{}", topic);

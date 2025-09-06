@@ -23,8 +23,30 @@ public class SceneStoryboardService {
     }
   }
 
+  public void saveStoryboardXML(Long videoId, String md5, String topic, String language, String storyboard,
+      String urlString) {
+    long id = SnowflakeIdUtils.id();
+    DbJsonObject dbJsonObject = new DbJsonObject(storyboard);
+    try {
+      Row row = Row.by("id", id).set("md5", md5).set("topic", topic)
+          //
+          .set("language", language).set("storyboard_xml", dbJsonObject).set("urls", urlString)
+          .set("video_id", videoId);
+      Db.save(StudyBaseTableName.study11_scene_storyboard, row);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   public String queryStoryboard(String md5, String language) {
     String sql = "select storyboard from %s where md5=? and language=?";
+    sql = String.format(sql, StudyBaseTableName.study11_scene_storyboard);
+    String storyboard = Db.queryStr(sql, md5, language);
+    return storyboard;
+  }
+
+  public String queryStoryboardXML(String md5, String language) {
+    String sql = "select storyboard_xml from %s where md5=? and language=?";
     sql = String.format(sql, StudyBaseTableName.study11_scene_storyboard);
     String storyboard = Db.queryStr(sql, md5, language);
     return storyboard;
