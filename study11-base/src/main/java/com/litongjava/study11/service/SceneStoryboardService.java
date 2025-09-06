@@ -26,11 +26,10 @@ public class SceneStoryboardService {
   public void saveStoryboardXML(Long videoId, String md5, String topic, String language, String storyboard,
       String urlString) {
     long id = SnowflakeIdUtils.id();
-    DbJsonObject dbJsonObject = new DbJsonObject(storyboard);
     try {
       Row row = Row.by("id", id).set("md5", md5).set("topic", topic)
           //
-          .set("language", language).set("storyboard_xml", dbJsonObject).set("urls", urlString)
+          .set("language", language).set("storyboard_xml", storyboard).set("urls", urlString)
           .set("video_id", videoId);
       Db.save(StudyBaseTableName.study11_scene_storyboard, row);
     } catch (Exception e) {
