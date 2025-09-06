@@ -20,13 +20,14 @@ CREATE TABLE study11_html_code (
 );
 
 
-drop table if exists study11_sence_storyboard;
-CREATE TABLE study11_sence_storyboard (
+drop table if exists study11_scene_storyboard;
+CREATE TABLE study11_scene_storyboard (
   id BIGINT PRIMARY KEY,
   md5 varchar,
   topic VARCHAR,
   language varchar,
   storyboard JSONB,
+  storyboard_xml varchar,
   urls VARCHAR,
   video_id bigint,
   sence_quiz JSONB,
