@@ -21,6 +21,7 @@ import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.page.Page;
 import com.litongjava.study11.consts.Study11TableName;
 import com.litongjava.study11.model.ExplanationVo;
+import com.litongjava.study11.model.SenceStoryboardInput;
 import com.litongjava.study11.utils.CoverSvgUtils;
 import com.litongjava.template.PromptEngine;
 import com.litongjava.tio.utils.hutool.FileUtil;
@@ -49,7 +50,8 @@ public class HtmlAnimationService {
     id = SnowflakeIdUtils.id();
     log.info("start with id:{}", id);
     log.info("start plan:{}", topic);
-    String plan = senceStoryboardPlanService.plan(id, topic, language, ModelPlatformName.BAILIAN,
+    SenceStoryboardInput senceStoryboardInput = new SenceStoryboardInput(id, topic, language, 10, 15);
+    String plan = senceStoryboardPlanService.plan(senceStoryboardInput, ModelPlatformName.BAILIAN,
         BaiLianAiModels.QWEN3_CODER_PLUS);
 
     log.info("finish plan:{}", topic);
