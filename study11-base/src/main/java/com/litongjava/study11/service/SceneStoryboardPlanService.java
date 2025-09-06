@@ -10,7 +10,7 @@ import com.litongjava.chat.UniChatRequest;
 import com.litongjava.chat.UniChatResponse;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.openai.chat.ChatResponseFormatType;
-import com.litongjava.study11.model.SenceStoryboardInput;
+import com.litongjava.study11.model.SceneStoryboardInput;
 import com.litongjava.template.PromptEngine;
 import com.litongjava.tio.utils.crypto.Md5Utils;
 import com.litongjava.tio.utils.json.FastJson2Utils;
@@ -19,24 +19,24 @@ import com.litongjava.utils.CodeBlockUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class SenceStoryboardPlanService {
+public class SceneStoryboardPlanService {
 
-  private SenceStoryboardService senceStoryboardService = Aop.get(SenceStoryboardService.class);
+  private SceneStoryboardService sceneStoryboardService = Aop.get(SceneStoryboardService.class);
 
-  public String plan(SenceStoryboardInput input, String platform, String model) {
+  public String plan(SceneStoryboardInput input, String platform, String model) {
     Long videoId = input.getVideoId();
     String topic = input.getTopic();
     String language = input.getLanguage();
     int min = input.getMin();
     int max = input.getMax();
     String md5 = Md5Utils.md5Hex(topic);
-    String parsedJson = senceStoryboardService.queryStoryboard(md5, language);
+    String parsedJson = sceneStoryboardService.queryStoryboard(md5, language);
     if (parsedJson != null) {
       return parsedJson;
     }
 
     Kv kv = Kv.by("min", min).set("max", max);
-    String prompt = PromptEngine.renderToString("sence_storyboard_prompt_json_format.txt", kv);
+    String prompt = PromptEngine.renderToString("scene_storyboard_prompt_json_format.txt", kv);
     String userPrompt = "topic:" + topic + ". Please respond in " + language;
 
     List<UniChatMessage> messages = new ArrayList<>();
@@ -69,7 +69,7 @@ public class SenceStoryboardPlanService {
       }
     }
 
-    senceStoryboardService.saveStoryboard(videoId, md5, topic, language, parsedJson, null);
+    sceneStoryboardService.saveStoryboard(videoId, md5, topic, language, parsedJson, null);
 
     return parsedJson;
   }

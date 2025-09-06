@@ -21,7 +21,7 @@ import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.page.Page;
 import com.litongjava.study11.consts.Study11TableName;
 import com.litongjava.study11.model.ExplanationVo;
-import com.litongjava.study11.model.SenceStoryboardInput;
+import com.litongjava.study11.model.SceneStoryboardInput;
 import com.litongjava.study11.utils.CoverSvgUtils;
 import com.litongjava.template.PromptEngine;
 import com.litongjava.tio.utils.hutool.FileUtil;
@@ -36,7 +36,7 @@ public class HtmlAnimationService {
   private static final String selectSql = "select id,topic as title,language,type,elapsed,user_id,is_public,view_count,create_time from study11_html_code";
 
   PlatformAndModelSetService platformAndModelSetService = Aop.get(PlatformAndModelSetService.class);
-  SenceStoryboardPlanService senceStoryboardPlanService = Aop.get(SenceStoryboardPlanService.class);
+  SceneStoryboardPlanService sceneStoryboardPlanService = Aop.get(SceneStoryboardPlanService.class);
 
   public Long generate(ExplanationVo explanationVo) {
     String topic = explanationVo.getQuestion();
@@ -50,8 +50,8 @@ public class HtmlAnimationService {
     id = SnowflakeIdUtils.id();
     log.info("start with id:{}", id);
     log.info("start plan:{}", topic);
-    SenceStoryboardInput senceStoryboardInput = new SenceStoryboardInput(id, topic, language, 10, 15);
-    String plan = senceStoryboardPlanService.plan(senceStoryboardInput, ModelPlatformName.BAILIAN,
+    SceneStoryboardInput sceneStoryboardInput = new SceneStoryboardInput(id, topic, language, 10, 15);
+    String plan = sceneStoryboardPlanService.plan(sceneStoryboardInput, ModelPlatformName.BAILIAN,
         BaiLianAiModels.QWEN3_CODER_PLUS);
 
     log.info("finish plan:{}", topic);

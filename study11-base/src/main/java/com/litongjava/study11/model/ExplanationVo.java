@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
 //"language": "english",
 public class ExplanationVo {
   private String question;
-  // 0 sence by sence 1 all sence at once
+  // 0 scene by scene 1 all scene at once
   private Long id;
   private int generate_type;
   private String voice_provider = "openai";

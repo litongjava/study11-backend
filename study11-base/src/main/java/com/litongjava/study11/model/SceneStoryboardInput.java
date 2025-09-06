@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class SenceStoryboardInput {
+public class SceneStoryboardInput {
   private Long videoId;
   private String topic;
   private String language;
