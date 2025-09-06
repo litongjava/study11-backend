@@ -31,6 +31,9 @@ public class SenceStoryboardPlanService {
     int max = input.getMax();
     String md5 = Md5Utils.md5Hex(topic);
     String parsedJson = senceStoryboardService.queryStoryboard(md5, language);
+    if (parsedJson != null) {
+      return parsedJson;
+    }
 
     Kv kv = Kv.by("min", min).set("max", max);
     String prompt = PromptEngine.renderToString("sence_storyboard_prompt_json_format.txt", kv);
@@ -51,7 +54,7 @@ public class SenceStoryboardPlanService {
     request.setResponseFormat(ChatResponseFormatType.json_object);
 
     for (int i = 0; i < 10; i++) {
-      log.error("tried:{}", i + 1);
+      log.info("tried:{}", i + 1);
       UniChatResponse resposne = UniChatClient.generate(request);
       parsedJson = resposne.getMessage().getContent();
       parsedJson = CodeBlockUtils.parseJson(parsedJson);

@@ -19,6 +19,7 @@ import lombok.experimental.Accessors;
 public class ExplanationVo {
   private String question;
   // 0 sence by sence 1 all sence at once
+  private Long id;
   private int generate_type;
   private String voice_provider = "openai";
   private String voice_id = "default_voice";

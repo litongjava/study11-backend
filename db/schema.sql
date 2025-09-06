@@ -61,6 +61,7 @@ CREATE TABLE study11_question_test_for_k12 (
   question VARCHAR NOT NULL,
   language VARCHAR(64) NOT NULL,
   url varchar,  
+  video_url varchar,
   creator VARCHAR(64) DEFAULT '', -- 创建者
   create_time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP, -- 创建时间
   updater VARCHAR(64) DEFAULT '', -- 更新者
