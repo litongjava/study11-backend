@@ -16,6 +16,9 @@ import com.litongjava.tio.utils.crypto.Md5Utils;
 import com.litongjava.tio.utils.json.FastJson2Utils;
 import com.litongjava.utils.CodeBlockUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class SenceStoryboardPlanService {
 
   private SenceStoryboardService senceStoryboardService = Aop.get(SenceStoryboardService.class);
@@ -47,19 +50,19 @@ public class SenceStoryboardPlanService {
     request.setMax_tokens(32000);
     request.setResponseFormat(ChatResponseFormatType.json_object);
 
-    while (parsedJson == null) {
+    for (int i = 0; i < 10; i++) {
+      log.error("tried:{}", i + 1);
       UniChatResponse resposne = UniChatClient.generate(request);
       parsedJson = resposne.getMessage().getContent();
-
       parsedJson = CodeBlockUtils.parseJson(parsedJson);
       if (parsedJson != null) {
         try {
           FastJson2Utils.parseObject(parsedJson);
+          break;
         } catch (Exception e) {
           messages.add(UniChatMessage.buildUser("Failed to parse Json:" + e.getMessage()));
           parsedJson = null;
         }
-
       }
     }
 
