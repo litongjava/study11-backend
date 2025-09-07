@@ -13,7 +13,7 @@ import com.litongjava.tio.utils.hutool.FileUtil;
 import com.litongjava.tio.utils.hutool.ResourceUtil;
 
 @RequestPath("/preview")
-public class PreviewController {
+public class HtmlPreviewController {
 
   HtmlAnimationService htmlService = Aop.get(HtmlAnimationService.class);
 

@@ -9,7 +9,6 @@ CREATE TABLE study11_html_code (
   user_id VARCHAR,
   "type" VARCHAR,
   "elapsed" bigint,
-  
   is_public bool DEFAULT FALSE,
   "creator" VARCHAR ( 64 ) DEFAULT '',
   "create_time" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
