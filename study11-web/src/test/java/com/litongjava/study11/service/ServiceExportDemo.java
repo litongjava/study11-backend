@@ -23,10 +23,14 @@ public class ServiceExportDemo {
     // 查询数据
     String sql = "select * from study11_question_test_for_k12 order by id";
     List<Row> records = Db.find(sql);
+    for (Row row : records) {
+      Long videoId = row.getLong("video_id");
+      row.set("video_url", "https://preview.jieti.cc/preview/" + videoId);
+    }
 
     // 导出数据到 Excel 文件
     try (OutputStream outputStream = new FileOutputStream("study11_question_test_for_k12.xlsx")) {
-      EasyExcelUtils.write(outputStream, "html", records);
+      EasyExcelUtils.write(outputStream, "test1", records);
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     } catch (IOException e1) {
