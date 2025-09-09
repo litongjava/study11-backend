@@ -157,3 +157,4 @@ vcpkg_installed/
 app.zip
 html/
 prompts/
+secrets.txt

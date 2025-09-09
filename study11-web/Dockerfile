@@ -4,7 +4,7 @@ FROM litongjava/jdk:17.0.12-stable-slim
 WORKDIR /app
 
 # 复制 jar 文件到容器中
-COPY .env /app/.env
+COPY secrets.txt /app/secrets.txt
 COPY target/study11-web-1.0.0.jar /app/
 
 # 运行 jar 文件

@@ -109,6 +109,7 @@ public class HtmlAnimationService {
     UniChatResponse generate = null;
     for (int i = 0; i < 3; i++) {
       try {
+        log.info("attempt:{}", i);
         generate = UniChatClient.generate(uniChatRequest);
         break;
       } catch (GenerateException e) {
