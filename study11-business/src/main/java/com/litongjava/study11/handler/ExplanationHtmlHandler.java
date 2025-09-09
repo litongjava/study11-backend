@@ -33,6 +33,7 @@ public class ExplanationHtmlHandler {
     String bodyString = request.getBodyString();
     ExplanationVo explanationVo = JsonUtils.parse(bodyString, ExplanationVo.class);
     explanationVo.setProvider(ModelPlatformName.BAILIAN);
+    explanationVo.setDomain(host);
 
     TioThreadUtils.execute(() -> {
       try {
@@ -55,6 +56,7 @@ public class ExplanationHtmlHandler {
     return response;
   }
 
+  @SuppressWarnings("unused")
   private void reportError(String userId, HttpRequest request, Exception e) {
     String appGroupName = "tio-boot";
     String warningName = "ExplanationHandler";
