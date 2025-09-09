@@ -42,8 +42,7 @@ public class HtmlAnimationService {
     String topic = explanationVo.getQuestion();
     String language = explanationVo.getLanguage();
 
-    String sql = "select id from study11_html_code where topic=?";
-    Long id = Db.queryLong(sql, topic);
+    Long id = selectIdByTopic(topic);
     if (id != null) {
       return id;
     }
@@ -71,6 +70,12 @@ public class HtmlAnimationService {
       e.printStackTrace();
     }
     Db.save("study11_html_code", row);
+    return id;
+  }
+
+  public Long selectIdByTopic(String topic) {
+    String sql = "select id from study11_html_code where topic=? and html is not null";
+    Long id = Db.queryLong(sql, topic);
     return id;
   }
 
