@@ -35,7 +35,7 @@ public class HtmlAnimationService {
 
   private static final String selectSql = "select id,topic as title,language,type,elapsed,user_id,is_public,view_count,create_time from study11_html_code";
 
-  PlatformAndModelSetService platformAndModelSetService = Aop.get(PlatformAndModelSetService.class);
+  PlatformAndModelConfigService platformAndModelSetService = Aop.get(PlatformAndModelConfigService.class);
   SceneStoryboardPlanService sceneStoryboardPlanService = Aop.get(SceneStoryboardPlanService.class);
 
   public Long generate(ExplanationVo explanationVo) {
