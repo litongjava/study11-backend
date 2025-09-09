@@ -23,11 +23,13 @@ public class HtmlController {
     if (language == null) {
       language = "Chinese";
     }
+    String host = request.getHost();
     ExplanationVo explanationVo = new ExplanationVo("1", topic, language);
     explanationVo.setProvider(ModelPlatformName.BAILIAN);
+    explanationVo.setDomain(host);
 
     Long id = htmlService.generate(explanationVo);
-    String host = request.getHost();
+
     String url = "//" + host + "/preview/" + id;
     Kv by = Kv.by("url", url);
     return RespBodyVo.ok(by);

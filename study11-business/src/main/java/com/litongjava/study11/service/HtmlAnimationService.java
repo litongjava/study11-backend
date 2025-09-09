@@ -58,7 +58,7 @@ public class HtmlAnimationService {
 
     String prompt = getSystemPrompt();
     log.info("start generate code of plan:{}", topic);
-    String html = genCode(prompt, plan, topic, language, id);
+    String html = genCode(prompt, plan, topic, language, explanationVo.getDomain(), id);
     if (html == null) {
       return null;
     }
@@ -89,12 +89,13 @@ public class HtmlAnimationService {
     return Db.queryStr(sql, id);
   }
 
-  public String genCode(String systemPrompt, String plan, String question, String language, long id) {
+  public String genCode(String systemPrompt, String storyboard, String question, String language, String host,
+      long id) {
     List<UniChatMessage> messages = new ArrayList<>();
     question = "The user question is:" + question + " .The generated subtitles and narration must use the " + language;
-    plan = "The user scene plan is:" + plan;
+    storyboard = "The user scene plan is:" + storyboard;
 
-    String userMessage = question + ".\r\n" + plan + ".\r\n" + "Please only output the html code.";
+    String userMessage = question + ".\r\n" + storyboard + ".\r\n" + "Please only output the html code.";
 
     String prompt = systemPrompt + "\r\n" + userMessage;
     File file = new File("prompts");
@@ -105,6 +106,8 @@ public class HtmlAnimationService {
     messages.add(UniChatMessage.buildUser(userMessage));
 
     UniChatRequest uniChatRequest = new UniChatRequest(systemPrompt, messages, 0f);
+    uniChatRequest.setDomain(host);
+
     platformAndModelSetService.configPlatformAndModel(uniChatRequest);
     UniChatResponse generate = null;
     for (int i = 0; i < 3; i++) {

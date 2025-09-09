@@ -29,7 +29,8 @@ public class ExplanationVo {
   private List<Long> imageIds;
   private String user_id;
   private String md5;
-
+  private String domain;
+  
   public ExplanationVo(String text) {
     this.question = text;
   }
