@@ -42,14 +42,14 @@ public class ExplanationHtmlHandler {
         Kv done = Kv.by("url", url);
         Tio.send(request.channelContext, new SsePacket("main", JsonUtils.toJson(done)));
       } catch (Exception e) {
-
         if (!request.channelContext.isClosed) {
           Kv done = Kv.by("type", "error");
           Tio.send(request.channelContext, new SsePacket("close", JsonUtils.toJson(done)));
-          SseEmitter.closeSeeConnection(request.channelContext);
         }
         e.printStackTrace();
         reportError(explanationVo.getUser_id(), request, e);
+      } finally {
+        SseEmitter.closeSeeConnection(request.channelContext);
       }
     });
     return response;
