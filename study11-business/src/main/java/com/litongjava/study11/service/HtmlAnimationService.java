@@ -6,12 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.bailian.BaiLianAiModels;
 import com.litongjava.chat.UniChatClient;
 import com.litongjava.chat.UniChatMessage;
 import com.litongjava.chat.UniChatRequest;
 import com.litongjava.chat.UniChatResponse;
-import com.litongjava.consts.ModelPlatformName;
 import com.litongjava.db.SqlPara;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
@@ -41,6 +39,7 @@ public class HtmlAnimationService {
   public Long generate(ExplanationVo explanationVo) {
     String topic = explanationVo.getQuestion();
     String language = explanationVo.getLanguage();
+    String domain = explanationVo.getDomain();
 
     Long id = selectIdByTopic(topic);
     if (id != null) {
@@ -50,14 +49,19 @@ public class HtmlAnimationService {
     log.info("start with id:{}", id);
     log.info("start plan:{}", topic);
     SceneStoryboardInput sceneStoryboardInput = new SceneStoryboardInput(id, topic, language, 10, 15);
-    String plan = sceneStoryboardPlanService.planJson(sceneStoryboardInput, ModelPlatformName.BAILIAN,
-        BaiLianAiModels.QWEN3_CODER_PLUS);
+    UniChatRequest uniChatRequest = new UniChatRequest();
+    uniChatRequest.setDomain(domain);
+    
+    platformAndModelSetService.configPlatformAndModel(uniChatRequest);
+
+    String plan = sceneStoryboardPlanService.planJson(sceneStoryboardInput, uniChatRequest);
 
     log.info("finish plan:{}", topic);
 
     String prompt = getSystemPrompt();
     log.info("start generate code of plan:{}", topic);
-    String html = genCode(prompt, plan, topic, language, explanationVo.getDomain(), id);
+    
+    String html = genCode(prompt, plan, topic, language, domain, id);
     if (html == null) {
       return null;
     }

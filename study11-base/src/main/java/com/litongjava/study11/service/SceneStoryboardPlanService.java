@@ -9,6 +9,7 @@ import com.litongjava.chat.UniChatMessage;
 import com.litongjava.chat.UniChatRequest;
 import com.litongjava.chat.UniChatResponse;
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.openai.ChatProvider;
 import com.litongjava.openai.chat.ChatResponseFormatType;
 import com.litongjava.study11.model.SceneStoryboardInput;
 import com.litongjava.template.PromptEngine;
@@ -23,7 +24,10 @@ public class SceneStoryboardPlanService {
 
   private SceneStoryboardService sceneStoryboardService = Aop.get(SceneStoryboardService.class);
 
-  public String planJson(SceneStoryboardInput input, String platform, String model) {
+  public String planJson(SceneStoryboardInput input, UniChatRequest uniChatRequest) {
+    String platform = uniChatRequest.getPlatform();
+    String model = uniChatRequest.getModel();
+    ChatProvider provider = uniChatRequest.getProvider();
     Long videoId = input.getVideoId();
     String topic = input.getTopic();
     String language = input.getLanguage();
@@ -43,7 +47,7 @@ public class SceneStoryboardPlanService {
     messages.add(UniChatMessage.buildUser(userPrompt));
 
     UniChatRequest request = new UniChatRequest();
-    request.setPlatform(platform);
+    request.setPlatform(platform).setProvider(provider);
     request.setModel(model);
 
     request.setTemperature(0f);
@@ -73,12 +77,15 @@ public class SceneStoryboardPlanService {
     return parsedJson;
   }
 
-  public String planXML(SceneStoryboardInput input, String platform, String model) {
+  public String planXML(SceneStoryboardInput input, UniChatRequest uniChatRequest) {
     Long videoId = input.getVideoId();
     String topic = input.getTopic();
     String language = input.getLanguage();
     int min = input.getMin();
     int max = input.getMax();
+    String platform = uniChatRequest.getPlatform();
+    String model = uniChatRequest.getModel();
+    ChatProvider provider = uniChatRequest.getProvider();
 
     String md5 = Md5Utils.md5Hex(topic);
     String planedXML = sceneStoryboardService.queryStoryboardXML(md5, language);
@@ -94,7 +101,7 @@ public class SceneStoryboardPlanService {
     messages.add(UniChatMessage.buildUser(userPrompt));
 
     UniChatRequest request = new UniChatRequest();
-    request.setPlatform(platform).setModel(model);
+    request.setPlatform(platform).setModel(model).setProvider(provider);
 
     request.setTemperature(0f);
     request.setSystemPrompt(prompt);
@@ -113,4 +120,5 @@ public class SceneStoryboardPlanService {
     sceneStoryboardService.saveStoryboardXML(videoId, md5, topic, language, planedXML, null);
     return planedXML;
   }
+
 }
