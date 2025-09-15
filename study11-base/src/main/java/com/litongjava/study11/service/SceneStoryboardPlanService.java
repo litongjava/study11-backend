@@ -78,14 +78,15 @@ public class SceneStoryboardPlanService {
   }
 
   public String planXML(SceneStoryboardInput input, UniChatRequest uniChatRequest) {
+    String platform = uniChatRequest.getPlatform();
+    String model = uniChatRequest.getModel();
+    ChatProvider provider = uniChatRequest.getProvider();
+
     Long videoId = input.getVideoId();
     String topic = input.getTopic();
     String language = input.getLanguage();
     int min = input.getMin();
     int max = input.getMax();
-    String platform = uniChatRequest.getPlatform();
-    String model = uniChatRequest.getModel();
-    ChatProvider provider = uniChatRequest.getProvider();
 
     String md5 = Md5Utils.md5Hex(topic);
     String planedXML = sceneStoryboardService.queryStoryboardXML(md5, language);
