@@ -485,8 +485,9 @@ class AnimationPlayer {
         const {playIcon} = this.elements;
         if (playIcon) playIcon.textContent = '⏸';
 
-        this.currentScene = 0;
-        this.playScene(0);
+        // 从当前场景开始播放，而不是总是从0开始
+        const startScene = this.currentScene || 0;
+        this.playScene(startScene);
         this.updateProgress();
     }
 
