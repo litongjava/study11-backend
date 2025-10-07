@@ -542,7 +542,7 @@
             subtitle: "通过拖动滑块,实时改变三角函数的振幅和频率参数,直观理解参数如何影响函数图像的形状。这是学习函数变换的绝佳工具。",
             isJSXGraph: true,
             containerId: 'jsxgraphContainer',
-
+            boundingbox: [-8, 8, 8, -8],
             setupJSXGraph: (board) => {
                 const amplitude = board.create('slider',
                     [[0.5, 4.5], [5.5, 4.5], [0.1, 1, 3]],

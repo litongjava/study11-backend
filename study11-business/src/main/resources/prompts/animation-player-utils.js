@@ -683,7 +683,7 @@ class AnimationPlayerComplete extends AnimationPlayer {
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        const renderer = new THREE.WebGLRenderer({canvas, antialias: true, alpha: true});
 
         renderer.setSize(canvas.width, canvas.height);
         camera.position.z = 5;
@@ -695,7 +695,7 @@ class AnimationPlayerComplete extends AnimationPlayer {
         directionalLight.position.set(5, 5, 5);
         scene.add(directionalLight);
 
-        const threeSetup = { scene, camera, renderer, objects: {} };
+        const threeSetup = {scene, camera, renderer, objects: {}};
 
         if (setupCallback) setupCallback(threeSetup);
 
@@ -780,7 +780,7 @@ class AnimationPlayerComplete extends AnimationPlayer {
     }
 
     // ===== JSXGraph 方法 =====
-    initJSXGraphScene(sceneIndex, containerId, setupCallback) {
+    initJSXGraphScene(sceneIndex, containerId, boundingbox, setupCallback) {
         if (this.jsxgraphBoards.has(sceneIndex)) {
             console.log(`♻️ JSXGraph场景 ${sceneIndex} 已存在`);
             return this.jsxgraphBoards.get(sceneIndex);
@@ -798,7 +798,7 @@ class AnimationPlayerComplete extends AnimationPlayer {
 
         // 创建 JSXGraph 画板
         const board = JXG.JSXGraph.initBoard(containerId, {
-            boundingbox: [-5, 5, 5, -5],
+            boundingbox: boundingbox,
             axis: true,
             showNavigation: true,
             showCopyright: false,
@@ -841,7 +841,7 @@ class AnimationPlayerComplete extends AnimationPlayer {
         // 创建 Desmos 计算器
         const calculator = Desmos.GraphingCalculator(container, {
             expressions: true,
-            expressionsCollapsed:true,
+            expressionsCollapsed: true,
             settingsMenu: true,
             zoomButtons: true,
             expressionsTopbar: true,
@@ -927,7 +927,11 @@ class AnimationPlayerComplete extends AnimationPlayer {
             if (!this.jsxgraphBoards.has(sceneIndex)) {
                 if (scene.setupJSXGraph) {
                     const containerId = scene.containerId || 'jsxgraphContainer';
-                    this.initJSXGraphScene(sceneIndex, containerId, scene.setupJSXGraph);
+                    if (!scene.boundingbox) {
+                        scene.boundingbox = [-8, 8, 8, -8]
+                    }
+
+                    this.initJSXGraphScene(sceneIndex, containerId, scene.boundingbox, scene.setupJSXGraph);
                 } else {
                     console.error(`❌ 场景 ${sceneIndex} 标记为 JSXGraph 但缺少 setupJSXGraph 方法`);
                 }
