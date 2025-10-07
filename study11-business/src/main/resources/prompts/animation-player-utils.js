@@ -667,12 +667,13 @@ class AnimationPlayer {
     }
 }
 
-// ===== 扩展 AnimationPlayer 支持 3D 场景 =====
+// ===== 扩展 AnimationPlayer 支持 3D 场景和 GeoGebra =====
 class AnimationPlayerWith3D extends AnimationPlayer {
     constructor(config) {
         super(config);
         this.threejsScenes = new Map();
         this.activeAnimations = new Map();
+        this.geogebraApplets = new Map(); // 存储 GeoGebra 实例
     }
 
     // ✅ 初始化 3D 场景
@@ -790,7 +791,7 @@ class AnimationPlayerWith3D extends AnimationPlayer {
         }
     }
 
-    // ✅ 重写 switchToScene: 处理 3D 场景初始化和动画
+    // ✅ 重写 switchToScene: 处理 3D 场景和 GeoGebra 初始化
     switchToScene(sceneIndex) {
         if (sceneIndex < 0 || sceneIndex >= this.scenes.length) return;
 
@@ -825,12 +826,28 @@ class AnimationPlayerWith3D extends AnimationPlayer {
                 this.start3DAnimation(sceneIndex, scene.animate3D);
             }
         }
+
+        // 处理 GeoGebra 场景
+        if (scene.isGeoGebra) {
+            if (!this.geogebraApplets.has(sceneIndex)) {
+                if (scene.setupGeoGebra) {
+                    console.log(`🎨 初始化 GeoGebra 场景 ${sceneIndex}`);
+                    scene.setupGeoGebra();
+                    this.geogebraApplets.set(sceneIndex, true);
+                } else {
+                    console.error(`❌ 场景 ${sceneIndex} 标记为 GeoGebra 但缺少 setupGeoGebra 方法`);
+                }
+            }
+        }
     }
 
     destroy() {
         this.threejsScenes.forEach((_, index) => {
             this.dispose3DScene(index);
         });
+
+        // 清理 GeoGebra 实例
+        this.geogebraApplets.clear();
 
         super.destroy();
     }

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://www.geogebra.org/apps/deployggb.js"></script>
 </head>
 <body>
 <div class="main-container">
@@ -254,10 +255,11 @@
                     <text x="300" y="350" fill="#2c3e50" font-size="18">tan θ = 建筑高度 / 影子长度</text>
                     <text x="300" y="380" fill="#2c3e50" font-size="18">高度 = 影子长度 × tan θ</text>
                 </g>
-                <!-- 在 SVG 中添加 3D 场景 -->
+
+                <!-- 场景7: Three.js 3D 场景 -->
                 <g id="scene7" style="display: none;">
                     <foreignObject x="0" y="0" width="800" height="400">
-                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 600px; height: 300px;">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 800px; height: 400px;">
                             <canvas id="canvas3d" width="800" height="400"
                                     style="display: block; border-radius: 10px;"></canvas>
                         </div>
@@ -266,6 +268,19 @@
                     <!-- 可以在 Canvas 周围添加 SVG 标注 -->
                     <text x="400" y="380" text-anchor="middle" fill="#2c3e50" font-size="18">
                         这是 Three.js 渲染的真 3D 立方体
+                    </text>
+                </g>
+
+                <!-- 场景8: GeoGebra 交互式几何 -->
+                <g id="scene8" style="display: none;">
+                    <foreignObject x="0" y="0" width="800" height="400">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 800px; height: 400px;">
+                            <div id="ggbApplet" style="width: 100%; height: 380px; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+
+                    <text x="400" y="395" text-anchor="middle" fill="#2c3e50" font-size="14">
+                        GeoGebra 交互式单位圆与三角函数
                     </text>
                 </g>
             </g>
@@ -305,7 +320,6 @@
 <script src="animation-player-utils.js"></script>
 <script src="player-control.js"></script>
 <script>
-    <!--player-control.js 提供了showScene函数,请求会读取mathScenes变量-->
     // 定义场景数据
     const allScenes = [
         {
@@ -341,9 +355,9 @@
         {
             title: "立体几何 - 旋转立方体",
             subtitle: "使用 Three.js 展示真正的 3D 效果",
-            is3D: true, // 标记为 3D 场景
+            is3D: true,
             canvasId: 'canvas3d',
-            // ✅ 初始化逻辑
+
             setup3D: (setup) => {
                 console.log('🎨 开始创建 3D 对象...');
                 const geometry = new THREE.BoxGeometry(2, 2, 2);
@@ -363,7 +377,6 @@
                 console.log('✅ 3D 立方体创建成功');
             },
 
-            // ✅ 动画逻辑
             animate3D: (setup) => {
                 if (setup.objects.cube) {
                     setup.objects.cube.rotation.x += 0.01;
@@ -371,6 +384,60 @@
                 }
             },
             action: () => showScene(7, "立体几何 - 旋转立方体")
+        },
+        {
+            title: "GeoGebra 交互式几何",
+            subtitle: "GeoGebra 是强大的数学可视化工具，可以展示动态几何、函数图像等。拖动单位圆上的点，观察正弦、余弦值的变化。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet',
+
+            setupGeoGebra: () => {
+                console.log('🎨 开始初始化 GeoGebra...');
+
+                // GeoGebra 参数配置
+                const parameters = {
+                    "appName": "classic",
+                    "width": 800,
+                    "height": 400,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": true,
+                    "enableRightClick": false,
+                    "enableShiftDragZoom": true,
+                    "showResetIcon": false,
+                    "language": "zh_CN",
+                    // 使用内置命令创建单位圆示例
+                    "appletOnLoad": function(api) {
+                        api.setPerspective('G');  // 只显示几何视图
+                        // 创建单位圆
+                        api.evalCommand('Circle((0,0),1)');
+                        // 创建角度参数
+                        api.evalCommand('α = 0°');
+                        // 创建单位圆上的点
+                        api.evalCommand('A = (cos(α), sin(α))');
+                        // 绘制半径
+                        api.evalCommand('Segment((0,0), A)');
+                        // 绘制坐标线
+                        api.evalCommand('Segment(A, (cos(α), 0))');
+                        api.evalCommand('Segment(A, (0, sin(α)))');
+                        // 添加标签
+                        api.evalCommand('Text("cos(α) = " + cos(α), (3, 3))');
+                        api.evalCommand('Text("sin(α) = " + sin(α), (3, 2.5))');
+                        // 添加滑块控制角度
+                        api.setVisible('α', true);
+                        console.log('✅ GeoGebra 内容创建完成');
+                    }
+                };
+
+                const applet = new GGBApplet(parameters, true);
+
+                // 当 DOM 准备好后注入
+                applet.inject('ggbApplet');
+
+                console.log('✅ GeoGebra 初始化完成');
+            },
+
+            action: () => showScene(8, "GeoGebra 交互式几何")
         }
     ];
 </script>
