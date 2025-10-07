@@ -407,6 +407,21 @@
                         api.setLineThickness('Segment(A, C)', 3);
                         api.evalCommand('Angle((1,0), (0,0), A)');
                         api.setVisible('α', true);
+                        api.evalCommand('Text1 = Text("角度 α = " + α, (2, 2))');
+                        api.evalCommand('Text2 = Text("cos(α) = " + round(cos(α), 3), (2, 1))');
+                        api.evalCommand('Text3 = Text("sin(α) = " + round(sin(α), 3), (2, 0))');
+                        api.evalCommand('Text4 = Text("tan(α) = " + round(tan(α), 3), (2, -1))');
+
+                        api.setFixed('Text1', true, true);
+                        api.setFixed('Text2', true, true);
+                        api.setFixed('Text3', true, true);
+                        api.setFixed('Text4', true, true);
+
+                        // 字体稍小一点
+                        api.setTextSize('Text1', 16);
+                        api.setTextSize('Text2', 16);
+                        api.setTextSize('Text3', 16);
+                        api.setTextSize('Text4', 16);
                     }
                 };
                 const applet = new GGBApplet(parameters, true);
