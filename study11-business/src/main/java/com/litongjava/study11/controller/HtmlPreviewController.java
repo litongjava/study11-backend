@@ -45,12 +45,25 @@ public class HtmlPreviewController {
     URL resource = ResourceUtil.getResource("prompts/animation-player-utils.js");
     if (resource != null) {
       String cssContent = FileUtil.readString(resource);
-      String contentType = Resps.getMimeTypeStr(MimeType.TEXT_CSS_CSS, charset);
+      String contentType = Resps.getMimeTypeStr(MimeType.TEXT_JAVASCRIPT_JS, charset);
       return Resps.string(response, cssContent, charset, contentType);
     }
     response.setStatus(404);
     return response;
-
+  }
+  
+  @RequestPath("/player-control.js")
+  public HttpResponse playerControlJS() {
+    HttpResponse response = TioRequestContext.getResponse();
+    String charset = response.getCharset();
+    URL resource = ResourceUtil.getResource("prompts/player-control.js");
+    if (resource != null) {
+      String cssContent = FileUtil.readString(resource);
+      String contentType = Resps.getMimeTypeStr(MimeType.TEXT_JAVASCRIPT_JS, charset);
+      return Resps.string(response, cssContent, charset, contentType);
+    }
+    response.setStatus(404);
+    return response;
   }
 
 }
