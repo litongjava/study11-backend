@@ -4,7 +4,6 @@ function showScene(sceneNumber, title) {
     for (let i = 0; i <= allScenes.length; i++) {
         const scene = document.getElementById(`scene${i}`);
         if (scene) {
-            // scene.style.visibility = i === sceneNumber ? 'visible' : 'hidden';
             scene.style.display = i === sceneNumber ? 'block' : 'none';
         }
     }
@@ -29,7 +28,6 @@ function showScene(sceneNumber, title) {
     }
 }
 
-
 // 初始化动画播放器
 async function initializePlayer() {
     // 获取DOM元素
@@ -48,7 +46,8 @@ async function initializePlayer() {
         cacheIndicator: document.getElementById('cacheIndicator')
     };
 
-    const player = new AnimationUtils.AnimationPlayerWith3D({
+    // 使用 AnimationPlayerWithAll 以支持 3D、GeoGebra 和 P5.js
+    const player = new AnimationUtils.AnimationPlayerComplete({
         scenes: allScenes,
         elements: elements,
     });
@@ -56,13 +55,13 @@ async function initializePlayer() {
     // 初始化播放器
     await player.init();
 
-    // 预加载音频
     // 显示 loading 层
     elements.loading?.classList.add('active');
 
-
+    // 设置场景按钮
     player.setSceneButtons(document.getElementById('sceneButtons'));
 
+    // 预加载音频
     await player.preloadAllAudio((current, total) => {
         // 百分比（防止 total 为 0）
         const percent = total ? Math.round((current / total) * 100) : 0;
@@ -84,9 +83,12 @@ async function initializePlayer() {
     elements.loading?.classList.remove('active');
     elements.playBtn.disabled = false;
 
-    console.log('动画播放器初始化完成');
-    await player.playWithErrorHandling()
+    console.log('动画播放器初始化完成 - 支持 SVG、Three.js、GeoGebra 和 P5.js');
 
+    // 自动播放
+    await player.playWithErrorHandling();
+
+    // 将播放器实例保存到 window 对象，方便调试
     window.mathPlayer = player;
 }
 

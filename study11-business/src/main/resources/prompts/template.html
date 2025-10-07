@@ -3,260 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>三角函数</title>
+    <title>三角函数动画教学 - Study11</title>
     <link rel="stylesheet" href="animation-player.css">
+
+    <!-- KaTeX -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+    <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- GeoGebra -->
     <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+
+    <!-- P5.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+
+    <!-- JSXGraph -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsxgraph@1.4.6/distrib/jsxgraph.css">
+    <script src="https://cdn.jsdelivr.net/npm/jsxgraph@1.4.6/distrib/jsxgraphcore.js"></script>
+
+    <!-- Desmos API -->
+    <script src="https://www.desmos.com/api/v1.8/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
 </head>
 <body>
 <div class="main-container">
+    <!-- Loading 界面 -->
     <div class="loading" id="loading">
         <div class="loading-spinner"></div>
-        <div class="loading-text">Loading...</div>
+        <div class="loading-text">正在加载...</div>
         <div class="loading-progress">
             <div class="loading-progress-bar">
                 <div class="loading-progress-fill" id="loadingProgressFill"></div>
             </div>
-            <div class="loading-progress-text" id="loadingProgressText">Progress: 0 / 0（0%）</div>
+            <div class="loading-progress-text" id="loadingProgressText">进度: 0 / 0（0%）</div>
         </div>
     </div>
+
+    <!-- 动画容器 -->
     <div class="animation-container">
-        <div class="cache-indicator" id="cacheIndicator">Use cached audio</div>
+        <div class="cache-indicator" id="cacheIndicator">使用缓存音频</div>
         <div class="scene-number" id="sceneNumber">1</div>
 
+        <!-- SVG 场景容器 -->
         <svg class="trig-scene" viewBox="0 0 800 400">
-            <!-- 定义 -->
+            <!-- 渐变定义 -->
             <defs>
-                <!-- 渐变定义 -->
-                <linearGradient id="angleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:#3498db;stop-opacity:1"/>
-                    <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1"/>
-                </linearGradient>
-
                 <linearGradient id="sinGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1"/>
                     <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1"/>
                 </linearGradient>
-
                 <linearGradient id="cosGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%" style="stop-color:#2ecc71;stop-opacity:1"/>
                     <stop offset="100%" style="stop-color:#27ae60;stop-opacity:1"/>
                 </linearGradient>
-
                 <linearGradient id="tanGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%" style="stop-color:#f39c12;stop-opacity:1"/>
                     <stop offset="100%" style="stop-color:#d35400;stop-opacity:1"/>
                 </linearGradient>
             </defs>
+
             <!-- 场景标题 -->
             <text x="800" y="30" text-anchor="middle" fill="#2c3e50" font-size="24" font-weight="300"
-                  class="scene-title" id="sceneTitle">
-                三角函数简介
+                  class="scene-title" id="sceneTitle">三角函数简介
             </text>
 
-            <!-- 视觉面板 -->
             <g id="visualPanel">
-                <!-- 场景1: 三角函数简介 -->
+                <!-- Scene 1: 三角函数简介 -->
                 <g id="scene1">
-                    <!-- 直角三角形 -->
-                    <path d="M 400 200 L 500 200 L 500 100 Z" fill="rgba(52, 152, 219, 0.2)" stroke="#3498db"
-                          stroke-width="2"/>
-
-                    <!-- 角标记 -->
-                    <path d="M 420 200 A 20 20 0 0 0 414.14 185.86" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                    <path d="M 400 200 L 500 200 L 500 100 Z" fill="rgba(52, 152, 219, 0.2)"
+                          stroke="#3498db" stroke-width="2"/>
+                    <path d="M 420 200 A 20 20 0 0 0 414.14 185.86" fill="none"
+                          stroke="#e74c3c" stroke-width="2"/>
                     <text x="410" y="190" fill="#e74c3c" font-size="16">θ</text>
-
-                    <!-- 边标记 -->
                     <text x="445" y="220" fill="#2c3e50" font-size="16">邻边</text>
                     <text x="510" y="150" fill="#2c3e50" font-size="16">对边</text>
                     <text x="440" y="140" fill="#2c3e50" font-size="16">斜边</text>
-
-                    <!-- 函数定义 -->
-                    <text x="300" y="280" fill="#2c3e50" font-size="18">sin θ = 对边 / 斜边</text>
-                    <text x="300" y="310" fill="#2c3e50" font-size="18">cos θ = 邻边 / 斜边</text>
-                    <text x="300" y="340" fill="#2c3e50" font-size="18">tan θ = 对边 / 邻边</text>
+                    <text x="280" y="280" fill="#2c3e50" font-size="16">sin θ = 对边 / 斜边</text>
+                    <text x="280" y="310" fill="#2c3e50" font-size="16">cos θ = 邻边 / 斜边</text>
+                    <text x="280" y="340" fill="#2c3e50" font-size="16">tan θ = 对边 / 邻边</text>
                 </g>
 
-                <!-- 场景2: 单位圆 -->
+                <!-- Scene 2: 单位圆 -->
                 <g id="scene2" style="display: none;">
-                    <!-- 坐标轴 -->
                     <line x1="300" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
                     <line x1="500" y1="50" x2="500" y2="350" stroke="#34495e" stroke-width="2"/>
-
-                    <!-- 坐标轴标记 -->
                     <text x="710" y="205" fill="#34495e" font-size="16">x</text>
                     <text x="505" y="45" fill="#34495e" font-size="16">y</text>
 
-                    <!-- 单位圆 -->
                     <circle cx="500" cy="200" r="100" fill="none" stroke="#3498db" stroke-width="2"/>
 
-                    <!-- 旋转的半径 -->
                     <line id="radius" x1="500" y1="200" x2="600" y2="200" stroke="#3498db" stroke-width="3">
-                        <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200"
-                                          dur="10s" repeatCount="indefinite"/>
+                        <animateTransform attributeName="transform" type="rotate"
+                                          from="0 500 200" to="360 500 200" dur="10s" repeatCount="indefinite"/>
                     </line>
 
-                    <!-- 点 -->
                     <circle id="point" cx="600" cy="200" r="6" fill="#e74c3c">
-                        <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200"
-                                          dur="10s" repeatCount="indefinite"/>
+                        <animateTransform attributeName="transform" type="rotate"
+                                          from="0 500 200" to="360 500 200" dur="10s" repeatCount="indefinite"/>
                     </circle>
 
-                    <!-- 正弦线 -->
-                    <line id="sinLine" x1="600" y1="200" x2="600" y2="200" stroke="url(#sinGradient)" stroke-width="2">
-                        <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200"
-                                          dur="10s" repeatCount="indefinite"/>
-                    </line>
-
-                    <!-- 余弦线 -->
-                    <line id="cosLine" x1="500" y1="200" x2="600" y2="200" stroke="url(#cosGradient)" stroke-width="2">
-                        <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200"
-                                          dur="10s" repeatCount="indefinite"/>
-                    </line>
-
-                    <!-- 标签 -->
-                    <text x="300" y="280" fill="#2c3e50" font-size="18">单位圆: x² + y² = 1</text>
-                    <text x="300" y="310" fill="#2c3e50" font-size="18">cos θ = x, sin θ = y</text>
+                    <text x="300" y="280" fill="#2c3e50" font-size="16">单位圆: x² + y² = 1</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="16">cos θ = x, sin θ = y</text>
                 </g>
 
-                <!-- 场景3: 正弦函数图像 -->
+                <!-- Scene 3: 正弦函数 -->
                 <g id="scene3" style="display: none;">
-                    <!-- 坐标轴 -->
                     <line x1="100" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
                     <line x1="400" y1="50" x2="400" y2="350" stroke="#34495e" stroke-width="2"/>
 
-                    <!-- 坐标轴标记 -->
-                    <text x="710" y="205" fill="#34495e" font-size="16">x</text>
-                    <text x="405" y="45" fill="#34495e" font-size="16">y</text>
-
-                    <!-- 刻度 -->
                     <line x1="300" y1="195" x2="300" y2="205" stroke="#34495e" stroke-width="2"/>
-                    <text x="295" y="220" fill="#34495e" font-size="14">-π/2</text>
-
+                    <text x="290" y="220" fill="#34495e" font-size="12">-π/2</text>
                     <line x1="500" y1="195" x2="500" y2="205" stroke="#34495e" stroke-width="2"/>
-                    <text x="495" y="220" fill="#34495e" font-size="14">π/2</text>
-
+                    <text x="490" y="220" fill="#34495e" font-size="12">π/2</text>
                     <line x1="600" y1="195" x2="600" y2="205" stroke="#34495e" stroke-width="2"/>
-                    <text x="595" y="220" fill="#34495e" font-size="14">π</text>
+                    <text x="595" y="220" fill="#34495e" font-size="12">π</text>
 
-                    <line x1="200" y1="195" x2="200" y2="205" stroke="#34495e" stroke-width="2"/>
-                    <text x="195" y="220" fill="#34495e" font-size="14">-π</text>
-
-                    <!-- 正弦曲线 -->
-                    <path d="M 100 200
-                                 C 150 200, 200 100, 300 100
-                                 S 500 300, 600 300
-                                 S 700 200, 700 200"
+                    <path d="M 100 200 C 150 200, 200 100, 300 100 S 500 300, 600 300 S 700 200, 700 200"
                           fill="none" stroke="url(#sinGradient)" stroke-width="3"/>
 
-                    <!-- 标签 -->
-                    <text x="300" y="280" fill="#2c3e50" font-size="18">y = sin(x)</text>
-                    <text x="300" y="310" fill="#2c3e50" font-size="18">周期: 2π, 振幅: 1</text>
+                    <text x="300" y="280" fill="#2c3e50" font-size="16">y = sin(x)</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="16">周期: 2π, 振幅: 1</text>
                 </g>
 
-                <!-- 场景4: 余弦函数图像 -->
+                <!-- Scene 4: 余弦函数 -->
                 <g id="scene4" style="display: none;">
-                    <!-- 坐标轴 -->
                     <line x1="100" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
                     <line x1="400" y1="50" x2="400" y2="350" stroke="#34495e" stroke-width="2"/>
 
-                    <!-- 坐标轴标记 -->
-                    <text x="710" y="205" fill="#34495e" font-size="16">x</text>
-                    <text x="405" y="45" fill="#34495e" font-size="16">y</text>
-
-                    <!-- 刻度 -->
                     <line x1="300" y1="195" x2="300" y2="205" stroke="#34495e" stroke-width="2"/>
-                    <text x="295" y="220" fill="#34495e" font-size="14">-π/2</text>
-
+                    <text x="290" y="220" fill="#34495e" font-size="12">-π/2</text>
                     <line x1="500" y1="195" x2="500" y2="205" stroke="#34495e" stroke-width="2"/>
-                    <text x="495" y="220" fill="#34495e" font-size="14">π/2</text>
-
+                    <text x="490" y="220" fill="#34495e" font-size="12">π/2</text>
                     <line x1="600" y1="195" x2="600" y2="205" stroke="#34495e" stroke-width="2"/>
-                    <text x="595" y="220" fill="#34495e" font-size="14">π</text>
+                    <text x="595" y="220" fill="#34495e" font-size="12">π</text>
 
-                    <line x1="200" y1="195" x2="200" y2="205" stroke="#34495e" stroke-width="2"/>
-                    <text x="195" y="220" fill="#34495e" font-size="14">-π</text>
-
-                    <!-- 余弦曲线 -->
-                    <path d="M 100 100
-                                 C 150 100, 200 200, 300 200
-                                 S 500 200, 600 200
-                                 S 700 100, 700 100"
+                    <path d="M 100 100 C 150 100, 200 200, 300 200 S 500 200, 600 200 S 700 100, 700 100"
                           fill="none" stroke="url(#cosGradient)" stroke-width="3"/>
 
-                    <!-- 标签 -->
-                    <text x="300" y="280" fill="#2c3e50" font-size="18">y = cos(x)</text>
-                    <text x="300" y="310" fill="#2c3e50" font-size="18">周期: 2π, 振幅: 1</text>
+                    <text x="300" y="280" fill="#2c3e50" font-size="16">y = cos(x)</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="16">周期: 2π, 振幅: 1</text>
                 </g>
 
-                <!-- 场景5: 正切函数图像 -->
+                <!-- Scene 5: 正切函数 -->
                 <g id="scene5" style="display: none;">
-                    <!-- 坐标轴 -->
                     <line x1="100" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
                     <line x1="400" y1="50" x2="400" y2="350" stroke="#34495e" stroke-width="2"/>
 
-                    <!-- 坐标轴标记 -->
-                    <text x="710" y="205" fill="#34495e" font-size="16">x</text>
-                    <text x="405" y="45" fill="#34495e" font-size="16">y</text>
-
-                    <!-- 刻度 -->
-                    <line x1="300" y1="195" x2="300" y2="205" stroke="#34495e" stroke-width="2"/>
-                    <text x="295" y="220" fill="#34495e" font-size="14">-π/2</text>
-
-                    <line x1="500" y1="195" x2="500" y2="205" stroke="#34495e" stroke-width="2"/>
-                    <text x="495" y="220" fill="#34495e" font-size="14">π/2</text>
-
-                    <line x1="600" y1="195" x2="600" y2="205" stroke="#34495e" stroke-width="2"/>
-                    <text x="595" y="220" fill="#34495e" font-size="14">π</text>
-
-                    <line x1="200" y1="195" x2="200" y2="205" stroke="#34495e" stroke-width="2"/>
-                    <text x="195" y="220" fill="#34495e" font-size="14">-π</text>
-
-                    <!-- 渐近线 -->
                     <line x1="300" y1="50" x2="300" y2="350" stroke="#95a5a6" stroke-width="1" stroke-dasharray="5,5"/>
                     <line x1="500" y1="50" x2="500" y2="350" stroke="#95a5a6" stroke-width="1" stroke-dasharray="5,5"/>
 
-                    <!-- 正切曲线 -->
-                    <path d="M 100 150
-                                 C 150 150, 250 50, 295 50
-                                 M 305 350
-                                 C 350 350, 450 50, 495 50
-                                 M 505 350
-                                 C 550 350, 650 50, 695 50"
+                    <path d="M 100 150 C 150 150, 250 50, 295 50 M 305 350 C 350 350, 450 50, 495 50 M 505 350 C 550 350, 650 50, 695 50"
                           fill="none" stroke="url(#tanGradient)" stroke-width="3"/>
 
-                    <!-- 标签 -->
-                    <text x="300" y="280" fill="#2c3e50" font-size="18">y = tan(x)</text>
-                    <text x="300" y="310" fill="#2c3e50" font-size="18">周期: π, 渐近线: x = π/2 + kπ</text>
+                    <text x="280" y="280" fill="#2c3e50" font-size="16">y = tan(x)</text>
+                    <text x="280" y="310" fill="#2c3e50" font-size="16">周期: π, 渐近线: x = π/2 + kπ</text>
                 </g>
 
-                <!-- 场景6: 三角函数应用 -->
+                <!-- Scene 6: 应用 -->
                 <g id="scene6" style="display: none;">
-                    <!-- 建筑物 -->
                     <rect x="300" y="100" width="100" height="200" fill="#95a5a6"/>
                     <polygon points="300,100 350,50 400,100" fill="#e74c3c"/>
-
-                    <!-- 太阳 -->
                     <circle cx="550" cy="100" r="30" fill="#f39c12"/>
-
-                    <!-- 光线 -->
                     <line x1="520" y1="100" x2="350" y2="100" stroke="#f39c12" stroke-width="2"/>
-
-                    <!-- 影子 -->
                     <rect x="400" y="300" width="80" height="5" fill="#34495e"/>
-
-                    <!-- 角度标记 -->
                     <path d="M 400 295 A 10 10 0 0 0 395 285" fill="none" stroke="#e74c3c" stroke-width="2"/>
                     <text x="385" y="285" fill="#e74c3c" font-size="16">θ</text>
-
-                    <!-- 标签 -->
-                    <text x="300" y="350" fill="#2c3e50" font-size="18">tan θ = 建筑高度 / 影子长度</text>
-                    <text x="300" y="380" fill="#2c3e50" font-size="18">高度 = 影子长度 × tan θ</text>
+                    <text x="250" y="350" fill="#2c3e50" font-size="14">tan θ = 建筑高度 / 影子长度</text>
                 </g>
 
-                <!-- 场景7: Three.js 3D 场景 -->
+                <!-- Scene 7: Three.js -->
                 <g id="scene7" style="display: none;">
                     <foreignObject x="0" y="0" width="800" height="400">
                         <div xmlns="http://www.w3.org/1999/xhtml" style="width: 800px; height: 400px;">
@@ -264,38 +180,58 @@
                                     style="display: block; border-radius: 10px;"></canvas>
                         </div>
                     </foreignObject>
-
-                    <!-- 可以在 Canvas 周围添加 SVG 标注 -->
-                    <text x="400" y="380" text-anchor="middle" fill="#2c3e50" font-size="18">
-                        这是 Three.js 渲染的真 3D 立方体
-                    </text>
                 </g>
 
-                <!-- 场景8: GeoGebra 交互式几何 -->
+                <!-- Scene 8: GeoGebra -->
                 <g id="scene8" style="display: none;">
                     <foreignObject x="0" y="0" width="800" height="400">
                         <div xmlns="http://www.w3.org/1999/xhtml" style="width: 800px; height: 400px;">
-                            <div id="ggbApplet" style="width: 100%; height: 380px; border-radius: 10px;"></div>
+                            <div id="ggbApplet" style="width: 100%; height: 100%; border-radius: 10px;"></div>
                         </div>
                     </foreignObject>
+                </g>
 
-                    <text x="400" y="395" text-anchor="middle" fill="#2c3e50" font-size="14">
-                        GeoGebra 交互式单位圆与三角函数
-                    </text>
+                <!-- Scene 9: P5.js -->
+                <g id="scene9" style="display: none;">
+                    <foreignObject x="0" y="0" width="800" height="400">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 800px; height: 400px;">
+                            <div id="p5Container" style="width: 100%; height: 100%;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 10: JSXGraph -->
+                <g id="scene10" style="display: none;">
+                    <foreignObject x="0" y="0" width="800" height="400">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 800px; height: 400px;">
+                            <div id="jsxgraphContainer" style="width: 100%; height: 100%;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 11: Desmos -->
+                <g id="scene11" style="display: none;">
+                    <foreignObject x="0" y="0" width="800" height="400">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 800px; height: 400px;">
+                            <div id="desmosContainer" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
                 </g>
             </g>
         </svg>
     </div>
 
+    <!-- 字幕容器 -->
     <div class="subtitle-container">
         <div class="subtitle" id="subtitle"></div>
     </div>
 
+    <!-- 控制面板 -->
     <div class="controls">
-        <button class="control-btn" id="playBtn" title="Play" disabled>
+        <button class="control-btn" id="playBtn" title="播放/暂停" disabled>
             <span id="playIcon">▶</span>
         </button>
-        <button class="control-btn" id="muteBtn" title="Mute">
+        <button class="control-btn" id="muteBtn" title="静音">
             <span id="muteIcon">🔊</span>
         </button>
         <div class="progress-container">
@@ -309,135 +245,440 @@
     </div>
 </div>
 
+<!-- 页脚 -->
 <div class="footer">
     <a href="https://study11.ai">© 2025 study11 lab</a>
 </div>
 
-<!-- 为每个场景创建一个音频元素 -->
+<!-- 音频容器 -->
 <div id="audioContainer"></div>
 
-<!-- 引入公共模块 -->
+<!-- 引入脚本 -->
 <script src="animation-player-utils.js"></script>
 <script src="player-control.js"></script>
 <script>
-    // 定义场景数据
+    // ===== 完整的11个场景配置 =====
     const allScenes = [
+        // Scene 1: 三角函数简介
         {
             title: "三角函数简介",
-            subtitle: "三角函数是数学中重要的函数，它们描述了直角三角形中角度与边长之间的关系。最基本的三角函数是正弦、余弦和正切。",
+            subtitle: "三角函数是数学中最重要的函数之一,它描述了直角三角形中角度与边长的关系。最基本的三角函数包括正弦、余弦和正切。",
             action: () => showScene(1, "三角函数简介")
         },
+
+        // Scene 2: 单位圆
         {
             title: "单位圆与三角函数",
-            subtitle: "单位圆是半径为1的圆，它在三角函数中扮演着重要角色。在单位圆上，任意角度θ的终边与单位圆的交点坐标为(cos θ, sin θ)。",
+            subtitle: "单位圆是半径为1的圆,它在三角函数中扮演关键角色。圆上任意点的坐标恰好是该角度的余弦值和正弦值,即坐标为(cos θ, sin θ)。",
             action: () => showScene(2, "单位圆与三角函数")
         },
+
+        // Scene 3: 正弦函数
         {
             title: "正弦函数图像",
-            subtitle: "正弦函数y=sin(x)是一个周期为2π的函数，其图像在[-1,1]之间波动。正弦函数在x=0时值为0，在x=π/2时达到最大值1，在x=π时回到0。",
+            subtitle: "正弦函数 y = sin(x) 的图像是一条优美的波浪曲线,周期为2π,振幅为1。它在 x = π/2 时达到最大值1,在 x = 3π/2 时达到最小值负1。",
             action: () => showScene(3, "正弦函数图像")
         },
+
+        // Scene 4: 余弦函数
         {
             title: "余弦函数图像",
-            subtitle: "余弦函数y=cos(x)也是一个周期为2π的函数，其图像在[-1,1]之间波动。与正弦函数不同，余弦函数在x=0时达到最大值1，在x=π/2时值为0。",
+            subtitle: "余弦函数 y = cos(x) 的图像与正弦函数相似,但相位不同。它在 x = 0 时达到最大值1,可以看作是正弦函数向左平移 π/2 的结果。",
             action: () => showScene(4, "余弦函数图像")
         },
+
+        // Scene 5: 正切函数
         {
             title: "正切函数图像",
-            subtitle: "正切函数y=tan(x)是正弦与余弦的比值，即tan(x)=sin(x)/cos(x)。它的周期是π，并且在cos(x)=0的点上有垂直渐近线，此时函数值趋向于无穷大。",
+            subtitle: "正切函数 y = tan(x) 等于正弦除以余弦。它的周期是π,并且在 x = π/2 + kπ 处有垂直渐近线,因为这些点的余弦值为0。",
             action: () => showScene(5, "正切函数图像")
         },
+
+        // Scene 6: 应用
         {
             title: "三角函数的实际应用",
-            subtitle: "三角函数在现实生活中有广泛的应用，如测量建筑物高度、计算天体距离、分析声波和光波等。通过测量角度和已知边长，我们可以使用三角函数计算出未知量。",
+            subtitle: "三角函数在现实生活中应用广泛,比如测量建筑物高度、计算天体距离、分析声波和光波等。通过测量角度和已知边长,我们可以计算未知的距离。",
             action: () => showScene(6, "三角函数的实际应用")
         },
+
+        // Scene 7: Three.js
         {
-            title: "立体几何 - 旋转立方体",
-            subtitle: "使用 Three.js 展示真正的 3D 效果",
+            title: "3D空间中的三角函数",
+            subtitle: "在三维空间中,我们可以看到单位圆如何在立体空间中旋转。这个彩色立方体展示了3D图形的基本概念,帮助理解空间几何中的三角关系。",
             is3D: true,
             canvasId: 'canvas3d',
 
             setup3D: (setup) => {
-                console.log('🎨 开始创建 3D 对象...');
-                const geometry = new THREE.BoxGeometry(2, 2, 2);
-                const materials = [
-                    new THREE.MeshPhongMaterial({color: 0xff0000}),
-                    new THREE.MeshPhongMaterial({color: 0x00ff00}),
-                    new THREE.MeshPhongMaterial({color: 0x0000ff}),
-                    new THREE.MeshPhongMaterial({color: 0xffff00}),
-                    new THREE.MeshPhongMaterial({color: 0xff00ff}),
-                    new THREE.MeshPhongMaterial({color: 0x00ffff})
-                ];
+                const circleGeometry = new THREE.CircleGeometry(1, 64);
+                const circleMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x3498db,
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0.3
+                });
+                const circle = new THREE.Mesh(circleGeometry, circleMaterial);
+                setup.scene.add(circle);
+                setup.objects.circle = circle;
 
-                const cube = new THREE.Mesh(geometry, materials);
-                setup.scene.add(cube);
-                setup.objects.cube = cube;
+                const edgeGeometry = new THREE.RingGeometry(0.98, 1, 64);
+                const edgeMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x2980b9,
+                    side: THREE.DoubleSide
+                });
+                const edge = new THREE.Mesh(edgeGeometry, edgeMaterial);
+                setup.scene.add(edge);
 
-                console.log('✅ 3D 立方体创建成功');
+                const lineMaterial = new THREE.LineBasicMaterial({color: 0xe74c3c, linewidth: 2});
+                const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+                    new THREE.Vector3(0, 0, 0),
+                    new THREE.Vector3(1, 0, 0)
+                ]);
+                const line = new THREE.Line(lineGeometry, lineMaterial);
+                setup.scene.add(line);
+                setup.objects.line = line;
+
+                const pointGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+                const pointMaterial = new THREE.MeshPhongMaterial({color: 0xe74c3c});
+                const point = new THREE.Mesh(pointGeometry, pointMaterial);
+                point.position.set(1, 0, 0);
+                setup.scene.add(point);
+                setup.objects.point = point;
+
+                const axesHelper = new THREE.AxesHelper(2);
+                setup.scene.add(axesHelper);
+
+                setup.camera.position.z = 3;
+                setup.objects.angle = 0;
             },
 
             animate3D: (setup) => {
-                if (setup.objects.cube) {
-                    setup.objects.cube.rotation.x += 0.01;
-                    setup.objects.cube.rotation.y += 0.01;
+                setup.objects.angle += 0.02;
+                const angle = setup.objects.angle;
+
+                if (setup.objects.line) {
+                    setup.objects.line.rotation.z = angle;
+                }
+
+                if (setup.objects.point) {
+                    setup.objects.point.position.x = Math.cos(angle);
+                    setup.objects.point.position.y = Math.sin(angle);
+                }
+
+                if (setup.objects.circle) {
+                    setup.objects.circle.rotation.x = Math.sin(angle * 0.2) * 0.3;
+                    setup.objects.circle.rotation.y = angle * 0.1;
                 }
             },
-            action: () => showScene(7, "立体几何 - 旋转立方体")
+
+            action: () => showScene(7, "3D空间中的三角函数")
         },
+
+        // Scene 8: GeoGebra
         {
-            title: "GeoGebra 交互式几何",
-            subtitle: "GeoGebra 是强大的数学可视化工具，可以展示动态几何、函数图像等。拖动单位圆上的点，观察正弦、余弦值的变化。",
+            title: "GeoGebra 交互式单位圆探索",
+            subtitle: "拖动滑块改变角度,观察单位圆上点的位置如何变化,以及对应的正弦值和余弦值如何实时更新。这是理解三角函数定义的最直观方式。",
             isGeoGebra: true,
             ggbAppletId: 'ggbApplet',
 
             setupGeoGebra: () => {
-                console.log('🎨 开始初始化 GeoGebra...');
-
-                // GeoGebra 参数配置
                 const parameters = {
                     "appName": "classic",
                     "width": 800,
                     "height": 400,
                     "showToolBar": false,
                     "showAlgebraInput": false,
-                    "showMenuBar": true,
-                    "enableRightClick": false,
-                    "enableShiftDragZoom": true,
-                    "showResetIcon": false,
+                    "showMenuBar": false,
                     "language": "zh_CN",
-                    // 使用内置命令创建单位圆示例
-                    "appletOnLoad": function(api) {
-                        api.setPerspective('G');  // 只显示几何视图
-                        // 创建单位圆
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
                         api.evalCommand('Circle((0,0),1)');
-                        // 创建角度参数
-                        api.evalCommand('α = 0°');
-                        // 创建单位圆上的点
+                        api.evalCommand('α = 30°');
                         api.evalCommand('A = (cos(α), sin(α))');
-                        // 绘制半径
+                        api.setColor('A', 231, 76, 60);
+                        api.setPointSize('A', 5);
                         api.evalCommand('Segment((0,0), A)');
-                        // 绘制坐标线
-                        api.evalCommand('Segment(A, (cos(α), 0))');
-                        api.evalCommand('Segment(A, (0, sin(α)))');
-                        // 添加标签
-                        api.evalCommand('Text("cos(α) = " + cos(α), (3, 3))');
-                        api.evalCommand('Text("sin(α) = " + sin(α), (3, 2.5))');
-                        // 添加滑块控制角度
+                        api.evalCommand('B = (cos(α), 0)');
+                        api.evalCommand('Segment(A, B)');
+                        api.setColor('Segment(A, B)', 46, 204, 113);
+                        api.setLineThickness('Segment(A, B)', 3);
+                        api.evalCommand('C = (0, sin(α))');
+                        api.evalCommand('Segment(A, C)');
+                        api.setColor('Segment(A, C)', 231, 76, 60);
+                        api.setLineThickness('Segment(A, C)', 3);
+                        api.evalCommand('Angle((1,0), (0,0), A)');
                         api.setVisible('α', true);
-                        console.log('✅ GeoGebra 内容创建完成');
                     }
                 };
-
                 const applet = new GGBApplet(parameters, true);
-
-                // 当 DOM 准备好后注入
                 applet.inject('ggbApplet');
-
-                console.log('✅ GeoGebra 初始化完成');
             },
 
-            action: () => showScene(8, "GeoGebra 交互式几何")
+            action: () => showScene(8, "GeoGebra 交互式单位圆探索")
+        },
+
+        // Scene 9: P5.js
+        {
+            title: "P5.js 动态正弦波可视化",
+            subtitle: "观看正弦波如何随时间流动变化,红色追踪点展示了波上任意时刻的位置和对应的函数值。按住鼠标拖动可以创建美丽的粒子效果。",
+            isP5: true,
+            containerId: 'p5Container',
+
+            setupP5: (p) => {
+                let angle = 0;
+                let particles = [];
+
+                class Particle {
+                    constructor(x, y) {
+                        this.x = x;
+                        this.y = y;
+                        this.vx = p.random(-2, 2);
+                        this.vy = p.random(-3, -1);
+                        this.alpha = 255;
+                        this.size = p.random(4, 10);
+                        this.color = p.color(
+                            p.random([52, 231, 46, 241]),
+                            p.random([152, 76, 204, 196]),
+                            p.random([219, 60, 113, 231])
+                        );
+                    }
+
+                    update() {
+                        this.x += this.vx;
+                        this.y += this.vy;
+                        this.vy += 0.15;
+                        this.alpha -= 4;
+                    }
+
+                    display() {
+                        p.noStroke();
+                        this.color.setAlpha(this.alpha);
+                        p.fill(this.color);
+                        p.circle(this.x, this.y, this.size);
+                    }
+
+                    isDead() {
+                        return this.alpha <= 0 || this.y > p.height;
+                    }
+                }
+
+                p.setup = () => {
+                    p.createCanvas(800, 400);
+                };
+
+                p.draw = () => {
+                    p.background(245, 247, 250);
+
+                    p.stroke(220, 220, 230);
+                    p.strokeWeight(1);
+                    for (let x = 50; x < p.width - 50; x += 50) {
+                        p.line(x, 50, x, p.height - 50);
+                    }
+                    for (let y = 50; y < p.height - 50; y += 50) {
+                        p.line(50, y, p.width - 50, y);
+                    }
+
+                    p.stroke(52, 73, 94);
+                    p.strokeWeight(2);
+                    p.line(50, p.height / 2, p.width - 50, p.height / 2);
+                    p.line(50, 50, 50, p.height - 50);
+
+                    p.noFill();
+                    p.strokeWeight(3);
+                    p.stroke(52, 152, 219);
+                    p.beginShape();
+                    for (let x = 0; x <= p.width - 100; x += 2) {
+                        let y = p.sin(x * 0.02 + angle) * 80;
+                        p.vertex(x + 50, p.height / 2 + y);
+                    }
+                    p.endShape();
+
+                    let progress = (p.frameCount % 300) / 300;
+                    let traceX = p.map(progress, 0, 1, 50, p.width - 50);
+                    let traceY = p.sin((traceX - 50) * 0.02 + angle) * 80 + p.height / 2;
+
+                    p.noStroke();
+                    p.fill(231, 76, 60);
+                    p.circle(traceX, traceY, 14);
+
+                    for (let i = particles.length - 1; i >= 0; i--) {
+                        particles[i].update();
+                        particles[i].display();
+                        if (particles[i].isDead()) {
+                            particles.splice(i, 1);
+                        }
+                    }
+
+                    if (p.mouseIsPressed && p.mouseX > 0 && p.mouseX < p.width) {
+                        for (let i = 0; i < 5; i++) {
+                            particles.push(new Particle(p.mouseX, p.mouseY));
+                        }
+                    }
+
+                    angle += 0.05;
+                };
+            },
+
+            action: () => showScene(9, "P5.js 动态正弦波可视化")
+        },
+
+        // Scene 10: JSXGraph
+        {
+            title: "JSXGraph 交互式函数参数探索",
+            subtitle: "通过拖动滑块,实时改变三角函数的振幅和频率参数,直观理解参数如何影响函数图像的形状。这是学习函数变换的绝佳工具。",
+            isJSXGraph: true,
+            containerId: 'jsxgraphContainer',
+
+            setupJSXGraph: (board) => {
+                const amplitude = board.create('slider',
+                    [[0.5, 4.5], [5.5, 4.5], [0.1, 1, 3]],
+                    {name: '振幅 A', snapWidth: 0.1, precision: 2}
+                );
+
+                const frequency = board.create('slider',
+                    [[0.5, 4], [5.5, 4], [0.1, 1, 3]],
+                    {name: '频率 ω', snapWidth: 0.1, precision: 2}
+                );
+
+                const phase = board.create('slider',
+                    [[0.5, 3.5], [5.5, 3.5], [-Math.PI, 0, Math.PI]],
+                    {name: '相位 φ', snapWidth: 0.1, precision: 2}
+                );
+
+                board.create('functiongraph', [
+                    function (x) {
+                        return amplitude.Value() * Math.sin(frequency.Value() * x + phase.Value());
+                    },
+                    -2 * Math.PI, 2 * Math.PI
+                ], {
+                    strokeColor: '#e74c3c',
+                    strokeWidth: 3,
+                    name: 'y = A·sin(ωx + φ)'
+                });
+
+                board.create('functiongraph', [
+                    function (x) {
+                        return amplitude.Value() * Math.cos(frequency.Value() * x + phase.Value());
+                    },
+                    -2 * Math.PI, 2 * Math.PI
+                ], {
+                    strokeColor: '#2ecc71',
+                    strokeWidth: 3,
+                    name: 'y = A·cos(ωx + φ)'
+                });
+
+                board.create('point', [0, 0], {
+                    name: 'O',
+                    fixed: true,
+                    color: '#34495e',
+                    size: 2
+                });
+
+                board.create('text', [0.5, -4.2, function () {
+                    return '<span style="color:#e74c3c">sin:</span> y = ' +
+                        amplitude.Value().toFixed(2) + ' · sin(' +
+                        frequency.Value().toFixed(2) + 'x + ' +
+                        phase.Value().toFixed(2) + ')';
+                }], {fontSize: 14});
+
+                board.create('text', [0.5, -4.6, function () {
+                    return '<span style="color:#2ecc71">cos:</span> y = ' +
+                        amplitude.Value().toFixed(2) + ' · cos(' +
+                        frequency.Value().toFixed(2) + 'x + ' +
+                        phase.Value().toFixed(2) + ')';
+                }], {fontSize: 14});
+            },
+
+            action: () => showScene(10, "JSXGraph 交互式函数参数探索")
+        },
+
+        // Scene 11: Desmos
+        {
+            title: "Desmos 高级图形计算器",
+            subtitle: "Desmos 是目前最强大最美观的在线图形计算器。在这里你可以绘制多个函数,使用滑块控制参数,甚至创建动画和参数方程,是数学探索的终极工具。",
+            isDesmos: true,
+            containerId: 'desmosContainer',
+
+            setupDesmos: (calculator) => {
+                calculator.setExpression({
+                    id: 'sin-basic',
+                    latex: 'y=\\sin(x)',
+                    color: Desmos.Colors.RED,
+                    lineWidth: 2
+                });
+
+                calculator.setExpression({
+                    id: 'cos-basic',
+                    latex: 'y=\\cos(x)',
+                    color: Desmos.Colors.GREEN,
+                    lineWidth: 2
+                });
+
+                calculator.setExpression({
+                    id: 'tan-basic',
+                    latex: 'y=\\tan(x)',
+                    color: Desmos.Colors.BLUE,
+                    lineWidth: 2,
+                    hidden: true
+                });
+
+                calculator.setExpression({
+                    id: 'slider-a',
+                    latex: 'a=1',
+                    sliderBounds: {min: 0.1, max: 3, step: 0.1}
+                });
+
+                calculator.setExpression({
+                    id: 'slider-b',
+                    latex: 'b=1',
+                    sliderBounds: {min: 0.1, max: 3, step: 0.1}
+                });
+
+                calculator.setExpression({
+                    id: 'param-sin',
+                    latex: 'y=a\\sin(bx)',
+                    color: Desmos.Colors.PURPLE,
+                    lineWidth: 3
+                });
+
+                calculator.setExpression({
+                    id: 'unit-circle',
+                    latex: 'x^2+y^2=1',
+                    color: Desmos.Colors.ORANGE,
+                    lineStyle: Desmos.Styles.DASHED,
+                    hidden: true
+                });
+
+                calculator.setExpression({
+                    id: 'angle-param',
+                    latex: 't=0',
+                    sliderBounds: {min: 0, max: 2 * Math.PI, step: 0.01}
+                });
+
+                calculator.setExpression({
+                    id: 'circle-point',
+                    latex: '(\\cos(t),\\sin(t))',
+                    color: Desmos.Colors.RED,
+                    showLabel: true,
+                    label: 'P',
+                    hidden: true
+                });
+
+                calculator.setExpression({
+                    id: 'lissajous',
+                    latex: '(\\sin(3t),\\sin(2t))',
+                    color: Desmos.Colors.BLUE,
+                    hidden: true
+                });
+
+                calculator.setMathBounds({
+                    left: -2 * Math.PI,
+                    right: 2 * Math.PI,
+                    bottom: -3,
+                    top: 3
+                });
+            },
+
+            action: () => showScene(11, "Desmos 高级图形计算器")
         }
     ];
 </script>
