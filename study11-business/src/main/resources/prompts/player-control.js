@@ -1,7 +1,7 @@
 // 场景显示函数
 function showScene(sceneNumber, title) {
     // 隐藏所有场景
-    for (let i = 0; i <= mathScenes.length; i++) {
+    for (let i = 0; i <= allScenes.length; i++) {
         const scene = document.getElementById(`scene${i}`);
         if (scene) {
             // scene.style.visibility = i === sceneNumber ? 'visible' : 'hidden';
@@ -49,7 +49,7 @@ async function initializePlayer() {
     };
 
     const player = new AnimationUtils.AnimationPlayerWith3D({
-        scenes: mathScenes,
+        scenes: allScenes,
         elements: elements,
     });
 
