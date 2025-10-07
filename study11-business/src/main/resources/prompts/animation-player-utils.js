@@ -1,6 +1,6 @@
 /**
- * 动画播放器公共函数库
- * 从三角函数动画中抽取出的可复用组件
+ * 动画播放器公共函数库 - 重构版
+ * 彻底解决3D场景初始化和音频播放逻辑问题
  */
 
 // ===== 音频缓存管理模块 =====
@@ -11,7 +11,6 @@ class AudioCacheManager {
         this.audioCache = null;
     }
 
-    // 初始化 Cache Storage
     async init() {
         try {
             this.audioCache = await caches.open(this.cacheName);
@@ -24,7 +23,6 @@ class AudioCacheManager {
         }
     }
 
-    // 生成缓存键名
     getCacheKey(text) {
         let hash = 0;
         for (let i = 0; i < text.length; i++) {
@@ -35,12 +33,10 @@ class AudioCacheManager {
         return `tts-${Math.abs(hash)}`;
     }
 
-    // 检查缓存是否过期
     isCacheExpired(timestamp) {
         return Date.now() - timestamp > this.cacheExpiry;
     }
 
-    // 从Cache Storage获取音频
     async getAudioFromCache(text) {
         if (!this.audioCache) return null;
 
@@ -65,7 +61,6 @@ class AudioCacheManager {
         return null;
     }
 
-    // 保存音频到Cache Storage
     async saveAudioToCache(text, blob) {
         if (!this.audioCache) return;
 
@@ -97,44 +92,35 @@ class TTSManager {
         return await this.cacheManager.init();
     }
 
-    // 合成单个文本的语音
     async synthesizeSpeech(text, showCacheIndicator = null) {
-        // 检查缓存
         const cachedAudioUrl = await this.cacheManager.getAudioFromCache(text);
         if (cachedAudioUrl) {
-            // 显示缓存指示器
             if (showCacheIndicator) {
                 showCacheIndicator();
             }
             return cachedAudioUrl;
         }
 
-        // 缓存中没有，请求TTS服务
         try {
             const encodedText = encodeURIComponent(text);
             const response = await fetch(`${this.apiUrl}${encodedText}`);
             if (response.status === 200) {
                 const blob = await response.blob();
                 const audioUrl = URL.createObjectURL(blob);
-
-                // 保存到缓存
                 await this.cacheManager.saveAudioToCache(text, blob);
                 return audioUrl;
             } else {
                 console.error(`TTS合成失败:`, response.status);
             }
-
         } catch (error) {
             console.error(`TTS合成失败:`, error);
             throw error;
         }
     }
 
-    // 批量合成多个文本的语音
     async synthesizeMultipleSpeech(texts, onProgress = null, showCacheIndicator = null) {
         const results = [];
 
-        let hasError = false;
         for (let i = 0; i < texts.length; i++) {
             try {
                 const audioUrl = await this.synthesizeSpeech(texts[i], showCacheIndicator);
@@ -143,8 +129,6 @@ class TTSManager {
                     if (onProgress) {
                         onProgress(i + 1, texts.length);
                     }
-                } else {
-                    hasError = true;
                 }
             } catch (error) {
                 results.push({success: false, error, text: texts[i]});
@@ -158,7 +142,6 @@ class TTSManager {
 
 // ===== 时间格式化工具函数 =====
 class TimeUtils {
-    // 格式化时间显示 (毫秒转 mm:ss)
     static formatTime(milliseconds) {
         const totalSeconds = Math.floor(milliseconds / 1000);
         const minutes = Math.floor(totalSeconds / 60);
@@ -166,56 +149,43 @@ class TimeUtils {
         return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 
-    // 计算百分比进度
     static calculateProgress(currentTime, totalTime) {
         return Math.min((currentTime / totalTime) * 100, 100);
     }
 
-    // 根据百分比计算时间
     static calculateTimeFromProgress(percentage, totalTime) {
         return (percentage / 100) * totalTime;
     }
 }
 
-// ===== 动画场景播放器 =====
+// ===== 动画场景播放器 - 重构版 =====
 class AnimationPlayer {
-    constructor(config = {apiUrl: 'https://javalinux.explanation.fun/tts?input='}) {
-        // 基本配置
+    constructor(config = {}) {
         this.scenes = config.scenes || [];
         this.audioElements = [];
         this.sceneTimestamps = [];
         this.totalDuration = 0;
 
-        // 播放状态
         this.currentScene = 0;
         this.isPlaying = false;
         this.isMuted = false;
-        this.wasPausedByUser = false;
-        this.pausedScene = 0;
-        this.pausedTime = 0;
         this.isDragging = false;
 
-        // DOM 元素 (需要在初始化时传入)
         this.elements = config.elements || {};
-
-        // TTS 管理器
         this.ttsManager = new TTSManager(config.apiUrl);
 
-        // 绑定方法的this
         this.updateProgress = this.updateProgress.bind(this);
         this.handleProgressClick = this.handleProgressClick.bind(this);
         this.handleMouseMove = this.handleMouseMove.bind(this);
         this.handleMouseUp = this.handleMouseUp.bind(this);
     }
 
-    // 初始化播放器
     async init() {
         await this.ttsManager.init();
         this.initializeAudioElements();
         this.bindEvents();
     }
 
-    // 初始化音频元素
     initializeAudioElements() {
         const {audioContainer} = this.elements;
         if (audioContainer) {
@@ -254,22 +224,18 @@ class AnimationPlayer {
             };
             audio.addEventListener('loadedmetadata', done, {once: true});
             audio.addEventListener('error', fail, {once: true});
-            audio.load();                    // 关键：确保触发元数据加载
+            audio.load();
             to = setTimeout(() => fail(new Error('metadata timeout')), timeoutMs);
         });
     }
 
-
-    // 预加载所有音频
     async preloadAllAudio(onProgress = null) {
         const {loading, playBtn, cacheIndicator} = this.elements;
 
-        // 显示加载状态
         if (loading) loading.classList.add('active');
         if (playBtn) playBtn.disabled = true;
 
         try {
-            // 缓存指示器显示函数
             const showCacheIndicator = () => {
                 if (cacheIndicator) {
                     cacheIndicator.classList.add('active');
@@ -279,7 +245,6 @@ class AnimationPlayer {
                 }
             };
 
-            // 合成所有语音
             const texts = this.scenes.map(scene => scene.subtitle);
             const results = await this.ttsManager.synthesizeMultipleSpeech(
                 texts,
@@ -287,7 +252,6 @@ class AnimationPlayer {
                 showCacheIndicator
             );
 
-            // 设置音频源并获取时长
             for (let i = 0; i < results.length; i++) {
                 const r = results[i];
                 if (!r.success) {
@@ -296,8 +260,6 @@ class AnimationPlayer {
                 }
 
                 const audio = this.audioElements[i];
-
-                // 先绑定等待，再赋 src
                 const wait = this.waitForMetadata(audio, 5000);
                 audio.src = r.audioUrl;
                 try {
@@ -309,19 +271,152 @@ class AnimationPlayer {
                 }
             }
 
-
-            // 计算时间戳和总时长
             this.calculateTimestamps();
-
-            // 更新时间显示
             this.updateTimeDisplay(0, this.totalDuration);
 
         } finally {
-            // 隐藏加载状态
             if (loading) loading.classList.remove('active');
             if (playBtn) playBtn.disabled = false;
         }
+    }
 
+    calculateTimestamps() {
+        this.sceneTimestamps = [];
+        let accumulatedTime = 0;
+
+        this.scenes.forEach((scene) => {
+            this.sceneTimestamps.push(accumulatedTime);
+            accumulatedTime += scene.duration || 5000;
+        });
+
+        this.totalDuration = accumulatedTime;
+    }
+
+    updateTimeDisplay(currentTime, totalTime) {
+        const {timeDisplay} = this.elements;
+        if (timeDisplay) {
+            const currentTimeStr = TimeUtils.formatTime(currentTime);
+            const totalTimeStr = TimeUtils.formatTime(totalTime);
+            timeDisplay.textContent = `${currentTimeStr} / ${totalTimeStr}`;
+        }
+    }
+
+    updateProgress() {
+        if (!this.isPlaying) return;
+
+        const currentAudio = this.audioElements[this.currentScene];
+        if (!currentAudio) return;
+
+        const sceneStartTime = this.sceneTimestamps[this.currentScene];
+        const currentTime = sceneStartTime + (currentAudio.currentTime * 1000);
+        const progress = TimeUtils.calculateProgress(currentTime, this.totalDuration);
+
+        const {progressFill, progressHandle} = this.elements;
+        if (progressFill) progressFill.style.width = progress + '%';
+        if (progressHandle) progressHandle.style.left = progress + '%';
+
+        this.updateTimeDisplay(currentTime, this.totalDuration);
+
+        if (progress >= 100) {
+            this.stop();
+        } else {
+            requestAnimationFrame(this.updateProgress);
+        }
+    }
+
+    // ✅ 核心方法:切换场景显示(不涉及音频播放)
+    switchToScene(sceneIndex) {
+        if (sceneIndex < 0 || sceneIndex >= this.scenes.length) return;
+
+        this.currentScene = sceneIndex;
+        const scene = this.scenes[sceneIndex];
+
+        // 更新字幕
+        const {subtitle} = this.elements;
+        if (subtitle) {
+            subtitle.textContent = scene.subtitle;
+            subtitle.classList.add('active');
+        }
+
+        // 执行场景动作(SVG显示或3D初始化)
+        if (scene.action) {
+            scene.action();
+        }
+
+        // 高亮场景按钮
+        this.highlightActiveSceneButton(sceneIndex);
+    }
+
+    // ✅ 播放指定场景(包含音频)
+    playScene(sceneIndex) {
+        if (sceneIndex >= this.scenes.length) {
+            this.stop();
+            return;
+        }
+
+        // 停止当前音频
+        if (this.currentScene < this.audioElements.length && this.audioElements[this.currentScene]) {
+            this.audioElements[this.currentScene].pause();
+        }
+
+        // 切换场景显示
+        this.switchToScene(sceneIndex);
+
+        const scene = this.scenes[sceneIndex];
+        const audio = this.audioElements[sceneIndex];
+
+        // 播放音频
+        if (audio && !this.isMuted) {
+            audio.currentTime = 0;
+            audio.play().catch(e => {
+                console.log('音频播放失败:', e);
+                this.showInteractionRequired();
+            });
+
+            audio.onended = () => {
+                const {subtitle} = this.elements;
+                if (subtitle) subtitle.classList.remove('active');
+                this.playScene(this.currentScene + 1);
+            };
+        } else {
+            setTimeout(() => {
+                const {subtitle} = this.elements;
+                if (subtitle) subtitle.classList.remove('active');
+                this.playScene(this.currentScene + 1);
+            }, scene.duration || 5000);
+        }
+    }
+
+    // ✅ 跳转到指定场景和时间点
+    jumpToScene(sceneIndex, timeOffset = 0) {
+        if (this.currentScene < this.audioElements.length && this.audioElements[this.currentScene]) {
+            this.audioElements[this.currentScene].pause();
+        }
+
+        this.switchToScene(sceneIndex);
+
+        const scene = this.scenes[sceneIndex];
+        const audio = this.audioElements[sceneIndex];
+
+        if (audio && !this.isMuted) {
+            audio.currentTime = timeOffset / 1000;
+            audio.play().catch(e => {
+                console.log('音频播放失败:', e);
+                this.showInteractionRequired();
+            });
+
+            audio.onended = () => {
+                const {subtitle} = this.elements;
+                if (subtitle) subtitle.classList.remove('active');
+                this.playScene(this.currentScene + 1);
+            };
+        } else {
+            setTimeout(() => {
+                const {subtitle} = this.elements;
+                if (subtitle) subtitle.classList.remove('active');
+                this.playScene(this.currentScene + 1);
+            }, (scene.duration || 5000) - timeOffset);
+        }
     }
 
     inIframe() {
@@ -334,14 +429,13 @@ class AnimationPlayer {
 
     iframeAutoplayAllowedByPolicy() {
         const p = document.permissionsPolicy || document.featurePolicy;
-        return p?.allowsFeature?.('autoplay') ?? true; // 不支持 API 时默认 true
+        return p?.allowsFeature?.('autoplay') ?? true;
     }
-
 
     async playWithErrorHandling() {
         const embedded = this.inIframe();
         const policyAllows = this.iframeAutoplayAllowedByPolicy();
-        // 播放前高亮当前场景（通常是 0）
+
         this.highlightActiveSceneButton(this.currentScene || 0);
 
         if (!embedded && policyAllows) {
@@ -388,222 +482,58 @@ class AnimationPlayer {
                 } catch (e) {
                     console.error('播放失败:', e);
                 }
-
             });
         }
     }
 
-    // 计算每个场景的时间戳
-    calculateTimestamps() {
-        this.sceneTimestamps = [];
-        let accumulatedTime = 0;
-
-        this.scenes.forEach((scene) => {
-            this.sceneTimestamps.push(accumulatedTime);
-            accumulatedTime += scene.duration || 5000;
-        });
-
-        this.totalDuration = accumulatedTime;
-    }
-
-    // 更新时间显示
-    updateTimeDisplay(currentTime, totalTime) {
-        const {timeDisplay} = this.elements;
-        if (timeDisplay) {
-            const currentTimeStr = TimeUtils.formatTime(currentTime);
-            const totalTimeStr = TimeUtils.formatTime(totalTime);
-            timeDisplay.textContent = `${currentTimeStr} / ${totalTimeStr}`;
-        }
-    }
-
-    // 更新进度条
-    updateProgress() {
-        if (!this.isPlaying) return;
-
-        const currentAudio = this.audioElements[this.currentScene];
-        if (!currentAudio) return;
-
-        // 计算当前时间点
-        const sceneStartTime = this.sceneTimestamps[this.currentScene];
-        const currentTime = sceneStartTime + (currentAudio.currentTime * 1000);
-        const progress = TimeUtils.calculateProgress(currentTime, this.totalDuration);
-
-        // 更新进度条UI
-        const {progressFill, progressHandle} = this.elements;
-        if (progressFill) progressFill.style.width = progress + '%';
-        if (progressHandle) progressHandle.style.left = progress + '%';
-
-        // 更新时间显示
-        this.updateTimeDisplay(currentTime, this.totalDuration);
-
-        if (progress >= 100) {
-            this.stop();
-        } else {
-            requestAnimationFrame(this.updateProgress);
-        }
-    }
-
-    // 播放指定场景
-    playScene(sceneIndex) {
-        if (sceneIndex >= this.scenes.length) {
-            this.stop();
-            return;
-        }
-
-        // 停止当前音频
-        if (this.currentScene < this.audioElements.length && this.audioElements[this.currentScene]) {
-            this.audioElements[this.currentScene].pause();
-        }
-
-        this.currentScene = sceneIndex;
-        const scene = this.scenes[sceneIndex];
-        const audio = this.audioElements[sceneIndex];
-
-        // 更新字幕和执行场景动画
-        const {subtitle} = this.elements;
-        if (subtitle) {
-            subtitle.textContent = scene.subtitle;
-            subtitle.classList.add('active');
-        }
-
-        if (scene.action) {
-            scene.action();
-        }
-
-        // 播放音频
-        if (audio && !this.isMuted) {
-            audio.currentTime = 0;
-            audio.play().catch(e => {
-                console.log('音频播放失败:', e)
-                this.showInteractionRequired();
-            });
-
-            // 音频结束时播放下一个场景
-            audio.onended = () => {
-                if (subtitle) subtitle.classList.remove('active');
-                this.playScene(this.currentScene + 1);
-            };
-        } else {
-            // 如果静音或没有音频，使用定时器
-            setTimeout(() => {
-                if (subtitle) subtitle.classList.remove('active');
-                this.playScene(this.currentScene + 1);
-            }, scene.duration || 5000);
-        }
-        this.highlightActiveSceneButton(this.currentScene);
-    }
-
-    // 开始播放
     play() {
         if (this.isPlaying) return;
 
         this.isPlaying = true;
 
-        // 更新播放按钮
         const {playIcon} = this.elements;
         if (playIcon) playIcon.textContent = '⏸';
 
-        if (this.wasPausedByUser && this.pausedScene < this.scenes.length) {
-            // 从暂停状态恢复
-            this.resumeFromPause();
-        } else {
-            // 从头开始播放
-            this.currentScene = 0;
-            this.playScene(0);
-        }
-
+        this.currentScene = 0;
+        this.playScene(0);
         this.updateProgress();
     }
 
-    // 从暂停状态恢复播放
-    resumeFromPause() {
-        const scene = this.scenes[this.pausedScene];
-        const audio = this.audioElements[this.pausedScene];
-
-        // 更新UI
-        const {subtitle} = this.elements;
-        if (subtitle) {
-            subtitle.textContent = scene.subtitle;
-            subtitle.classList.add('active');
-        }
-
-        if (scene.action) {
-            scene.action();
-        }
-
-        this.currentScene = this.pausedScene;
-
-        // 播放音频（从暂停位置继续）
-        if (audio && !this.isMuted) {
-            audio.currentTime = this.pausedTime / 1000;
-            audio.play().catch(e => console.log('音频播放失败:', e));
-
-            audio.onended = () => {
-                if (subtitle) subtitle.classList.remove('active');
-                this.playScene(this.currentScene + 1);
-            };
-        } else {
-            // 使用定时器
-            setTimeout(() => {
-                if (subtitle) subtitle.classList.remove('active');
-                this.playScene(this.currentScene + 1);
-            }, (scene.duration || 5000) - this.pausedTime);
-        }
-
-        this.wasPausedByUser = false;
-    }
-
-    // 暂停播放
     pause() {
         this.isPlaying = false;
-        this.wasPausedByUser = true;
 
-        // 更新播放按钮
         const {playIcon} = this.elements;
         if (playIcon) playIcon.textContent = '▶';
 
-        // 保存当前播放状态
         if (this.currentScene < this.audioElements.length && this.audioElements[this.currentScene]) {
             const audio = this.audioElements[this.currentScene];
-            this.pausedScene = this.currentScene;
-            this.pausedTime = audio.currentTime * 1000;
             audio.pause();
         }
     }
 
-    // 停止播放
     stop() {
         this.pause();
         this.currentScene = 0;
-        this.pausedScene = 0;
-        this.pausedTime = 0;
-        this.wasPausedByUser = false;
 
-        // 重置进度条
         const {progressFill, progressHandle, subtitle} = this.elements;
         if (progressFill) progressFill.style.width = '0%';
         if (progressHandle) progressHandle.style.left = '0%';
         if (subtitle) subtitle.textContent = '';
 
-        // 重置时间显示
         this.updateTimeDisplay(0, this.totalDuration);
     }
 
-    // 切换静音
     toggleMute() {
         this.isMuted = !this.isMuted;
 
-        // 更新静音按钮
         const {muteIcon} = this.elements;
         if (muteIcon) muteIcon.textContent = this.isMuted ? '🔇' : '🔊';
 
-        // 设置所有音频元素的静音状态
         this.audioElements.forEach(audio => {
             audio.muted = this.isMuted;
         });
     }
 
-    // 处理进度条点击
     handleProgressClick(e) {
         const {progressBar} = this.elements;
         if (!progressBar) return;
@@ -615,17 +545,14 @@ class AnimationPlayer {
         this.seekToProgress(percentage);
     }
 
-    // 跳转到指定进度
     seekToProgress(percentage) {
         const {progressFill, progressHandle} = this.elements;
         if (progressFill) progressFill.style.width = percentage + '%';
         if (progressHandle) progressHandle.style.left = percentage + '%';
 
-        // 计算对应的时间点
         const targetTime = TimeUtils.calculateTimeFromProgress(percentage, this.totalDuration);
         this.updateTimeDisplay(targetTime, this.totalDuration);
 
-        // 找到对应的场景
         let targetScene = 0;
         for (let i = 0; i < this.sceneTimestamps.length; i++) {
             if (targetTime >= this.sceneTimestamps[i]) {
@@ -635,90 +562,27 @@ class AnimationPlayer {
             }
         }
 
-        // 更新状态
-        this.pausedScene = targetScene;
-        this.pausedTime = targetTime - this.sceneTimestamps[targetScene];
+        const timeOffset = targetTime - this.sceneTimestamps[targetScene];
 
         if (this.isPlaying) {
-            this.jumpToScene(targetScene, this.pausedTime);
-        } else if (this.wasPausedByUser) {
-            this.updateSceneDisplay(targetScene);
-        }
-    }
-
-    // 跳转到指定场景和时间
-    jumpToScene(sceneIndex, timeOffset) {
-        // 停止当前音频
-        if (this.currentScene < this.audioElements.length && this.audioElements[this.currentScene]) {
-            this.audioElements[this.currentScene].pause();
-        }
-
-        this.currentScene = sceneIndex;
-        const scene = this.scenes[sceneIndex];
-        const audio = this.audioElements[sceneIndex];
-
-        // 更新UI
-        const {subtitle} = this.elements;
-        if (subtitle) {
-            subtitle.textContent = scene.subtitle;
-            subtitle.classList.add('active');
-        }
-
-        if (scene.action) {
-            scene.action();
-        }
-
-        // 播放音频（从指定时间点开始）
-        if (audio && !this.isMuted) {
-            audio.currentTime = timeOffset / 1000;
-            audio.play().catch(e => console.log('音频播放失败:', e));
-
-            audio.onended = () => {
-                if (subtitle) subtitle.classList.remove('active');
-                this.playScene(this.currentScene + 1);
-            };
+            this.jumpToScene(targetScene, timeOffset);
         } else {
-            // 使用定时器
-            setTimeout(() => {
-                if (subtitle) subtitle.classList.remove('active');
-                this.playScene(this.currentScene + 1);
-            }, (scene.duration || 5000) - timeOffset);
+            this.switchToScene(targetScene);
         }
-        this.highlightActiveSceneButton(this.currentScene);
     }
 
-    // 更新场景显示（暂停状态下）
-    updateSceneDisplay(sceneIndex) {
-        this.currentScene = sceneIndex;
-        const scene = this.scenes[sceneIndex];
-
-        const {subtitle} = this.elements;
-        if (subtitle) {
-            subtitle.textContent = scene.subtitle;
-            subtitle.classList.add('active');
-        }
-
-        if (scene.action) {
-            scene.action();
-        }
-        this.highlightActiveSceneButton(this.currentScene);
-    }
-
-    // 鼠标移动事件处理
     handleMouseMove(e) {
         if (this.isDragging) {
             this.handleProgressClick(e);
         }
     }
 
-    // 鼠标释放事件处理
     handleMouseUp() {
         if (this.isDragging) {
             this.isDragging = false;
         }
     }
 
-    // 绑定事件监听
     bindEvents() {
         const {playBtn, muteBtn, progressBar, progressHandle} = this.elements;
 
@@ -746,65 +610,41 @@ class AnimationPlayer {
             });
         }
 
-        // 全局事件
         document.addEventListener('mousemove', this.handleMouseMove);
         document.addEventListener('mouseup', this.handleMouseUp);
     }
 
-    // 销毁播放器，清理事件监听
-    destroy() {
-        document.removeEventListener('mousemove', this.handleMouseMove);
-        document.removeEventListener('mouseup', this.handleMouseUp);
-
-        // 停止所有音频
-        this.audioElements.forEach(audio => {
-            audio.pause();
-            if (audio.src.startsWith('blob:')) {
-                URL.revokeObjectURL(audio.src);
-            }
-        });
-    }
-
-
+    // ✅ 设置场景按钮(重构版)
     setSceneButtons(container) {
         this.sceneButtonsContainer = container || null;
         if (!this.sceneButtonsContainer) return;
 
-        // 清空并生成按钮
         this.sceneButtonsContainer.innerHTML = '';
         this.scenes.forEach((scene, idx) => {
             const btn = document.createElement('button');
             btn.className = 'scene-btn';
-            btn.textContent = String(idx + 1); // 或 scene.title 更直观
+            btn.textContent = String(idx + 1);
+
             btn.addEventListener('click', () => {
-                // 画面与字幕
-                const sceneNo = idx + 1;
-                if (scene) {
-                    if (scene.action) scene.action();
+                if (this.isPlaying) {
+                    // 播放中:跳转并继续播放
+                    this.jumpToScene(idx, 0);
+                } else {
+                    // 暂停中:只切换画面,不播放音频
+                    this.switchToScene(idx);
                 }
 
-                // 同步内部状态（暂停/播放两种情况）
-                if (this.isPlaying) {
-                    this.jumpToScene(idx, 0); // 立刻切音频到场景起点
-                } else {
-                    this.pausedScene = idx;
-                    this.pausedTime = 0;
-                    this.updateSceneDisplay(idx);
-                }
-                // 同步进度 & 时间
+                // 同步进度条
                 const t0 = this.sceneTimestamps?.[idx] ?? 0;
                 const percent = this.totalDuration ? Math.min(100, (t0 / this.totalDuration) * 100) : 0;
                 this.elements.progressFill && (this.elements.progressFill.style.width = percent + '%');
                 this.elements.progressHandle && (this.elements.progressHandle.style.left = percent + '%');
                 this.updateTimeDisplay(t0, this.totalDuration);
-
-                // 高亮
-                this.highlightActiveSceneButton(idx);
             });
+
             this.sceneButtonsContainer.appendChild(btn);
         });
 
-        // 初始高亮（第一个场景）
         this.highlightActiveSceneButton(0);
     }
 
@@ -813,30 +653,43 @@ class AnimationPlayer {
         const buttons = this.sceneButtonsContainer.querySelectorAll('.scene-btn');
         buttons.forEach((b, i) => b.classList.toggle('active', i === index));
     }
+
+    destroy() {
+        document.removeEventListener('mousemove', this.handleMouseMove);
+        document.removeEventListener('mouseup', this.handleMouseUp);
+
+        this.audioElements.forEach(audio => {
+            audio.pause();
+            if (audio.src.startsWith('blob:')) {
+                URL.revokeObjectURL(audio.src);
+            }
+        });
+    }
 }
 
-// ===== 扩展 AnimationPlayer 类 =====
+// ===== 扩展 AnimationPlayer 支持 3D 场景 =====
 class AnimationPlayerWith3D extends AnimationPlayer {
     constructor(config) {
         super(config);
-        this.threejsScenes = new Map(); // 存储 Three.js 场景
-        this.activeAnimations = new Map(); // 存储动画循环
+        this.threejsScenes = new Map();
+        this.activeAnimations = new Map();
     }
 
-    // 初始化特定的 3D 场景
+    // ✅ 初始化 3D 场景
     init3DScene(sceneIndex, canvasId, setupCallback) {
         const canvas = document.getElementById(canvasId);
         if (!canvas) {
-            console.error(`Canvas ${canvasId} not found`);
+            console.error(`❌ Canvas ${canvasId} not found`);
             return null;
         }
 
-        // 避免重复初始化
         if (this.threejsScenes.has(sceneIndex)) {
+            console.log(`♻️ 3D场景 ${sceneIndex} 已存在,跳过初始化`);
             return this.threejsScenes.get(sceneIndex);
         }
 
-        // 创建 Three.js 基础设置
+        console.log(`🎨 初始化 3D 场景 ${sceneIndex}`);
+
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(
             75,
@@ -847,13 +700,12 @@ class AnimationPlayerWith3D extends AnimationPlayer {
         const renderer = new THREE.WebGLRenderer({
             canvas,
             antialias: true,
-            alpha: true // 透明背景
+            alpha: true
         });
 
         renderer.setSize(canvas.width, canvas.height);
         camera.position.z = 5;
 
-        // 添加基础光源
         const ambientLight = new THREE.AmbientLight(0x404040);
         scene.add(ambientLight);
 
@@ -865,37 +717,34 @@ class AnimationPlayerWith3D extends AnimationPlayer {
             scene,
             camera,
             renderer,
-            objects: {} // 用于存储场景中的对象
+            objects: {}
         };
 
-        // 执行自定义设置
         if (setupCallback) {
             setupCallback(threeSetup);
         }
 
-        // 保存设置
         this.threejsScenes.set(sceneIndex, threeSetup);
 
         return threeSetup;
     }
 
-    // 启动 3D 场景动画
+    // ✅ 启动 3D 动画
     start3DAnimation(sceneIndex, animateCallback) {
         const threeSetup = this.threejsScenes.get(sceneIndex);
         if (!threeSetup) {
-            console.error(`3D scene ${sceneIndex} not initialized`);
+            console.error(`❌ 3D场景 ${sceneIndex} 未初始化`);
             return;
         }
 
-        // 停止之前的动画
         this.stop3DAnimation(sceneIndex);
 
-        // 动画循环
+        console.log(`▶️ 启动 3D 动画 ${sceneIndex}`);
+
         const animate = () => {
             const animationId = requestAnimationFrame(animate);
             this.activeAnimations.set(sceneIndex, animationId);
 
-            // 执行自定义动画逻辑
             if (animateCallback) {
                 animateCallback(threeSetup);
             }
@@ -906,22 +755,22 @@ class AnimationPlayerWith3D extends AnimationPlayer {
         animate();
     }
 
-    // 停止 3D 场景动画
+    // ✅ 停止 3D 动画
     stop3DAnimation(sceneIndex) {
         const animationId = this.activeAnimations.get(sceneIndex);
         if (animationId) {
             cancelAnimationFrame(animationId);
             this.activeAnimations.delete(sceneIndex);
+            console.log(`⏸ 停止 3D 动画 ${sceneIndex}`);
         }
     }
 
-    // 清理 3D 场景资源
+    // ✅ 清理 3D 场景资源
     dispose3DScene(sceneIndex) {
         this.stop3DAnimation(sceneIndex);
 
         const threeSetup = this.threejsScenes.get(sceneIndex);
         if (threeSetup) {
-            // 清理几何体和材质
             threeSetup.scene.traverse((object) => {
                 if (object.geometry) {
                     object.geometry.dispose();
@@ -937,30 +786,32 @@ class AnimationPlayerWith3D extends AnimationPlayer {
 
             threeSetup.renderer.dispose();
             this.threejsScenes.delete(sceneIndex);
+            console.log(`🗑️ 清理 3D 场景 ${sceneIndex}`);
         }
     }
 
-    // 重写 playScene 以支持 3D (自动初始化)
-    playScene(sceneIndex) {
-        // 先停止所有 3D 动画
+    // ✅ 重写 switchToScene: 处理 3D 场景初始化和动画
+    switchToScene(sceneIndex) {
+        if (sceneIndex < 0 || sceneIndex >= this.scenes.length) return;
+
+        // 停止所有其他 3D 动画
         this.activeAnimations.forEach((_, index) => {
-            this.stop3DAnimation(index);
+            if (index !== sceneIndex) {
+                this.stop3DAnimation(index);
+            }
         });
 
-        // 调用父类方法
-        super.playScene(sceneIndex);
+        // 调用父类方法(更新字幕、执行action)
+        super.switchToScene(sceneIndex);
 
-        debugger
         const scene = this.scenes[sceneIndex];
 
-        // 🎯 如果是 3D 场景,自动处理初始化和动画
-        if (scene && scene.is3D) {
-            // 检查是否已初始化
+        // 处理 3D 场景
+        if (scene.is3D) {
+            const canvasId = scene.canvasId || 'canvas3d';
+
+            // 如果未初始化,则初始化
             if (!this.threejsScenes.has(sceneIndex)) {
-                console.log(`🔧 自动初始化 3D 场景 ${sceneIndex}`);
-
-                const canvasId = scene.canvasId || `canvas3d`;
-
                 if (scene.setup3D) {
                     this.init3DScene(sceneIndex, canvasId, scene.setup3D);
                 } else {
@@ -976,9 +827,7 @@ class AnimationPlayerWith3D extends AnimationPlayer {
         }
     }
 
-    // 重写 destroy 以清理 3D 资源
     destroy() {
-        // 清理所有 3D 场景
         this.threejsScenes.forEach((_, index) => {
             this.dispose3DScene(index);
         });
@@ -987,7 +836,7 @@ class AnimationPlayerWith3D extends AnimationPlayer {
     }
 }
 
-// 导出所有类和工具函数
+// ===== 导出模块 =====
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         AudioCacheManager,
