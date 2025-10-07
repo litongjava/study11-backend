@@ -779,7 +779,10 @@ class AnimationPlayer {
             btn.addEventListener('click', () => {
                 // 画面与字幕
                 const sceneNo = idx + 1;
-                if (scene.action) scene.action();
+                if (scene) {
+                    if (scene.action) scene.action();
+                }
+
                 // 同步内部状态（暂停/播放两种情况）
                 if (this.isPlaying) {
                     this.jumpToScene(idx, 0); // 立刻切音频到场景起点
@@ -812,19 +815,193 @@ class AnimationPlayer {
     }
 }
 
+// ===== 扩展 AnimationPlayer 类 =====
+class AnimationPlayerWith3D extends AnimationPlayer {
+    constructor(config) {
+        super(config);
+        this.threejsScenes = new Map(); // 存储 Three.js 场景
+        this.activeAnimations = new Map(); // 存储动画循环
+    }
+
+    // 初始化特定的 3D 场景
+    init3DScene(sceneIndex, canvasId, setupCallback) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) {
+            console.error(`Canvas ${canvasId} not found`);
+            return null;
+        }
+
+        // 避免重复初始化
+        if (this.threejsScenes.has(sceneIndex)) {
+            return this.threejsScenes.get(sceneIndex);
+        }
+
+        // 创建 Three.js 基础设置
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(
+            75,
+            canvas.width / canvas.height,
+            0.1,
+            1000
+        );
+        const renderer = new THREE.WebGLRenderer({
+            canvas,
+            antialias: true,
+            alpha: true // 透明背景
+        });
+
+        renderer.setSize(canvas.width, canvas.height);
+        camera.position.z = 5;
+
+        // 添加基础光源
+        const ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(5, 5, 5);
+        scene.add(directionalLight);
+
+        const threeSetup = {
+            scene,
+            camera,
+            renderer,
+            objects: {} // 用于存储场景中的对象
+        };
+
+        // 执行自定义设置
+        if (setupCallback) {
+            setupCallback(threeSetup);
+        }
+
+        // 保存设置
+        this.threejsScenes.set(sceneIndex, threeSetup);
+
+        return threeSetup;
+    }
+
+    // 启动 3D 场景动画
+    start3DAnimation(sceneIndex, animateCallback) {
+        const threeSetup = this.threejsScenes.get(sceneIndex);
+        if (!threeSetup) {
+            console.error(`3D scene ${sceneIndex} not initialized`);
+            return;
+        }
+
+        // 停止之前的动画
+        this.stop3DAnimation(sceneIndex);
+
+        // 动画循环
+        const animate = () => {
+            const animationId = requestAnimationFrame(animate);
+            this.activeAnimations.set(sceneIndex, animationId);
+
+            // 执行自定义动画逻辑
+            if (animateCallback) {
+                animateCallback(threeSetup);
+            }
+
+            threeSetup.renderer.render(threeSetup.scene, threeSetup.camera);
+        };
+
+        animate();
+    }
+
+    // 停止 3D 场景动画
+    stop3DAnimation(sceneIndex) {
+        const animationId = this.activeAnimations.get(sceneIndex);
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+            this.activeAnimations.delete(sceneIndex);
+        }
+    }
+
+    // 清理 3D 场景资源
+    dispose3DScene(sceneIndex) {
+        this.stop3DAnimation(sceneIndex);
+
+        const threeSetup = this.threejsScenes.get(sceneIndex);
+        if (threeSetup) {
+            // 清理几何体和材质
+            threeSetup.scene.traverse((object) => {
+                if (object.geometry) {
+                    object.geometry.dispose();
+                }
+                if (object.material) {
+                    if (Array.isArray(object.material)) {
+                        object.material.forEach(material => material.dispose());
+                    } else {
+                        object.material.dispose();
+                    }
+                }
+            });
+
+            threeSetup.renderer.dispose();
+            this.threejsScenes.delete(sceneIndex);
+        }
+    }
+
+    // 重写 playScene 以支持 3D (自动初始化)
+    playScene(sceneIndex) {
+        // 先停止所有 3D 动画
+        this.activeAnimations.forEach((_, index) => {
+            this.stop3DAnimation(index);
+        });
+
+        // 调用父类方法
+        super.playScene(sceneIndex);
+
+        debugger
+        const scene = this.scenes[sceneIndex];
+
+        // 🎯 如果是 3D 场景,自动处理初始化和动画
+        if (scene && scene.is3D) {
+            // 检查是否已初始化
+            if (!this.threejsScenes.has(sceneIndex)) {
+                console.log(`🔧 自动初始化 3D 场景 ${sceneIndex}`);
+
+                const canvasId = scene.canvasId || `canvas3d`;
+
+                if (scene.setup3D) {
+                    this.init3DScene(sceneIndex, canvasId, scene.setup3D);
+                } else {
+                    console.error(`❌ 场景 ${sceneIndex} 标记为 3D 但缺少 setup3D 方法`);
+                    return;
+                }
+            }
+
+            // 启动 3D 动画
+            if (scene.animate3D) {
+                this.start3DAnimation(sceneIndex, scene.animate3D);
+            }
+        }
+    }
+
+    // 重写 destroy 以清理 3D 资源
+    destroy() {
+        // 清理所有 3D 场景
+        this.threejsScenes.forEach((_, index) => {
+            this.dispose3DScene(index);
+        });
+
+        super.destroy();
+    }
+}
+
 // 导出所有类和工具函数
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         AudioCacheManager,
         TTSManager,
         TimeUtils,
-        AnimationPlayer
+        AnimationPlayer,
+        AnimationPlayerWith3D
     };
 } else if (typeof window !== 'undefined') {
     window.AnimationUtils = {
         AudioCacheManager,
         TTSManager,
         TimeUtils,
-        AnimationPlayer
+        AnimationPlayer,
+        AnimationPlayerWith3D
     };
 }

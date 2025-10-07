@@ -1,10 +1,11 @@
 // 场景显示函数
 function showScene(sceneNumber, title) {
     // 隐藏所有场景
-    for (let i = 1; i <= mathScenes.length; i++) {
+    for (let i = 0; i <= mathScenes.length; i++) {
         const scene = document.getElementById(`scene${i}`);
         if (scene) {
-            scene.style.visibility = i === sceneNumber ? 'visible' : 'hidden';
+            // scene.style.visibility = i === sceneNumber ? 'visible' : 'hidden';
+            scene.style.display = i === sceneNumber ? 'block' : 'none';
         }
     }
 
@@ -47,7 +48,7 @@ async function initializePlayer() {
         cacheIndicator: document.getElementById('cacheIndicator')
     };
 
-    const player = new AnimationUtils.AnimationPlayer({
+    const player = new AnimationUtils.AnimationPlayerWith3D({
         scenes: mathScenes,
         elements: elements,
     });

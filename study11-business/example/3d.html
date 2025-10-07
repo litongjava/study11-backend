@@ -3,329 +3,444 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVG vs Canvas 3D 对比</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            text-align: center;
-            color: white;
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .comparison {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .demo-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .demo-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-
-        .demo-subtitle {
-            color: #7f8c8d;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-        }
-
-        .canvas-container, .svg-container {
-            width: 100%;
-            height: 300px;
-            border: 2px solid #ecf0f1;
-            border-radius: 10px;
-            overflow: hidden;
-            background: #f8f9fa;
-        }
-
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
-        svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .status {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .status.fail {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .status.partial {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
-        }
-
-        .conclusion {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .conclusion h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-
-        .conclusion ul {
-            line-height: 1.8;
-            color: #34495e;
-        }
-
-        .conclusion li {
-            margin-bottom: 10px;
-        }
-
-        .emoji {
-            font-size: 1.2em;
-        }
-    </style>
+    <title>SVG + Three.js 混合示例</title>
+    <link rel="stylesheet" href="animation-player.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
-<body>
-<div class="container">
-    <h1>🔬 SVG vs Canvas 3D 能力实验</h1>
-
-    <div class="comparison">
-        <!-- Canvas 2D - 伪3D -->
-        <div class="demo-card">
-            <div class="demo-title">1. Canvas 2D - 手动 3D 投影</div>
-            <div class="demo-subtitle">需要自己计算透视投影</div>
-            <div class="canvas-container">
-                <canvas id="canvas2d"></canvas>
-            </div>
-            <div class="status partial">
-                <span class="emoji">⚠️</span> <strong>部分支持:</strong> 需手动实现所有 3D 数学计算(旋转矩阵、投影等)
-            </div>
-        </div>
-
-        <!-- Canvas WebGL/Three.js -->
-        <div class="demo-card">
-            <div class="demo-title">2. Canvas + WebGL (Three.js)</div>
-            <div class="demo-subtitle">真正的 3D 引擎</div>
-            <div class="canvas-container">
-                <canvas id="canvasWebGL"></canvas>
-            </div>
-            <div class="status success">
-                <span class="emoji">✅</span> <strong>完全支持:</strong> 硬件加速的真 3D，性能强大
-            </div>
-        </div>
-
-        <!-- SVG + CSS 3D Transform -->
-        <div class="demo-card">
-            <div class="demo-title">3. SVG + CSS 3D Transform</div>
-            <div class="demo-subtitle">尝试用 CSS 变换</div>
-            <div class="svg-container">
-                <svg viewBox="0 0 400 300">
-                    <g id="svgCss3d" style="transform-style: preserve-3d;">
-                        <rect x="150" y="100" width="100" height="100" fill="#3498db" />
-                        <text x="175" y="160" fill="white" font-size="20">CSS 3D?</text>
-                    </g>
-                </svg>
-            </div>
-            <div class="status fail">
-                <span class="emoji">❌</span> <strong>不支持:</strong> SVG 不支持 transform-style: preserve-3d
-            </div>
-        </div>
-
-        <!-- SVG foreignObject + CSS 3D -->
-        <div class="demo-card">
-            <div class="demo-title">4. SVG foreignObject + CSS 3D</div>
-            <div class="demo-subtitle">在 foreignObject 中尝试 3D</div>
-            <div class="svg-container">
-                <svg viewBox="0 0 400 300">
-                    <foreignObject x="100" y="50" width="200" height="200">
-                        <div xmlns="http://www.w3.org/1999/xhtml"
-                             id="foreignObject3d"
-                             style="width: 200px; height: 200px;
-                                        background: #e74c3c;
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: center;
-                                        color: white;
-                                        font-size: 20px;
-                                        perspective: 500px;
-                                        transform-style: preserve-3d;">
-                            <div style="transform: rotateY(0deg);">
-                                Foreign 3D?
-                            </div>
-                        </div>
-                    </foreignObject>
-                </svg>
-            </div>
-            <div class="status fail">
-                <span class="emoji">❌</span> <strong>不可靠:</strong> 跨浏览器兼容性差，行为不一致
-            </div>
-        </div>
-    </div>
-
-    <div class="conclusion">
-        <h2>📊 结论与建议</h2>
-        <ul>
-            <li><strong>Canvas 2D:</strong> 可以做伪 3D，但需要手写大量数学代码，不推荐</li>
-            <li><strong>Canvas + WebGL (Three.js):</strong> <span class="emoji">🏆</span> <strong>真 3D 的唯一选择</strong>，性能强大，生态完善</li>
-            <li><strong>SVG + CSS 3D:</strong> 不支持 preserve-3d，无法实现真正的 3D 空间</li>
-            <li><strong>foreignObject + CSS 3D:</strong> 理论上可能但极不可靠，不同浏览器表现不一致</li>
-        </ul>
-
-        <h2 style="margin-top: 30px;">💡 针对你的项目</h2>
-        <ul>
-            <li><strong>如果需要 3D:</strong> 必须使用 <code>canvas + Three.js</code></li>
-            <li><strong>如果不需要 3D:</strong> 继续用 SVG，它更适合你当前的 2D 图表</li>
-            <li><strong>混合方案:</strong> 某些场景用 Three.js (canvas)，其他场景用 SVG</li>
-        </ul>
-    </div>
+<body class="main-container">
+<div class="loading" id="loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading...</div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<div class="animation-container">
+    <div class="scene-number" id="sceneNumber">1</div>
+
+    <svg class="trig-scene" viewBox="0 0 800 400">
+        <!-- 场景 1: SVG 场景 -->
+        <g id="scene1">
+            <circle cx="400" cy="200" r="80" fill="#3498db" opacity="0.3"/>
+            <text x="400" y="210" text-anchor="middle" fill="#2c3e50" font-size="24">
+                SVG 2D 场景
+            </text>
+        </g>
+
+        <!-- 场景 2: 另一个 SVG 场景 -->
+        <g id="scene2" style="display: none;">
+            <rect x="300" y="150" width="200" height="100" fill="#e74c3c" opacity="0.3"/>
+            <text x="400" y="210" text-anchor="middle" fill="#2c3e50" font-size="24">
+                又一个 SVG 场景
+            </text>
+        </g>
+
+        <!-- 场景 3: 嵌入 Canvas 的 3D 场景 -->
+        <g id="scene3" style="display: none;">
+            <foreignObject x="100" y="50" width="600" height="300">
+                <div xmlns="http://www.w3.org/1999/xhtml" style="width: 600px; height: 300px;">
+                    <canvas id="canvas3d" width="600" height="300"
+                            style="display: block; border-radius: 10px; background: #f0f0f0;"></canvas>
+                </div>
+            </foreignObject>
+            <text x="400" y="370" text-anchor="middle" fill="#2c3e50" font-size="18">
+                Three.js 3D 立方体
+            </text>
+        </g>
+    </svg>
+</div>
+
+<div class="subtitle-container">
+    <div class="subtitle" id="subtitle"></div>
+</div>
+
+<div class="controls">
+    <button class="control-btn" id="playBtn" title="Play">
+        <span id="playIcon">▶</span>
+    </button>
+    <div class="scene-buttons" id="sceneButtons"></div>
+</div>
+
+<div id="audioContainer"></div>
+
+<!-- 引入你的工具类 -->
 <script>
-    // 1. Canvas 2D - 手动 3D 投影
-    const canvas2d = document.getElementById('canvas2d');
-    const ctx = canvas2d.getContext('2d');
-    canvas2d.width = canvas2d.offsetWidth;
-    canvas2d.height = canvas2d.offsetHeight;
-
-    let angle2d = 0;
-    function draw2DCube() {
-        ctx.clearRect(0, 0, canvas2d.width, canvas2d.height);
-
-        const centerX = canvas2d.width / 2;
-        const centerY = canvas2d.height / 2;
-        const size = 60;
-
-        // 简单的旋转矩阵(仅绕 Y 轴)
-        const cos = Math.cos(angle2d);
-        const sin = Math.sin(angle2d);
-
-        // 立方体顶点
-        const vertices = [
-            [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
-            [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]
-        ];
-
-        // 投影顶点
-        const projected = vertices.map(v => {
-            const x = v[0] * cos - v[2] * sin;
-            const z = v[0] * sin + v[2] * cos;
-            const scale = 200 / (200 + z * 50);
-            return [
-                centerX + x * size * scale,
-                centerY + v[1] * size * scale
-            ];
-        });
-
-        // 绘制边
-        ctx.strokeStyle = '#3498db';
-        ctx.lineWidth = 2;
-        const edges = [
-            [0,1],[1,2],[2,3],[3,0],
-            [4,5],[5,6],[6,7],[7,4],
-            [0,4],[1,5],[2,6],[3,7]
-        ];
-
-        edges.forEach(([a, b]) => {
-            ctx.beginPath();
-            ctx.moveTo(projected[a][0], projected[a][1]);
-            ctx.lineTo(projected[b][0], projected[b][1]);
-            ctx.stroke();
-        });
-
-        angle2d += 0.02;
-        requestAnimationFrame(draw2DCube);
-    }
-    draw2DCube();
-
-    // 2. Canvas WebGL (Three.js)
-    const canvasWebGL = document.getElementById('canvasWebGL');
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, canvasWebGL.offsetWidth / canvasWebGL.offsetHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas: canvasWebGL, antialias: true });
-    renderer.setSize(canvasWebGL.offsetWidth, canvasWebGL.offsetHeight);
-
-    const geometry = new THREE.BoxGeometry(2, 2, 2);
-    const material = new THREE.MeshPhongMaterial({ color: 0x2ecc71 });
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
-
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(5, 5, 5);
-    scene.add(light);
-    scene.add(new THREE.AmbientLight(0x404040));
-
-    camera.position.z = 5;
-
-    function animateWebGL() {
-        requestAnimationFrame(animateWebGL);
-        cube.rotation.x += 0.01;
-        cube.rotation.y += 0.01;
-        renderer.render(scene, camera);
-    }
-    animateWebGL();
-
-    // 3. SVG CSS 3D (会失败)
-    const svgCss3d = document.getElementById('svgCss3d');
-    let angle3d = 0;
-    function animateSvgCss() {
-        angle3d += 1;
-        svgCss3d.style.transform = `rotateY(${angle3d}deg)`;
-        requestAnimationFrame(animateSvgCss);
-    }
-    animateSvgCss();
-
-    // 4. foreignObject 3D (可能部分工作)
-    const foreign3d = document.getElementById('foreignObject3d');
-    let angle4 = 0;
-    function animateForeign() {
-        angle4 += 1;
-        const innerDiv = foreign3d.querySelector('div');
-        if (innerDiv) {
-            innerDiv.style.transform = `rotateY(${angle4}deg)`;
+    // ===== 扩展的 AnimationPlayer 类 =====
+    class AnimationPlayerWith3D {
+        constructor(config) {
+            this.scenes = config.scenes || [];
+            this.elements = config.elements || {};
+            this.currentScene = 0;
+            this.threejsScenes = new Map();
+            this.activeAnimations = new Map();
         }
-        requestAnimationFrame(animateForeign);
+
+        init() {
+            console.log('✅ AnimationPlayerWith3D 初始化完成');
+        }
+
+        // 初始化 3D 场景
+        init3DScene(sceneIndex, canvasId, setupCallback) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) {
+                console.error(`❌ Canvas ${canvasId} 未找到`);
+                return null;
+            }
+
+            if (this.threejsScenes.has(sceneIndex)) {
+                console.log(`ℹ️ 场景 ${sceneIndex} 已经初始化过了`);
+                return this.threejsScenes.get(sceneIndex);
+            }
+
+            console.log(`🔧 正在初始化 3D 场景 ${sceneIndex}...`);
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(
+                75,
+                canvas.width / canvas.height,
+                0.1,
+                1000
+            );
+            const renderer = new THREE.WebGLRenderer({
+                canvas,
+                antialias: true,
+                alpha: true
+            });
+
+            renderer.setSize(canvas.width, canvas.height);
+            camera.position.z = 5;
+
+            // 添加光源
+            const ambientLight = new THREE.AmbientLight(0x404040);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+
+            const threeSetup = {
+                scene,
+                camera,
+                renderer,
+                objects: {}
+            };
+
+            if (setupCallback) {
+                setupCallback(threeSetup);
+            }
+
+            this.threejsScenes.set(sceneIndex, threeSetup);
+            console.log(`✅ 场景 ${sceneIndex} 初始化成功!`, threeSetup);
+
+            return threeSetup;
+        }
+
+        // 启动 3D 动画
+        start3DAnimation(sceneIndex, animateCallback) {
+            const threeSetup = this.threejsScenes.get(sceneIndex);
+            if (!threeSetup) {
+                console.error(`❌ 场景 ${sceneIndex} 未初始化`);
+                return;
+            }
+
+            this.stop3DAnimation(sceneIndex);
+
+            const animate = () => {
+                const animationId = requestAnimationFrame(animate);
+                this.activeAnimations.set(sceneIndex, animationId);
+
+                if (animateCallback) {
+                    animateCallback(threeSetup);
+                }
+
+                threeSetup.renderer.render(threeSetup.scene, threeSetup.camera);
+            };
+
+            console.log(`▶️ 启动场景 ${sceneIndex} 的 3D 动画`);
+            animate();
+        }
+
+        // 停止 3D 动画
+        stop3DAnimation(sceneIndex) {
+            const animationId = this.activeAnimations.get(sceneIndex);
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                this.activeAnimations.delete(sceneIndex);
+                console.log(`⏸️ 停止场景 ${sceneIndex} 的 3D 动画`);
+            }
+        }
+
+        // 播放场景 (自动处理 3D 初始化)
+        playScene(sceneIndex) {
+            console.log(`\n🎬 播放场景 ${sceneIndex}`);
+
+            // 停止所有 3D 动画
+            this.activeAnimations.forEach((_, index) => {
+                this.stop3DAnimation(index);
+            });
+
+            // 隐藏所有场景
+            for (let i = 0; i < this.scenes.length; i++) {
+                const sceneElement = document.getElementById(`scene${i + 1}`);
+                if (sceneElement) {
+                    sceneElement.style.display = 'none';
+                }
+            }
+
+            // 显示当前场景
+            const currentSceneElement = document.getElementById(`scene${sceneIndex + 1}`);
+            if (currentSceneElement) {
+                currentSceneElement.style.display = 'block';
+            }
+
+            this.currentScene = sceneIndex;
+            const scene = this.scenes[sceneIndex];
+
+            // 更新字幕
+            const subtitle = document.getElementById('subtitle');
+            if (subtitle) {
+                subtitle.textContent = scene.subtitle;
+                subtitle.classList.add('active');
+            }
+
+            // 更新场景编号
+            const sceneNumber = document.getElementById('sceneNumber');
+            if (sceneNumber) {
+                sceneNumber.textContent = sceneIndex + 1;
+            }
+
+            // 执行场景的 action
+            if (scene.action) {
+                scene.action();
+            }
+
+            // 🎯 自动处理 3D 场景
+            if (scene.is3D) {
+                console.log(`🎮 这是一个 3D 场景`);
+
+                if (!this.threejsScenes.has(sceneIndex)) {
+                    console.log(`🔧 场景未初始化,开始自动初始化...`);
+
+                    const canvasId = scene.canvasId || 'canvas3d';
+
+                    if (scene.setup3D) {
+                        this.init3DScene(sceneIndex, canvasId, scene.setup3D);
+                    } else {
+                        console.error(`❌ 场景 ${sceneIndex} 缺少 setup3D 方法`);
+                        return;
+                    }
+                }
+
+                if (scene.animate3D) {
+                    this.start3DAnimation(sceneIndex, scene.animate3D);
+                }
+            }
+        }
+
+        setSceneButtons(container) {
+            if (!container) return;
+
+            container.innerHTML = '';
+            this.scenes.forEach((scene, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'scene-btn';
+                btn.textContent = String(idx + 1);
+                btn.addEventListener('click', () => {
+                    this.playScene(idx);
+                    this.highlightActiveSceneButton(idx);
+                });
+                container.appendChild(btn);
+            });
+
+            this.highlightActiveSceneButton(0);
+        }
+
+        highlightActiveSceneButton(index) {
+            const buttons = document.querySelectorAll('.scene-btn');
+            buttons.forEach((b, i) => b.classList.toggle('active', i === index));
+        }
     }
-    animateForeign();
+
+    // ===== 场景定义 =====
+    const demoScenes = [
+        {
+            title: "场景 1 - SVG 圆形",
+            subtitle: "这是一个简单的 SVG 2D 场景",
+            action: () => console.log('场景 1 执行')
+        },
+        {
+            title: "场景 2 - SVG 矩形",
+            subtitle: "又一个 SVG 2D 场景",
+            action: () => console.log('场景 2 执行')
+        },
+        {
+            title: "场景 3 - Three.js 3D",
+            subtitle: "这是一个真正的 3D 场景,会自动初始化",
+            is3D: true,
+            canvasId: 'canvas3d',
+
+            // ✅ 初始化逻辑
+            setup3D: (setup) => {
+                console.log('🎨 开始创建 3D 对象...');
+
+                const geometry = new THREE.BoxGeometry(2, 2, 2);
+                const materials = [
+                    new THREE.MeshPhongMaterial({ color: 0xff0000 }),
+                    new THREE.MeshPhongMaterial({ color: 0x00ff00 }),
+                    new THREE.MeshPhongMaterial({ color: 0x0000ff }),
+                    new THREE.MeshPhongMaterial({ color: 0xffff00 }),
+                    new THREE.MeshPhongMaterial({ color: 0xff00ff }),
+                    new THREE.MeshPhongMaterial({ color: 0x00ffff })
+                ];
+
+                const cube = new THREE.Mesh(geometry, materials);
+                setup.scene.add(cube);
+                setup.objects.cube = cube;
+
+                console.log('✅ 3D 立方体创建成功');
+            },
+
+            // ✅ 动画逻辑
+            animate3D: (setup) => {
+                if (setup.objects.cube) {
+                    setup.objects.cube.rotation.x += 0.01;
+                    setup.objects.cube.rotation.y += 0.01;
+                }
+            },
+
+            action: () => console.log('场景 3 执行 (3D 会自动处理)')
+        }
+    ];
+
+    // ===== 初始化 =====
+    const player = new AnimationPlayerWith3D({
+        scenes: demoScenes
+    });
+
+    player.init();
+    player.setSceneButtons(document.getElementById('sceneButtons'));
+    player.playScene(0);
+
+    // 播放按钮
+    document.getElementById('playBtn').addEventListener('click', () => {
+        const nextScene = (player.currentScene + 1) % demoScenes.length;
+        player.playScene(nextScene);
+    });
+
+    window.mathPlayer = player;
 </script>
+
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .main-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .animation-container {
+        background: white;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        margin-bottom: 20px;
+        min-height: 450px;
+        position: relative;
+    }
+
+    .scene-number {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: #3498db;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .trig-scene {
+        width: 100%;
+        height: 400px;
+    }
+
+    .subtitle-container {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .subtitle {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #2c3e50;
+    }
+
+    .controls {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .control-btn {
+        width: 50px;
+        height: 50px;
+        border: none;
+        border-radius: 50%;
+        background: #3498db;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .control-btn:hover {
+        background: #2980b9;
+        transform: scale(1.1);
+    }
+
+    .scene-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .scene-btn {
+        padding: 8px 16px;
+        border: 2px solid #3498db;
+        border-radius: 8px;
+        background: white;
+        color: #3498db;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .scene-btn:hover {
+        background: #3498db;
+        color: white;
+    }
+
+    .scene-btn.active {
+        background: #3498db;
+        color: white;
+        font-weight: bold;
+    }
+</style>
 </body>
 </html>

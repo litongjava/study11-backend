@@ -7,274 +7,291 @@
     <link rel="stylesheet" href="animation-player.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
-<body class="main-container">
-<div class="loading" id="loading">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">Loading...</div>
-    <div class="loading-progress">
-        <div class="loading-progress-bar">
-            <div class="loading-progress-fill" id="loadingProgressFill"></div>
+<body>
+<div class="main-container">
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading...</div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar">
+                <div class="loading-progress-fill" id="loadingProgressFill"></div>
+            </div>
+            <div class="loading-progress-text" id="loadingProgressText">Progress: 0 / 0（0%）</div>
         </div>
-        <div class="loading-progress-text" id="loadingProgressText">Progress: 0 / 0（0%）</div>
     </div>
-</div>
-<div class="animation-container">
-    <div class="cache-indicator" id="cacheIndicator">Use cached audio</div>
-    <div class="scene-number" id="sceneNumber">1</div>
+    <div class="animation-container">
+        <div class="cache-indicator" id="cacheIndicator">Use cached audio</div>
+        <div class="scene-number" id="sceneNumber">1</div>
 
-    <svg class="trig-scene" viewBox="0 0 800 400">
-        <!-- 定义 -->
-        <defs>
-            <!-- 渐变定义 -->
-            <linearGradient id="angleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#3498db;stop-opacity:1"/>
-                <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1"/>
-            </linearGradient>
+        <svg class="trig-scene" viewBox="0 0 800 400">
+            <!-- 定义 -->
+            <defs>
+                <!-- 渐变定义 -->
+                <linearGradient id="angleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#3498db;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1"/>
+                </linearGradient>
 
-            <linearGradient id="sinGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1"/>
-                <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1"/>
-            </linearGradient>
+                <linearGradient id="sinGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1"/>
+                </linearGradient>
 
-            <linearGradient id="cosGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style="stop-color:#2ecc71;stop-opacity:1"/>
-                <stop offset="100%" style="stop-color:#27ae60;stop-opacity:1"/>
-            </linearGradient>
+                <linearGradient id="cosGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#2ecc71;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#27ae60;stop-opacity:1"/>
+                </linearGradient>
 
-            <linearGradient id="tanGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style="stop-color:#f39c12;stop-opacity:1"/>
-                <stop offset="100%" style="stop-color:#d35400;stop-opacity:1"/>
-            </linearGradient>
-        </defs>
-        <!-- 场景标题 -->
-        <text x="800" y="30" text-anchor="middle" fill="#2c3e50" font-size="24" font-weight="300"
-              class="scene-title" id="sceneTitle">
-            三角函数简介
-        </text>
+                <linearGradient id="tanGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#f39c12;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#d35400;stop-opacity:1"/>
+                </linearGradient>
+            </defs>
+            <!-- 场景标题 -->
+            <text x="800" y="30" text-anchor="middle" fill="#2c3e50" font-size="24" font-weight="300"
+                  class="scene-title" id="sceneTitle">
+                三角函数简介
+            </text>
 
-        <!-- 视觉面板 -->
-        <g id="visualPanel">
-            <!-- 场景1: 三角函数简介 -->
-            <g id="scene1">
-                <!-- 直角三角形 -->
-                <path d="M 400 200 L 500 200 L 500 100 Z" fill="rgba(52, 152, 219, 0.2)" stroke="#3498db"
-                      stroke-width="2"/>
+            <!-- 视觉面板 -->
+            <g id="visualPanel">
+                <!-- 场景1: 三角函数简介 -->
+                <g id="scene1">
+                    <!-- 直角三角形 -->
+                    <path d="M 400 200 L 500 200 L 500 100 Z" fill="rgba(52, 152, 219, 0.2)" stroke="#3498db"
+                          stroke-width="2"/>
 
-                <!-- 角标记 -->
-                <path d="M 420 200 A 20 20 0 0 0 414.14 185.86" fill="none" stroke="#e74c3c" stroke-width="2"/>
-                <text x="410" y="190" fill="#e74c3c" font-size="16">θ</text>
+                    <!-- 角标记 -->
+                    <path d="M 420 200 A 20 20 0 0 0 414.14 185.86" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                    <text x="410" y="190" fill="#e74c3c" font-size="16">θ</text>
 
-                <!-- 边标记 -->
-                <text x="445" y="220" fill="#2c3e50" font-size="16">邻边</text>
-                <text x="510" y="150" fill="#2c3e50" font-size="16">对边</text>
-                <text x="440" y="140" fill="#2c3e50" font-size="16">斜边</text>
+                    <!-- 边标记 -->
+                    <text x="445" y="220" fill="#2c3e50" font-size="16">邻边</text>
+                    <text x="510" y="150" fill="#2c3e50" font-size="16">对边</text>
+                    <text x="440" y="140" fill="#2c3e50" font-size="16">斜边</text>
 
-                <!-- 函数定义 -->
-                <text x="300" y="280" fill="#2c3e50" font-size="18">sin θ = 对边 / 斜边</text>
-                <text x="300" y="310" fill="#2c3e50" font-size="18">cos θ = 邻边 / 斜边</text>
-                <text x="300" y="340" fill="#2c3e50" font-size="18">tan θ = 对边 / 邻边</text>
-            </g>
+                    <!-- 函数定义 -->
+                    <text x="300" y="280" fill="#2c3e50" font-size="18">sin θ = 对边 / 斜边</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="18">cos θ = 邻边 / 斜边</text>
+                    <text x="300" y="340" fill="#2c3e50" font-size="18">tan θ = 对边 / 邻边</text>
+                </g>
 
-            <!-- 场景2: 单位圆 -->
-            <g id="scene2" style="display: none;">
-                <!-- 坐标轴 -->
-                <line x1="300" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
-                <line x1="500" y1="50" x2="500" y2="350" stroke="#34495e" stroke-width="2"/>
+                <!-- 场景2: 单位圆 -->
+                <g id="scene2" style="display: none;">
+                    <!-- 坐标轴 -->
+                    <line x1="300" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
+                    <line x1="500" y1="50" x2="500" y2="350" stroke="#34495e" stroke-width="2"/>
 
-                <!-- 坐标轴标记 -->
-                <text x="710" y="205" fill="#34495e" font-size="16">x</text>
-                <text x="505" y="45" fill="#34495e" font-size="16">y</text>
+                    <!-- 坐标轴标记 -->
+                    <text x="710" y="205" fill="#34495e" font-size="16">x</text>
+                    <text x="505" y="45" fill="#34495e" font-size="16">y</text>
 
-                <!-- 单位圆 -->
-                <circle cx="500" cy="200" r="100" fill="none" stroke="#3498db" stroke-width="2"/>
+                    <!-- 单位圆 -->
+                    <circle cx="500" cy="200" r="100" fill="none" stroke="#3498db" stroke-width="2"/>
 
-                <!-- 旋转的半径 -->
-                <line id="radius" x1="500" y1="200" x2="600" y2="200" stroke="#3498db" stroke-width="3">
-                    <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200"
-                                      dur="10s" repeatCount="indefinite"/>
-                </line>
+                    <!-- 旋转的半径 -->
+                    <line id="radius" x1="500" y1="200" x2="600" y2="200" stroke="#3498db" stroke-width="3">
+                        <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200"
+                                          dur="10s" repeatCount="indefinite"/>
+                    </line>
 
-                <!-- 点 -->
-                <circle id="point" cx="600" cy="200" r="6" fill="#e74c3c">
-                    <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200"
-                                      dur="10s" repeatCount="indefinite"/>
-                </circle>
+                    <!-- 点 -->
+                    <circle id="point" cx="600" cy="200" r="6" fill="#e74c3c">
+                        <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200"
+                                          dur="10s" repeatCount="indefinite"/>
+                    </circle>
 
-                <!-- 正弦线 -->
-                <line id="sinLine" x1="600" y1="200" x2="600" y2="200" stroke="url(#sinGradient)" stroke-width="2">
-                    <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200"
-                                      dur="10s" repeatCount="indefinite"/>
-                </line>
+                    <!-- 正弦线 -->
+                    <line id="sinLine" x1="600" y1="200" x2="600" y2="200" stroke="url(#sinGradient)" stroke-width="2">
+                        <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200"
+                                          dur="10s" repeatCount="indefinite"/>
+                    </line>
 
-                <!-- 余弦线 -->
-                <line id="cosLine" x1="500" y1="200" x2="600" y2="200" stroke="url(#cosGradient)" stroke-width="2">
-                    <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200"
-                                      dur="10s" repeatCount="indefinite"/>
-                </line>
+                    <!-- 余弦线 -->
+                    <line id="cosLine" x1="500" y1="200" x2="600" y2="200" stroke="url(#cosGradient)" stroke-width="2">
+                        <animateTransform attributeName="transform" type="rotate" from="0 500 200" to="360 500 200"
+                                          dur="10s" repeatCount="indefinite"/>
+                    </line>
 
-                <!-- 标签 -->
-                <text x="300" y="280" fill="#2c3e50" font-size="18">单位圆: x² + y² = 1</text>
-                <text x="300" y="310" fill="#2c3e50" font-size="18">cos θ = x, sin θ = y</text>
-            </g>
+                    <!-- 标签 -->
+                    <text x="300" y="280" fill="#2c3e50" font-size="18">单位圆: x² + y² = 1</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="18">cos θ = x, sin θ = y</text>
+                </g>
 
-            <!-- 场景3: 正弦函数图像 -->
-            <g id="scene3" style="display: none;">
-                <!-- 坐标轴 -->
-                <line x1="100" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
-                <line x1="400" y1="50" x2="400" y2="350" stroke="#34495e" stroke-width="2"/>
+                <!-- 场景3: 正弦函数图像 -->
+                <g id="scene3" style="display: none;">
+                    <!-- 坐标轴 -->
+                    <line x1="100" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
+                    <line x1="400" y1="50" x2="400" y2="350" stroke="#34495e" stroke-width="2"/>
 
-                <!-- 坐标轴标记 -->
-                <text x="710" y="205" fill="#34495e" font-size="16">x</text>
-                <text x="405" y="45" fill="#34495e" font-size="16">y</text>
+                    <!-- 坐标轴标记 -->
+                    <text x="710" y="205" fill="#34495e" font-size="16">x</text>
+                    <text x="405" y="45" fill="#34495e" font-size="16">y</text>
 
-                <!-- 刻度 -->
-                <line x1="300" y1="195" x2="300" y2="205" stroke="#34495e" stroke-width="2"/>
-                <text x="295" y="220" fill="#34495e" font-size="14">-π/2</text>
+                    <!-- 刻度 -->
+                    <line x1="300" y1="195" x2="300" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="295" y="220" fill="#34495e" font-size="14">-π/2</text>
 
-                <line x1="500" y1="195" x2="500" y2="205" stroke="#34495e" stroke-width="2"/>
-                <text x="495" y="220" fill="#34495e" font-size="14">π/2</text>
+                    <line x1="500" y1="195" x2="500" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="495" y="220" fill="#34495e" font-size="14">π/2</text>
 
-                <line x1="600" y1="195" x2="600" y2="205" stroke="#34495e" stroke-width="2"/>
-                <text x="595" y="220" fill="#34495e" font-size="14">π</text>
+                    <line x1="600" y1="195" x2="600" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="595" y="220" fill="#34495e" font-size="14">π</text>
 
-                <line x1="200" y1="195" x2="200" y2="205" stroke="#34495e" stroke-width="2"/>
-                <text x="195" y="220" fill="#34495e" font-size="14">-π</text>
+                    <line x1="200" y1="195" x2="200" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="195" y="220" fill="#34495e" font-size="14">-π</text>
 
-                <!-- 正弦曲线 -->
-                <path d="M 100 200
+                    <!-- 正弦曲线 -->
+                    <path d="M 100 200
                                  C 150 200, 200 100, 300 100
                                  S 500 300, 600 300
                                  S 700 200, 700 200"
-                      fill="none" stroke="url(#sinGradient)" stroke-width="3"/>
+                          fill="none" stroke="url(#sinGradient)" stroke-width="3"/>
 
-                <!-- 标签 -->
-                <text x="300" y="280" fill="#2c3e50" font-size="18">y = sin(x)</text>
-                <text x="300" y="310" fill="#2c3e50" font-size="18">周期: 2π, 振幅: 1</text>
-            </g>
+                    <!-- 标签 -->
+                    <text x="300" y="280" fill="#2c3e50" font-size="18">y = sin(x)</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="18">周期: 2π, 振幅: 1</text>
+                </g>
 
-            <!-- 场景4: 余弦函数图像 -->
-            <g id="scene4" style="display: none;">
-                <!-- 坐标轴 -->
-                <line x1="100" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
-                <line x1="400" y1="50" x2="400" y2="350" stroke="#34495e" stroke-width="2"/>
+                <!-- 场景4: 余弦函数图像 -->
+                <g id="scene4" style="display: none;">
+                    <!-- 坐标轴 -->
+                    <line x1="100" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
+                    <line x1="400" y1="50" x2="400" y2="350" stroke="#34495e" stroke-width="2"/>
 
-                <!-- 坐标轴标记 -->
-                <text x="710" y="205" fill="#34495e" font-size="16">x</text>
-                <text x="405" y="45" fill="#34495e" font-size="16">y</text>
+                    <!-- 坐标轴标记 -->
+                    <text x="710" y="205" fill="#34495e" font-size="16">x</text>
+                    <text x="405" y="45" fill="#34495e" font-size="16">y</text>
 
-                <!-- 刻度 -->
-                <line x1="300" y1="195" x2="300" y2="205" stroke="#34495e" stroke-width="2"/>
-                <text x="295" y="220" fill="#34495e" font-size="14">-π/2</text>
+                    <!-- 刻度 -->
+                    <line x1="300" y1="195" x2="300" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="295" y="220" fill="#34495e" font-size="14">-π/2</text>
 
-                <line x1="500" y1="195" x2="500" y2="205" stroke="#34495e" stroke-width="2"/>
-                <text x="495" y="220" fill="#34495e" font-size="14">π/2</text>
+                    <line x1="500" y1="195" x2="500" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="495" y="220" fill="#34495e" font-size="14">π/2</text>
 
-                <line x1="600" y1="195" x2="600" y2="205" stroke="#34495e" stroke-width="2"/>
-                <text x="595" y="220" fill="#34495e" font-size="14">π</text>
+                    <line x1="600" y1="195" x2="600" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="595" y="220" fill="#34495e" font-size="14">π</text>
 
-                <line x1="200" y1="195" x2="200" y2="205" stroke="#34495e" stroke-width="2"/>
-                <text x="195" y="220" fill="#34495e" font-size="14">-π</text>
+                    <line x1="200" y1="195" x2="200" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="195" y="220" fill="#34495e" font-size="14">-π</text>
 
-                <!-- 余弦曲线 -->
-                <path d="M 100 100
+                    <!-- 余弦曲线 -->
+                    <path d="M 100 100
                                  C 150 100, 200 200, 300 200
                                  S 500 200, 600 200
                                  S 700 100, 700 100"
-                      fill="none" stroke="url(#cosGradient)" stroke-width="3"/>
+                          fill="none" stroke="url(#cosGradient)" stroke-width="3"/>
 
-                <!-- 标签 -->
-                <text x="300" y="280" fill="#2c3e50" font-size="18">y = cos(x)</text>
-                <text x="300" y="310" fill="#2c3e50" font-size="18">周期: 2π, 振幅: 1</text>
-            </g>
+                    <!-- 标签 -->
+                    <text x="300" y="280" fill="#2c3e50" font-size="18">y = cos(x)</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="18">周期: 2π, 振幅: 1</text>
+                </g>
 
-            <!-- 场景5: 正切函数图像 -->
-            <g id="scene5" style="display: none;">
-                <!-- 坐标轴 -->
-                <line x1="100" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
-                <line x1="400" y1="50" x2="400" y2="350" stroke="#34495e" stroke-width="2"/>
+                <!-- 场景5: 正切函数图像 -->
+                <g id="scene5" style="display: none;">
+                    <!-- 坐标轴 -->
+                    <line x1="100" y1="200" x2="700" y2="200" stroke="#34495e" stroke-width="2"/>
+                    <line x1="400" y1="50" x2="400" y2="350" stroke="#34495e" stroke-width="2"/>
 
-                <!-- 坐标轴标记 -->
-                <text x="710" y="205" fill="#34495e" font-size="16">x</text>
-                <text x="405" y="45" fill="#34495e" font-size="16">y</text>
+                    <!-- 坐标轴标记 -->
+                    <text x="710" y="205" fill="#34495e" font-size="16">x</text>
+                    <text x="405" y="45" fill="#34495e" font-size="16">y</text>
 
-                <!-- 刻度 -->
-                <line x1="300" y1="195" x2="300" y2="205" stroke="#34495e" stroke-width="2"/>
-                <text x="295" y="220" fill="#34495e" font-size="14">-π/2</text>
+                    <!-- 刻度 -->
+                    <line x1="300" y1="195" x2="300" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="295" y="220" fill="#34495e" font-size="14">-π/2</text>
 
-                <line x1="500" y1="195" x2="500" y2="205" stroke="#34495e" stroke-width="2"/>
-                <text x="495" y="220" fill="#34495e" font-size="14">π/2</text>
+                    <line x1="500" y1="195" x2="500" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="495" y="220" fill="#34495e" font-size="14">π/2</text>
 
-                <line x1="600" y1="195" x2="600" y2="205" stroke="#34495e" stroke-width="2"/>
-                <text x="595" y="220" fill="#34495e" font-size="14">π</text>
+                    <line x1="600" y1="195" x2="600" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="595" y="220" fill="#34495e" font-size="14">π</text>
 
-                <line x1="200" y1="195" x2="200" y2="205" stroke="#34495e" stroke-width="2"/>
-                <text x="195" y="220" fill="#34495e" font-size="14">-π</text>
+                    <line x1="200" y1="195" x2="200" y2="205" stroke="#34495e" stroke-width="2"/>
+                    <text x="195" y="220" fill="#34495e" font-size="14">-π</text>
 
-                <!-- 渐近线 -->
-                <line x1="300" y1="50" x2="300" y2="350" stroke="#95a5a6" stroke-width="1" stroke-dasharray="5,5"/>
-                <line x1="500" y1="50" x2="500" y2="350" stroke="#95a5a6" stroke-width="1" stroke-dasharray="5,5"/>
+                    <!-- 渐近线 -->
+                    <line x1="300" y1="50" x2="300" y2="350" stroke="#95a5a6" stroke-width="1" stroke-dasharray="5,5"/>
+                    <line x1="500" y1="50" x2="500" y2="350" stroke="#95a5a6" stroke-width="1" stroke-dasharray="5,5"/>
 
-                <!-- 正切曲线 -->
-                <path d="M 100 150
+                    <!-- 正切曲线 -->
+                    <path d="M 100 150
                                  C 150 150, 250 50, 295 50
                                  M 305 350
                                  C 350 350, 450 50, 495 50
                                  M 505 350
                                  C 550 350, 650 50, 695 50"
-                      fill="none" stroke="url(#tanGradient)" stroke-width="3"/>
+                          fill="none" stroke="url(#tanGradient)" stroke-width="3"/>
 
-                <!-- 标签 -->
-                <text x="300" y="280" fill="#2c3e50" font-size="18">y = tan(x)</text>
-                <text x="300" y="310" fill="#2c3e50" font-size="18">周期: π, 渐近线: x = π/2 + kπ</text>
+                    <!-- 标签 -->
+                    <text x="300" y="280" fill="#2c3e50" font-size="18">y = tan(x)</text>
+                    <text x="300" y="310" fill="#2c3e50" font-size="18">周期: π, 渐近线: x = π/2 + kπ</text>
+                </g>
+
+                <!-- 场景6: 三角函数应用 -->
+                <g id="scene6" style="display: none;">
+                    <!-- 建筑物 -->
+                    <rect x="300" y="100" width="100" height="200" fill="#95a5a6"/>
+                    <polygon points="300,100 350,50 400,100" fill="#e74c3c"/>
+
+                    <!-- 太阳 -->
+                    <circle cx="550" cy="100" r="30" fill="#f39c12"/>
+
+                    <!-- 光线 -->
+                    <line x1="520" y1="100" x2="350" y2="100" stroke="#f39c12" stroke-width="2"/>
+
+                    <!-- 影子 -->
+                    <rect x="400" y="300" width="80" height="5" fill="#34495e"/>
+
+                    <!-- 角度标记 -->
+                    <path d="M 400 295 A 10 10 0 0 0 395 285" fill="none" stroke="#e74c3c" stroke-width="2"/>
+                    <text x="385" y="285" fill="#e74c3c" font-size="16">θ</text>
+
+                    <!-- 标签 -->
+                    <text x="300" y="350" fill="#2c3e50" font-size="18">tan θ = 建筑高度 / 影子长度</text>
+                    <text x="300" y="380" fill="#2c3e50" font-size="18">高度 = 影子长度 × tan θ</text>
+                </g>
+                <!-- 在 SVG 中添加 3D 场景 -->
+                <g id="scene7" style="display: none;">
+                    <foreignObject x="100" y="50" width="600" height="300">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 600px; height: 300px;">
+                            <canvas id="canvas3d" width="600" height="300"
+                                    style="display: block; border-radius: 10px;"></canvas>
+                        </div>
+                    </foreignObject>
+
+                    <!-- 可以在 Canvas 周围添加 SVG 标注 -->
+                    <text x="400" y="380" text-anchor="middle" fill="#2c3e50" font-size="18">
+                        这是 Three.js 渲染的真 3D 立方体
+                    </text>
+                </g>
             </g>
-
-            <!-- 场景6: 三角函数应用 -->
-            <g id="scene6" style="display: none;">
-                <!-- 建筑物 -->
-                <rect x="300" y="100" width="100" height="200" fill="#95a5a6"/>
-                <polygon points="300,100 350,50 400,100" fill="#e74c3c"/>
-
-                <!-- 太阳 -->
-                <circle cx="550" cy="100" r="30" fill="#f39c12"/>
-
-                <!-- 光线 -->
-                <line x1="520" y1="100" x2="350" y2="100" stroke="#f39c12" stroke-width="2"/>
-
-                <!-- 影子 -->
-                <rect x="400" y="300" width="80" height="5" fill="#34495e"/>
-
-                <!-- 角度标记 -->
-                <path d="M 400 295 A 10 10 0 0 0 395 285" fill="none" stroke="#e74c3c" stroke-width="2"/>
-                <text x="385" y="285" fill="#e74c3c" font-size="16">θ</text>
-
-                <!-- 标签 -->
-                <text x="300" y="350" fill="#2c3e50" font-size="18">tan θ = 建筑高度 / 影子长度</text>
-                <text x="300" y="380" fill="#2c3e50" font-size="18">高度 = 影子长度 × tan θ</text>
-            </g>
-        </g>
-    </svg>
-</div>
-
-<div class="subtitle-container">
-    <div class="subtitle" id="subtitle"></div>
-</div>
-
-<div class="controls">
-    <button class="control-btn" id="playBtn" title="Play" disabled>
-        <span id="playIcon">▶</span>
-    </button>
-    <button class="control-btn" id="muteBtn" title="Mute">
-        <span id="muteIcon">🔊</span>
-    </button>
-    <div class="progress-container">
-        <div class="progress-bar" id="progressBar">
-            <div class="progress-fill" id="progressFill"></div>
-            <div class="progress-handle" id="progressHandle"></div>
-        </div>
-        <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+        </svg>
     </div>
-    <div class="scene-buttons" id="sceneButtons"></div>
+
+    <div class="subtitle-container">
+        <div class="subtitle" id="subtitle"></div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn" id="playBtn" title="Play" disabled>
+            <span id="playIcon">▶</span>
+        </button>
+        <button class="control-btn" id="muteBtn" title="Mute">
+            <span id="muteIcon">🔊</span>
+        </button>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-handle" id="progressHandle"></div>
+            </div>
+            <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+        </div>
+        <div class="scene-buttons" id="sceneButtons"></div>
+    </div>
 </div>
 
 <div class="footer">
@@ -320,6 +337,40 @@
             title: "三角函数的实际应用",
             subtitle: "三角函数在现实生活中有广泛的应用，如测量建筑物高度、计算天体距离、分析声波和光波等。通过测量角度和已知边长，我们可以使用三角函数计算出未知量。",
             action: () => showScene(6, "三角函数的实际应用")
+        },
+        {
+            title: "立体几何 - 旋转立方体",
+            subtitle: "使用 Three.js 展示真正的 3D 效果",
+            is3D: true, // 标记为 3D 场景
+            canvasId: 'canvas3d',
+            // ✅ 初始化逻辑
+            setup3D: (setup) => {
+                console.log('🎨 开始创建 3D 对象...');
+                const geometry = new THREE.BoxGeometry(2, 2, 2);
+                const materials = [
+                    new THREE.MeshPhongMaterial({color: 0xff0000}),
+                    new THREE.MeshPhongMaterial({color: 0x00ff00}),
+                    new THREE.MeshPhongMaterial({color: 0x0000ff}),
+                    new THREE.MeshPhongMaterial({color: 0xffff00}),
+                    new THREE.MeshPhongMaterial({color: 0xff00ff}),
+                    new THREE.MeshPhongMaterial({color: 0x00ffff})
+                ];
+
+                const cube = new THREE.Mesh(geometry, materials);
+                setup.scene.add(cube);
+                setup.objects.cube = cube;
+
+                console.log('✅ 3D 立方体创建成功');
+            },
+
+            // ✅ 动画逻辑
+            animate3D: (setup) => {
+                if (setup.objects.cube) {
+                    setup.objects.cube.rotation.x += 0.01;
+                    setup.objects.cube.rotation.y += 0.01;
+                }
+            },
+            action: () => showScene(7, "立体几何 - 旋转立方体")
         }
     ];
 </script>
