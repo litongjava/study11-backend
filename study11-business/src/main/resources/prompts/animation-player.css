@@ -261,10 +261,6 @@ body {
         min-height: 300px;
     }
 
-    .subtitle-container {
-        height: 10vh; /* 占视口高度 10% */
-    }
-
     .subtitle {
         font-size: clamp(12px, 2vw, 24px);
     }
