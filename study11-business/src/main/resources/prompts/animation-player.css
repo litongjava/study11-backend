@@ -49,12 +49,14 @@ body {
 
 
 .subtitle {
-    font-size: clamp(12px, 2vw, 24px);
-    text-align: center;
     color: black;
     border-radius: 30px;
+    font-size: 1.4rem;
     max-width: 80%;
+    text-align: center;
+    line-height: 1.5;
     opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .subtitle.active {
@@ -261,10 +263,14 @@ body {
         min-height: 300px;
     }
 
-    .subtitle {
-        font-size: 1rem;
-        padding: 12px 20px;
+    .subtitle-container {
+        height: 10vh; /* 占视口高度 10% */
     }
+
+    .subtitle {
+        font-size: clamp(12px, 2vw, 24px);
+    }
+
 
     .control-btn {
         width: 45px;
