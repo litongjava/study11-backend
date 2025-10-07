@@ -51,7 +51,7 @@ public class HtmlPreviewController {
     response.setStatus(404);
     return response;
   }
-  
+
   @RequestPath("/player-control.js")
   public HttpResponse playerControlJS() {
     HttpResponse response = TioRequestContext.getResponse();
@@ -60,6 +60,20 @@ public class HtmlPreviewController {
     if (resource != null) {
       String cssContent = FileUtil.readString(resource);
       String contentType = Resps.getMimeTypeStr(MimeType.TEXT_JAVASCRIPT_JS, charset);
+      return Resps.string(response, cssContent, charset, contentType);
+    }
+    response.setStatus(404);
+    return response;
+  }
+
+  @RequestPath("/template.html")
+  public HttpResponse templateHtml() {
+    HttpResponse response = TioRequestContext.getResponse();
+    String charset = response.getCharset();
+    URL resource = ResourceUtil.getResource("prompts/template.html");
+    if (resource != null) {
+      String cssContent = FileUtil.readString(resource);
+      String contentType = Resps.getMimeTypeStr(MimeType.TEXT_HTML_HTML, charset);
       return Resps.string(response, cssContent, charset, contentType);
     }
     response.setStatus(404);
