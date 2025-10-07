@@ -10,7 +10,7 @@ public class Stduy11AdminApp {
   public static void main(String[] args) {
     long start = System.currentTimeMillis();
     TioApplication.run(Stduy11AdminApp.class, args);
-    new Study11HeartbeatSender().run();
+    new Study11HeartbeatSender().start();
     long end = System.currentTimeMillis();
     System.out.println((end - start) + "(ms)");
   }

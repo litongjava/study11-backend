@@ -4,7 +4,7 @@ function showScene(sceneNumber, title) {
     for (let i = 1; i <= mathScenes.length; i++) {
         const scene = document.getElementById(`scene${i}`);
         if (scene) {
-            scene.style.display = 'none';
+            scene.style.visibility = i === sceneNumber ? 'visible' : 'hidden';
         }
     }
 

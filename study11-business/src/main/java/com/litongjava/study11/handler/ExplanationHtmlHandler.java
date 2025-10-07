@@ -1,7 +1,6 @@
 package com.litongjava.study11.handler;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.consts.ModelPlatformName;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.study11.model.ExplanationVo;
 import com.litongjava.study11.service.HtmlAnimationService;
@@ -32,7 +31,6 @@ public class ExplanationHtmlHandler {
     request.channelContext.setAttribute("type", "SSE");
     String bodyString = request.getBodyString();
     ExplanationVo explanationVo = JsonUtils.parse(bodyString, ExplanationVo.class);
-    explanationVo.setProvider(ModelPlatformName.BAILIAN);
     explanationVo.setDomain(host);
 
     TioThreadUtils.execute(() -> {
