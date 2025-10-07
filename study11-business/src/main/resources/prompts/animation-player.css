@@ -45,19 +45,16 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: auto;
 }
 
 
 .subtitle {
+    font-size: clamp(12px, 2vw, 24px);
+    text-align: center;
     color: black;
     border-radius: 30px;
-    font-size: 1.4rem;
     max-width: 80%;
-    text-align: center;
-    line-height: 1.5;
     opacity: 0;
-    transition: opacity 0.3s ease;
 }
 
 .subtitle.active {
