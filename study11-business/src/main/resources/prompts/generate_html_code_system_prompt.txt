@@ -124,10 +124,10 @@ const allScenes = [...]
 ---
 
 ### 9. 公式渲染
-svg <text>不支持显示公式.显示公式必须使用 KaTeX 进行公式渲染+`<foreignObject>` 内嵌 HTML：
-class="html-formula"必须设置.
+svg的<text>标签不支持显示公式.显示公式必须使用 KaTeX 进行公式渲染：
 
-显示单号公式
+直接显示公式的方式如下:
+class="html-formula"必须设置.
 ```html
 <foreignObject x="100" y="100" width="200" height="50">
     <div id="formula" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
@@ -139,40 +139,26 @@ class="html-formula"必须设置.
 </script>
 ```
 
-从公式放到html的Element中,使用renderMathInElement从Element中渲染公式
-1.在svg的对应的场景中定义foreignObject
-2.封装renderFormula公式渲染函数.
-3.在document.addEventListener('DOMContentLoaded', function () { 中使用renderFormula 函数渲染公式
+讲公式放到html的Element中,使用renderMathInElement从Element中渲染公式
 示例代码如下
 ```html
-<foreignObject x="200" y="150" width="1200" height="500">
-  <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
-    <div id="formula3" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
-   </div>
-</foreignObject>
+        // 纯公式使用katex.render渲染,注意需要定义html-formula8
+        katex.render("\\frac{dy}{dx} = \\frac{dy/dt}{dx/dt}",
+            document.getElementById('html-formula8'));
 
-<script>
-    // 封装渲染函数
-    function renderFormula(containerId, htmlContent) {
-        const el = document.getElementById(containerId);
-        if (!el) return;
-        el.innerHTML = htmlContent;
-        renderMathInElement(el, {
+        // Scene 9: 高阶导数, 如果将公式放到div标签中,使用renderMathInElement渲染
+        const formula9 = `
+            <div>二阶导数: $f''(x)$ 或 $\\frac{d^2y}{dx^2}$</div>
+            <div style="margin-top: 20px;">例如: 若 $f(x) = x^3$，则 $f'(x) = 3x^2$，$f''(x) = 6x$</div>
+            <div style="margin-top: 20px;">物理应用: 加速度 $a = \\frac{dv}{dt} = \\frac{d^2s}{dt^2}$</div>
+        `;
+        document.getElementById('html-formula9').innerHTML = formula9;
+        renderMathInElement(document.getElementById('html-formula9'), {
             delimiters: [
-                {left: "$", right: "$", display: false},
-                {left: "$$", right: "$$", display: true}
+                { left: "$", right: "$", display: false },
+                { left: "$$", right: "$$", display: true }
             ]
         });
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const formula3 = `
-            <div>链式法则: $[f(g(x))]' = f'(g(x)) \\cdot g'(x)$</div>
-            <div style="margin-top: 20px;">例如: $(\\sin(x^2))' = \\cos(x^2) \\cdot 2x$</div>
-        `;
-        renderFormula('formula3', formula3);
-    });
-</script>
 ```
 
 ---
