@@ -123,10 +123,10 @@ const allScenes = [...]
 
 使用 KaTeX 进行公式渲染。
 通过 `<foreignObject>` 内嵌 HTML：
-
+id="html-formula"必须设置
 ```html
 <foreignObject x="100" y="100" width="200" height="50">
-    <div xmlns="http://www.w3.org/1999/xhtml" style="padding: 10px;">
+    <div id="html-formula" xmlns="http://www.w3.org/1999/xhtml">
         <span id="formula1"></span>
     </div>
 </foreignObject>
@@ -170,15 +170,6 @@ GeoGebra最擅长绘制的类型
 6. **统计与数据分析（Statistics）**
    - 绘制直方图、散点图、拟合曲线。
 ---
-
-教学应用建议
-| 学段 | 应用方向 |
-|------|-----------|
-| 初中几何 | 平行线、圆、角度变化演示 |
-| 高中函数 | 参数函数、切线、导数变化 |
-| 物理力学 | 速度、加速度、向量演示 |
-| 大学数学 | 多元函数与积分区域、3D可视化 |
-
 
 **SVG 结构示例：**
 
