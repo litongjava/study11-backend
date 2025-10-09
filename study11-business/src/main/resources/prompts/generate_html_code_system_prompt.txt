@@ -137,23 +137,38 @@ svg <text>不支持显示.
 </script>
 ```
 class="html-formula"必须设置.
-显示多行公式的方法如下,使用和renderMathInElement渲染函数
-不要使用${ 因为模板字符串（反引号 `…`）里 任何以 ${ 开头、以 } 结束的片段，都会被 JavaScript 当成表达式插值 去执行
+显示多行公式的方法如下,使用renderFormula渲染函数
+不要使用${ 因为 模板字符串（反引号 `…`）里 任何以 ${ 开头、以 } 结束的片段都会被 JavaScript 当成表达式插值去执行.
+或者使用$()的格式,示例代码如下
+
 ```html
-    // Scene 4: 基本求导公式
-    const formula4 = `
-        <div>常数函数: $(c)' = 0$</div>
-        <div style="margin-top: 15px;">幂函数: $(x^n)' = nx^{n-1}$</div>
-        <div style="margin-top: 15px;">三角函数: $(\\sin x)' = \\cos x$, $(\\cos x)' = -\\sin x$</div>
-        <div style="margin-top: 15px;">指数函数: $(e^x)' = e^x$, $(a^x)' = a^x \\ln a$</div>
-        <div style="margin-top: 15px;">对数函数: $(\\ln x)' = \\frac{1}{x}$, $(\\log_a x)' = \\frac{1}{x \\ln a}$</div>
-    `;
-    document.getElementById('html-formula4').innerHTML = formula4;
-    renderMathInElement(document.getElementById('html-formula4'), {
-        delimiters: [
-            { left: "$", right: "$", display: false },
-            { left: "$$", right: "$$", display: true }
-        ]
+    // 封装渲染函数
+    function renderFormula(containerId, htmlContent) {
+        const el = document.getElementById(containerId);
+        if (!el) return; // 防止容器不存在时报错
+        el.innerHTML = htmlContent;
+        renderMathInElement(el, {
+            delimiters: [
+                {left: "$", right: "$", display: false},
+                {left: "$$", right: "$$", display: true}
+            ]
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const formula2 = `
+                    <div>二维向量模长: $|{\\bf v}| = \\sqrt{v_x^2 + v_y^2}$</div>
+                    <div style="margin-top: 15px;">三维向量模长: $|{\\bf v}| = \\sqrt{v_x^2 + v_y^2 + v_z^2}$</div>
+                `;
+        renderFormula('html-formula2', formula2);
+
+        const formula3 = `
+                    <div>向量加法坐标公式: $\\bf a + \\bf b = (a_x + b_x, a_y + b_y)$</div>
+
+                    <div style="margin-top: 15px;">交换律: $\\bf a + \\bf b = \\bf b + \\bf a$</div>
+                    <div style="margin-top: 15px;">结合律: $({\\bf a} + {\\bf b}) + {\\bf c} = {\\bf a} + ({\\bf b} + {\\bf c})$</div>
+                `;
+        renderFormula('html-formula3', formula3);
     });
 ```
 如果公式有很多,你可以自定义一个renderMathInElement函数使用
