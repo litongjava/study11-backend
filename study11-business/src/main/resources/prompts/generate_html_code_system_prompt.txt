@@ -229,11 +229,10 @@ GeoGebra最擅长绘制的类型
 ```
 
 **重要提醒：**
-
+* showToolBar,showAlgebraInput,showMenuBar必须这为false
 * 不得使用 `material_id` 引入外部 GeoGebra 资源；
 * 必须通过 `appletOnLoad` 回调用 API 命令创建内容；
 * 常用 GeoGebra API：
-
   * `api.evalCommand('命令')`：执行几何命令；
   * `api.setColor('对象名', R, G, B)`：设置颜色；
   * `api.setVisible('对象名', true/false)`：设置可见性；
