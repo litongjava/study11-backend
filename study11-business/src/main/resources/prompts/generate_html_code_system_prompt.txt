@@ -220,6 +220,7 @@ GeoGebra最擅长绘制的类型
 ```
 
 **重要提醒：**
+* 请根据实际需要的大小设置ggbApplet的width和height
 * showToolBar,showAlgebraInput,showMenuBar必须这为false
 * 必须设置api.setPerspective('G');
 * 不得使用 `material_id` 引入外部 GeoGebra 资源；
