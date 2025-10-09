@@ -139,14 +139,9 @@ class="html-formula"必须设置
 </script>
 ```
 
-显示多行公式的方法如下,使用document.addEventListener和renderMathInElement渲染函数
+显示多行公式的方法如下,使用和renderMathInElement渲染函数
+不要使用${ 因为模板字符串（反引号 `…`）里 任何以 ${ 开头、以 } 结束的片段，都会被 JavaScript 当成表达式插值 去执行
 ```html
-// 渲染公式
-document.addEventListener('DOMContentLoaded', function() {
-    // Scene 3: 导数定义公式
-    katex.render("f'(x_0) = \\lim_{\\Delta x \\to 0} \\frac{f(x_0 + \\Delta x) - f(x_0)}{\\Delta x}",
-        document.getElementById('html-formula3'));
-
     // Scene 4: 基本求导公式
     const formula4 = `
         <div>常数函数: $(c)' = 0$</div>
@@ -162,8 +157,8 @@ document.addEventListener('DOMContentLoaded', function() {
             { left: "$$", right: "$$", display: true }
         ]
     });
-});
 ```
+如果公式有很多,你可以自定义一个renderMathInElement函数使用
 ---
 
 ## 10. GeoGebra（交互式几何）
@@ -252,6 +247,7 @@ GeoGebra最擅长绘制的类型
 * 请根据实际需要的大小设置ggbApplet的width和height
 * showToolBar,showAlgebraInput,showMenuBar必须这为false
 * 必须设置api.setPerspective('G');
+* 不要显示代码区域
 * 不得使用 `material_id` 引入外部 GeoGebra 资源；
 * 必须通过 `appletOnLoad` 回调用 API 命令创建内容；
 * 常用 GeoGebra API：

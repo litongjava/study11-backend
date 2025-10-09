@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -43,8 +44,7 @@
             <g id="visualPanel">
                 <!-- Scene 1: 向量基本概念 -->
                 <g id="scene1">
-                    <line x1="400" y1="400" x2="700" y2="300" stroke="#3498db" stroke-width="4"
-                          marker-end="url(#arrowhead)"/>
+                    <line x1="400" y1="400" x2="700" y2="300" stroke="#3498db" stroke-width="4" marker-end="url(#arrowhead)"/>
                     <circle cx="400" cy="400" r="5" fill="#3498db"/>
                     <circle cx="700" cy="300" r="5" fill="#3498db"/>
                     <text x="380" y="420" fill="#2c3e50" font-size="30">起点</text>
@@ -285,7 +285,7 @@
                     "enableShiftDragZoom": true,
                     "showResetIcon": true,
                     "language": "zh_CN",
-                    "appletOnLoad": function (api) {
+                    "appletOnLoad": function(api) {
                         api.setPerspective('G');
                         api.setAxesVisible(true, true);
                         api.setGridVisible(true);
@@ -306,17 +306,6 @@
             },
             action: () => {
                 showScene(2, "向量模长公式");
-                const formula2 = `
-                    <div>二维向量模长: $|{\\bf v}| = \\sqrt{v_x^2 + v_y^2}$</div>
-                    <div style="margin-top: 15px;">三维向量模长: $|{\\bf v}| = \\sqrt{v_x^2 + v_y^2 + v_z^2}$</div>
-                `;
-                document.getElementById('html-formula2').innerHTML = formula2;
-                renderMathInElement(document.getElementById('html-formula2'), {
-                    delimiters: [
-                        {left: "$", right: "$", display: false},
-                        {left: "$$", right: "$$", display: true}
-                    ]
-                });
             }
         },
 
@@ -338,7 +327,7 @@
                     "enableShiftDragZoom": true,
                     "showResetIcon": true,
                     "language": "zh_CN",
-                    "appletOnLoad": function (api) {
+                    "appletOnLoad": function(api) {
                         api.setPerspective('G');
                         api.setAxesVisible(true, true);
                         api.setGridVisible(true);
@@ -366,19 +355,6 @@
             },
             action: () => {
                 showScene(3, "向量加法公式");
-                const formula3 = `
-  <div>向量加法坐标公式: $\\mathbf{a} + \\mathbf{b} = (a_x + b_x, a_y + b_y)$</div>
-  <div style="margin-top: 15px;">交换律: $\\mathbf{a} + \\mathbf{b} = \\mathbf{b} + \\mathbf{a}$</div>
-  <div style="margin-top: 15px;">结合律: $(\\mathbf{a} + \\mathbf{b}) + \\mathbf{c} = \\mathbf{a} + (\\mathbf{b} + \\mathbf{c})$</div>
-`;
-
-                document.getElementById('html-formula3').innerHTML = formula3;
-                renderMathInElement(document.getElementById('html-formula3'), {
-                    delimiters: [
-                        {left: "$", right: "$", display: false},
-                        {left: "$$", right: "$$", display: true}
-                    ]
-                });
             }
         },
 
@@ -400,7 +376,7 @@
                     "enableShiftDragZoom": true,
                     "showResetIcon": true,
                     "language": "zh_CN",
-                    "appletOnLoad": function (api) {
+                    "appletOnLoad": function(api) {
                         api.setPerspective('G');
                         api.setAxesVisible(true, true);
                         api.setGridVisible(true);
@@ -428,17 +404,7 @@
             },
             action: () => {
                 showScene(4, "向量减法公式");
-                const formula4 = `
-                    <div>向量减法坐标公式: ${\\bf a} - {\\bf b} = (a_x - b_x, a_y - b_y)$</div>
-                    <div style="margin-top: 15px;">几何意义: 从${\\bf b}$的终点指向${\\bf a}$的终点</div>
-                `;
-                document.getElementById('html-formula4').innerHTML = formula4;
-                renderMathInElement(document.getElementById('html-formula4'), {
-                    delimiters: [
-                        {left: "$", right: "$", display: false},
-                        {left: "$$", right: "$$", display: true}
-                    ]
-                });
+
             }
         },
 
@@ -460,7 +426,7 @@
                     "enableShiftDragZoom": true,
                     "showResetIcon": true,
                     "language": "zh_CN",
-                    "appletOnLoad": function (api) {
+                    "appletOnLoad": function(api) {
                         api.setPerspective('G');
                         api.setAxesVisible(true, true);
                         api.setGridVisible(true);
@@ -485,17 +451,7 @@
             },
             action: () => {
                 showScene(5, "数量积公式");
-                const formula5 = `
-                    <div>坐标计算公式: ${\\bf a} \\cdot {\\bf b} = a_x b_x + a_y b_y$</div>
-                    <div style="margin-top: 15px;">几何计算公式: ${\\bf a} \\cdot {\\bf b} = |{\\bf a}||{\\bf b}|\\cos\\theta$</div>
-                `;
-                document.getElementById('html-formula5').innerHTML = formula5;
-                renderMathInElement(document.getElementById('html-formula5'), {
-                    delimiters: [
-                        {left: "$", right: "$", display: false},
-                        {left: "$$", right: "$$", display: true}
-                    ]
-                });
+
             }
         },
 
@@ -517,7 +473,7 @@
                     "enableShiftDragZoom": true,
                     "showResetIcon": true,
                     "language": "zh_CN",
-                    "appletOnLoad": function (api) {
+                    "appletOnLoad": function(api) {
                         api.setPerspective('G');
                         api.setAxesVisible(true, true);
                         api.setGridVisible(true);
@@ -541,18 +497,6 @@
             },
             action: () => {
                 showScene(6, "向量夹角公式");
-                const formula6 = `
-                    <div>夹角计算公式: $\\cos\\theta = \\frac{{\\bf a} \\cdot {\\bf b}}{|{\\bf a}||{\\bf b}|}$</div>
-                    <div style="margin-top: 15px;">当${\\bf a} \\cdot {\\bf b} = 0$时，两向量垂直</div>
-                    <div style="margin-top: 15px;">当${\\bf a} \\cdot {\\bf b} = |{\\bf a}||{\\bf b}|$时，两向量平行且同向</div>
-                `;
-                document.getElementById('html-formula6').innerHTML = formula6;
-                renderMathInElement(document.getElementById('html-formula6'), {
-                    delimiters: [
-                        {left: "$", right: "$", display: false},
-                        {left: "$$", right: "$$", display: true}
-                    ]
-                });
             }
         },
 
@@ -574,7 +518,7 @@
                     "enableShiftDragZoom": true,
                     "showResetIcon": true,
                     "language": "zh_CN",
-                    "appletOnLoad": function (api) {
+                    "appletOnLoad": function(api) {
                         api.setPerspective('G');
                         api.setAxesVisible(true, true);
                         api.setGridVisible(true);
@@ -603,17 +547,7 @@
             },
             action: () => {
                 showScene(7, "向量投影公式");
-                const formula7 = `
-                    <div>投影公式: ${\\bf proj}_{\\bf b}{\\bf a} = \\frac{{\\bf a} \\cdot {\\bf b}}{|{\\bf b}|^2}{\\bf b}$</div>
-                    <div style="margin-top: 15px;">投影长度: $|{\\bf proj}_{\\bf b}{\\bf a}| = \\frac{|{\\bf a} \\cdot {\\bf b}|}{|{\\bf b}|}$</div>
-                `;
-                document.getElementById('html-formula7').innerHTML = formula7;
-                renderMathInElement(document.getElementById('html-formula7'), {
-                    delimiters: [
-                        {left: "$", right: "$", display: false},
-                        {left: "$$", right: "$$", display: true}
-                    ]
-                });
+
             }
         },
 
@@ -635,7 +569,7 @@
                     "enableShiftDragZoom": true,
                     "showResetIcon": true,
                     "language": "zh_CN",
-                    "appletOnLoad": function (api) {
+                    "appletOnLoad": function(api) {
                         // 创建向量
                         api.evalCommand('a = Vector((0,0,0), (3,0,0))');
                         api.evalCommand('b = Vector((0,0,0), (0,4,0))');
@@ -658,17 +592,6 @@
             },
             action: () => {
                 showScene(8, "向量叉积公式");
-                const formula8 = `
-                    <div>叉积坐标公式: ${\\bf a} \\times {\\bf b} = (a_y b_z - a_z b_y, a_z b_x - a_x b_z, a_x b_y - a_y b_x)$</div>
-                    <div style="margin-top: 15px;">模长公式: $|{\\bf a} \\times {\\bf b}| = |{\\bf a}||{\\bf b}|\\sin\\theta$</div>
-                `;
-                document.getElementById('html-formula8').innerHTML = formula8;
-                renderMathInElement(document.getElementById('html-formula8'), {
-                    delimiters: [
-                        {left: "$", right: "$", display: false},
-                        {left: "$$", right: "$$", display: true}
-                    ]
-                });
             }
         },
 
@@ -690,7 +613,7 @@
                     "enableShiftDragZoom": true,
                     "showResetIcon": true,
                     "language": "zh_CN",
-                    "appletOnLoad": function (api) {
+                    "appletOnLoad": function(api) {
                         // 创建向量
                         api.evalCommand('a = Vector((0,0,0), (3,1,0))');
                         api.evalCommand('b = Vector((0,0,0), (1,4,0))');
@@ -712,18 +635,7 @@
             },
             action: () => {
                 showScene(9, "叉积几何意义");
-                const formula9 = `
-                    <div>叉积模长: $|{\\bf a} \\times {\\bf b}| = |{\\bf a}||{\\bf b}|\\sin\\theta$</div>
-                    <div style="margin-top: 15px;">平行四边形面积: $S = |{\\bf a} \\times {\\bf b}|$</div>
-                    <div style="margin-top: 15px;">三角形面积: $S = \\frac{1}{2}|{\\bf a} \\times {\\bf b}|$</div>
-                `;
-                document.getElementById('html-formula9').innerHTML = formula9;
-                renderMathInElement(document.getElementById('html-formula9'), {
-                    delimiters: [
-                        {left: "$", right: "$", display: false},
-                        {left: "$$", right: "$$", display: true}
-                    ]
-                });
+
             }
         },
 
@@ -745,7 +657,7 @@
                     "enableShiftDragZoom": true,
                     "showResetIcon": true,
                     "language": "zh_CN",
-                    "appletOnLoad": function (api) {
+                    "appletOnLoad": function(api) {
                         api.setPerspective('G');
                         api.setAxesVisible(true, true);
                         api.setGridVisible(true);
@@ -770,17 +682,7 @@
             },
             action: () => {
                 showScene(10, "单位向量公式");
-                const formula10 = `
-                    <div>单位向量公式: ${\\bf \\hat{v}} = \\frac{{\\bf v}}{|{\\bf v}|}$</div>
-                    <div style="margin-top: 15px;">模长为1: $|{\\bf \\hat{v}}| = 1$</div>
-                `;
-                document.getElementById('html-formula10').innerHTML = formula10;
-                renderMathInElement(document.getElementById('html-formula10'), {
-                    delimiters: [
-                        {left: "$", right: "$", display: false},
-                        {left: "$$", right: "$$", display: true}
-                    ]
-                });
+
             }
         },
 
@@ -802,7 +704,7 @@
                     "enableShiftDragZoom": true,
                     "showResetIcon": true,
                     "language": "zh_CN",
-                    "appletOnLoad": function (api) {
+                    "appletOnLoad": function(api) {
                         api.setPerspective('G');
                         api.setAxesVisible(true, true);
                         api.setGridVisible(true);
@@ -830,17 +732,7 @@
             },
             action: () => {
                 showScene(11, "向量线性组合");
-                const formula11 = `
-                    <div>线性组合公式: ${\\bf v} = k_1{\\bf v_1} + k_2{\\bf v_2} + ... + k_n{\\bf v_n}$</div>
-                    <div style="margin-top: 15px;">二维示例: ${\\bf v} = k_1{\\bf e_1} + k_2{\\bf e_2}$</div>
-                `;
-                document.getElementById('html-formula11').innerHTML = formula11;
-                renderMathInElement(document.getElementById('html-formula11'), {
-                    delimiters: [
-                        {left: "$", right: "$", display: false},
-                        {left: "$$", right: "$$", display: true}
-                    ]
-                });
+
             }
         },
 
@@ -862,7 +754,7 @@
                     "enableShiftDragZoom": true,
                     "showResetIcon": true,
                     "language": "zh_CN",
-                    "appletOnLoad": function (api) {
+                    "appletOnLoad": function(api) {
                         api.setPerspective('G');
                         api.setAxesVisible(true, true);
                         api.setGridVisible(true);
@@ -888,21 +780,148 @@
             },
             action: () => {
                 showScene(12, "向量共线条件");
-                const formula12 = `
-                    <div>共线条件: ${\\bf a} = k{\\bf b}$ (存在实数k)</div>
-                    <div style="margin-top: 15px;">二维坐标条件: $a_x b_y - a_y b_x = 0$</div>
-                    <div style="margin-top: 15px;">三维坐标条件: ${\\bf a} \\times {\\bf b} = {\\bf 0}$</div>
-                `;
-                document.getElementById('html-formula12').innerHTML = formula12;
-                renderMathInElement(document.getElementById('html-formula12'), {
-                    delimiters: [
-                        {left: "$", right: "$", display: false},
-                        {left: "$$", right: "$$", display: true}
-                    ]
-                });
+
             }
         }
     ];
+    document.addEventListener('DOMContentLoaded', function() {
+        const formula2 = `
+                    <div>二维向量模长: $|{\\bf v}| = \\sqrt{v_x^2 + v_y^2}$</div>
+                    <div style="margin-top: 15px;">三维向量模长: $|{\\bf v}| = \\sqrt{v_x^2 + v_y^2 + v_z^2}$</div>
+                `;
+        document.getElementById('html-formula2').innerHTML = formula2;
+        renderMathInElement(document.getElementById('html-formula2'), {
+            delimiters: [
+                {left: "$", right: "$", display: false},
+                {left: "$$", right: "$$", display: true}
+            ]
+        });
+
+
+        const formula3 = `
+                    <div>向量加法坐标公式: $\\bf a + \\bf b = (a_x + b_x, a_y + b_y)$</div>
+
+                    <div style="margin-top: 15px;">交换律: $\\bf a + \\bf b = \\bf b + \\bf a$</div>
+                    <div style="margin-top: 15px;">结合律: $({\\bf a} + {\\bf b}) + {\\bf c} = {\\bf a} + ({\\bf b} + {\\bf c})$</div>
+                `;
+        document.getElementById('html-formula3').innerHTML = formula3;
+        renderMathInElement(document.getElementById('html-formula3'), {
+            delimiters: [
+                {left: "$", right: "$", display: false},
+                {left: "$$", right: "$$", display: true}
+            ]
+        });
+        const formula4 = `
+                    <div>向量减法坐标公式: $({\\bf a} - {\\bf b} = (a_x - b_x, a_y - b_y))$</div>
+                    <div style="margin-top: 15px;">几何意义: 从$({\\bf b})$的终点指向$({\\bf a})$的终点</div>
+                `;
+        document.getElementById('html-formula4').innerHTML = formula4;
+        renderMathInElement(document.getElementById('html-formula4'), {
+            delimiters: [
+                { left: "$", right: "$", display: false },
+                { left: "$$", right: "$$", display: true }
+            ]
+        });
+
+        const formula5 = `
+                    <div>坐标计算公式: $({\\bf a} \\cdot {\\bf b} = a_x b_x + a_y b_y)$</div>
+                    <div style="margin-top: 15px;">几何计算公式: $({\\bf a} \\cdot {\\bf b} = |{\\bf a}||{\\bf b}|\\cos\\theta)$</div>
+                `;
+        document.getElementById('html-formula5').innerHTML = formula5;
+        renderMathInElement(document.getElementById('html-formula5'), {
+            delimiters: [
+                { left: "$", right: "$", display: false },
+                { left: "$$", right: "$$", display: true }
+            ]
+        });
+
+        const formula6 = `
+                    <div>夹角计算公式: $\\cos\\theta = \\frac{{\\bf a} \\cdot {\\bf b}}{|{\\bf a}||{\\bf b}|})$</div>
+                    <div style="margin-top: 15px;">当$({\\bf a} \\cdot {\\bf b} = 0$时，两向量垂直</div>
+                    <div style="margin-top: 15px;">当$({\\bf a} \\cdot {\\bf b} = |{\\bf a}||{\\bf b}|$时，两向量平行且同向</div>
+                `;
+        document.getElementById('html-formula6').innerHTML = formula6;
+        renderMathInElement(document.getElementById('html-formula6'), {
+            delimiters: [
+                { left: "$", right: "$", display: false },
+                { left: "$$", right: "$$", display: true }
+            ]
+        });
+
+        const formula7 = `
+                    <div>投影公式: $({\\bf proj}_{\\bf b}{\\bf a} = \\frac{{\\bf a} \\cdot {\\bf b}}{|{\\bf b}|^2}{\\bf b})$</div>
+                    <div style="margin-top: 15px;">投影长度: $|{\\bf proj}_{\\bf b}{\\bf a}| = \\frac{|{\\bf a} \\cdot {\\bf b}|}{|{\\bf b}|})$</div>
+                `;
+        document.getElementById('html-formula7').innerHTML = formula7;
+        renderMathInElement(document.getElementById('html-formula7'), {
+            delimiters: [
+                { left: "$", right: "$", display: false },
+                { left: "$$", right: "$$", display: true }
+            ]
+        });
+
+        const formula8 = `
+                    <div>叉积坐标公式: $({\\bf a} \\times {\\bf b} = (a_y b_z - a_z b_y, a_z b_x - a_x b_z, a_x b_y - a_y b_x))$</div>
+                    <div style="margin-top: 15px;">模长公式: $|{\\bf a} \\times {\\bf b}| = |{\\bf a}||{\\bf b}|\\sin\\theta)$</div>
+                `;
+        document.getElementById('html-formula8').innerHTML = formula8;
+        renderMathInElement(document.getElementById('html-formula8'), {
+            delimiters: [
+                { left: "$", right: "$", display: false },
+                { left: "$$", right: "$$", display: true }
+            ]
+        });
+
+        const formula9 = `
+                    <div>叉积模长: $|{\\bf a} \\times {\\bf b}| = |{\\bf a}||{\\bf b}|\\sin\\theta)$</div>
+                    <div style="margin-top: 15px;">平行四边形面积: $S = |{\\bf a} \\times {\\bf b}|)$</div>
+                    <div style="margin-top: 15px;">三角形面积: $S = \\frac{1}{2}|{\\bf a} \\times {\\bf b}|)$</div>
+                `;
+        document.getElementById('html-formula9').innerHTML = formula9;
+        renderMathInElement(document.getElementById('html-formula9'), {
+            delimiters: [
+                { left: "$", right: "$", display: false },
+                { left: "$$", right: "$$", display: true }
+            ]
+        });
+
+        const formula10 = `
+                    <div>单位向量公式: $({\\bf \\hat{v}} = \\frac{{\\bf v}}{|{\\bf v}|})$</div>
+                    <div style="margin-top: 15px;">模长为1: $|{\\bf \\hat{v}}| = 1)$</div>
+                `;
+        document.getElementById('html-formula10').innerHTML = formula10;
+        renderMathInElement(document.getElementById('html-formula10'), {
+            delimiters: [
+                { left: "$", right: "$", display: false },
+                { left: "$$", right: "$$", display: true }
+            ]
+        });
+
+        const formula11 = `
+                    <div>线性组合公式: $({\\bf v} = k_1{\\bf v_1} + k_2{\\bf v_2} + ... + k_n{\\bf v_n})$</div>
+                    <div style="margin-top: 15px;">二维示例: $({\\bf v} = k_1{\\bf e_1} + k_2{\\bf e_2})$</div>
+                `;
+        document.getElementById('html-formula11').innerHTML = formula11;
+        renderMathInElement(document.getElementById('html-formula11'), {
+            delimiters: [
+                { left: "$", right: "$", display: false },
+                { left: "$$", right: "$$", display: true }
+            ]
+        });
+
+        const formula12 = `
+                    <div>共线条件: $({\\bf a} = k{\\bf b}$ (存在实数k)</div>
+                    <div style="margin-top: 15px;">二维坐标条件: $a_x b_y - a_y b_x = 0)$</div>
+                    <div style="margin-top: 15px;">三维坐标条件: $({\\bf a} \\times {\\bf b} = {\\bf 0})$</div>
+                `;
+        document.getElementById('html-formula12').innerHTML = formula12;
+        renderMathInElement(document.getElementById('html-formula12'), {
+            delimiters: [
+                { left: "$", right: "$", display: false },
+                { left: "$$", right: "$$", display: true }
+            ]
+        });
+    });
 </script>
 </body>
 </html>
