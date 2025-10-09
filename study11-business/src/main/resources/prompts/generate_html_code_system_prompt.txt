@@ -143,7 +143,7 @@ class="html-formula"必须设置.
 2.封装renderFormula公式渲染函数.
 3.在document.addEventListener('DOMContentLoaded', function () { 中使用renderFormula 函数渲染公式
 示例代码如下
-```javascript
+```html
 <foreignObject x="200" y="150" width="1200" height="500">
   <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
     <div id="formula3" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
