@@ -124,10 +124,8 @@ const allScenes = [...]
 ---
 
 ### 9. 公式渲染
-
-使用 KaTeX 进行公式渲染。
-通过 `<foreignObject>` 内嵌 HTML：
-class="html-formula"必须设置
+svg <text>不支持显示.
+显示公式必须使用 KaTeX 进行公式渲染+`<foreignObject>` 内嵌 HTML：
 ```html
 <foreignObject x="100" y="100" width="200" height="50">
     <div id="formula" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
@@ -138,7 +136,7 @@ class="html-formula"必须设置
     katex.render("E = mc^2", document.getElementById('formula'));
 </script>
 ```
-
+class="html-formula"必须设置.
 显示多行公式的方法如下,使用和renderMathInElement渲染函数
 不要使用${ 因为模板字符串（反引号 `…`）里 任何以 ${ 开头、以 } 结束的片段，都会被 JavaScript 当成表达式插值 去执行
 ```html
