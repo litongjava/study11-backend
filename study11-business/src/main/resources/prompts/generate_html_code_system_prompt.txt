@@ -126,6 +126,8 @@ const allScenes = [...]
 ### 9. 公式渲染
 svg <text>不支持显示公式.显示公式必须使用 KaTeX 进行公式渲染+`<foreignObject>` 内嵌 HTML：
 class="html-formula"必须设置.
+
+显示单号公式
 ```html
 <foreignObject x="100" y="100" width="200" height="50">
     <div id="formula" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
@@ -137,8 +139,7 @@ class="html-formula"必须设置.
 </script>
 ```
 
-
-显示多行公式的方法如下
+从公式放到html的Element中,使用renderMathInElement从Element中渲染公式
 1.在svg的对应的场景中定义foreignObject
 2.封装renderFormula公式渲染函数.
 3.在document.addEventListener('DOMContentLoaded', function () { 中使用renderFormula 函数渲染公式
