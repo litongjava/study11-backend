@@ -124,8 +124,8 @@ const allScenes = [...]
 ---
 
 ### 9. 公式渲染
-svg <text>不支持显示.
-显示公式必须使用 KaTeX 进行公式渲染+`<foreignObject>` 内嵌 HTML：
+svg <text>不支持显示公式.显示公式必须使用 KaTeX 进行公式渲染+`<foreignObject>` 内嵌 HTML：
+class="html-formula"必须设置.
 ```html
 <foreignObject x="100" y="100" width="200" height="50">
     <div id="formula" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
@@ -136,10 +136,10 @@ svg <text>不支持显示.
     katex.render("E = mc^2", document.getElementById('formula'));
 </script>
 ```
-class="html-formula"必须设置.
+
+
 显示多行公式的方法如下
-不要使用${ 因为 模板字符串（反引号 `…`）里 任何以 ${ 开头、以 } 结束的片段都会被 JavaScript 当成表达式插值去执行 或者使用$()的格式,
-1.封装renderFormula渲染函数.
+1.封装renderFormula公式渲染函数.
 2.在document.addEventListener('DOMContentLoaded', function () { 中使用renderFormula 函数渲染公式
 示例代码如下
 ```javascript
@@ -158,11 +158,9 @@ class="html-formula"必须设置.
 
     document.addEventListener('DOMContentLoaded', function () {
         const formula3 = `
-                    <div>向量加法坐标公式: $\\bf a + \\bf b = (a_x + b_x, a_y + b_y)$</div>
-
-                    <div style="margin-top: 15px;">交换律: $\\bf a + \\bf b = \\bf b + \\bf a$</div>
-                    <div style="margin-top: 15px;">结合律: $({\\bf a} + {\\bf b}) + {\\bf c} = {\\bf a} + ({\\bf b} + {\\bf c})$</div>
-                `;
+            <div>链式法则: $[f(g(x))]' = f'(g(x)) \\cdot g'(x)$</div>
+            <div style="margin-top: 20px;">例如: $(\\sin(x^2))' = \\cos(x^2) \\cdot 2x$</div>
+        `;
         renderFormula('html-formula3', formula3);
     });
 ```
