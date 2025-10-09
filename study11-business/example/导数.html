@@ -1,0 +1,542 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>如何计算切线和求导 - Study11</title>
+    <link rel="stylesheet" href="animation-player.css">
+
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <!-- GeoGebra -->
+    <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+</head>
+<body>
+<div class="main-container">
+    <!-- Loading 界面 -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">正在加载...</div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar">
+                <div class="loading-progress-fill" id="loadingProgressFill"></div>
+            </div>
+            <div class="loading-progress-text" id="loadingProgressText">进度: 0 / 0（0%）</div>
+        </div>
+    </div>
+
+    <!-- 动画容器 -->
+    <div class="animation-container">
+        <div class="cache-indicator" id="cacheIndicator">使用缓存音频</div>
+        <div class="scene-number" id="sceneNumber">1</div>
+
+        <!-- SVG 场景容器 -->
+        <svg class="trig-scene" viewBox="0 0 1600 800">
+            <!-- 渐变定义 -->
+            <defs>
+                <linearGradient id="tangentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1"/>
+                </linearGradient>
+                <linearGradient id="functionGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#3498db;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1"/>
+                </linearGradient>
+            </defs>
+
+            <!-- 场景标题 -->
+            <text x="1600" y="50" text-anchor="middle" fill="#2c3e50" font-size="32" font-weight="300"
+                  class="scene-title" id="sceneTitle">导数概念引入
+            </text>
+
+            <g id="visualPanel">
+                <!-- Scene 1: 导数概念引入 -->
+                <g id="scene1">
+                    <rect x="200" y="150" width="1200" height="500" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#3498db" stroke-width="2" rx="15"/>
+                    <text x="800" y="250" text-anchor="middle" fill="#2c3e50" font-size="36" font-weight="bold">
+                        切线与导数
+                    </text>
+                    <text x="800" y="350" text-anchor="middle" fill="#2c3e50" font-size="30">
+                        切线是与曲线相切的直线
+                    </text>
+                    <text x="800" y="420" text-anchor="middle" fill="#2c3e50" font-size="30">
+                        导数是函数在某点的瞬时变化率
+                    </text>
+                    <text x="800" y="490" text-anchor="middle" fill="#2c3e50" font-size="30">
+                        理解切线与导数的关系是掌握微积分的基础
+                    </text>
+                </g>
+
+                <!-- Scene 2: 切线的几何意义 -->
+                <g id="scene2" style="display: none;">
+                    <foreignObject x="200" y="100" width="1200" height="600">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet2" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 3: 导数的数学定义 -->
+                <g id="scene3" style="display: none;">
+                    <rect x="200" y="150" width="1200" height="500" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#e74c3c" stroke-width="2" rx="15"/>
+                    <foreignObject x="300" y="200" width="1000" height="100">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="html-formula3" style="font-size: 36px; text-align: center; padding-top: 30px;"></div>
+                        </div>
+                    </foreignObject>
+                    <text x="800" y="380" text-anchor="middle" fill="#2c3e50" font-size="30">
+                        导数定义为函数增量与自变量增量比值的极限
+                    </text>
+                    <text x="800" y="450" text-anchor="middle" fill="#2c3e50" font-size="30">
+                        当Δx趋近于0时，割线斜率趋近于切线斜率
+                    </text>
+                </g>
+
+                <!-- Scene 4: 基本求导公式 -->
+                <g id="scene4" style="display: none;">
+                    <rect x="150" y="100" width="1300" height="600" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#2ecc71" stroke-width="2" rx="15"/>
+                    <foreignObject x="200" y="150" width="1200" height="500">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="html-formula4" style="font-size: 30px; padding: 30px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 5: 四则运算求导法则 -->
+                <g id="scene5" style="display: none;">
+                    <rect x="150" y="100" width="1300" height="600" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#f39c12" stroke-width="2" rx="15"/>
+                    <foreignObject x="200" y="150" width="1200" height="500">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="html-formula5" style="font-size: 30px; padding: 30px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 6: 复合函数求导 -->
+                <g id="scene6" style="display: none;">
+                    <rect x="150" y="100" width="1300" height="600" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#9b59b6" stroke-width="2" rx="15"/>
+                    <foreignObject x="200" y="150" width="1200" height="500">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="html-formula6" style="font-size: 30px; padding: 30px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 7: 隐函数求导法 -->
+                <g id="scene7" style="display: none;">
+                    <foreignObject x="200" y="100" width="1200" height="600">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet7" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 8: 参数方程求导 -->
+                <g id="scene8" style="display: none;">
+                    <rect x="150" y="100" width="1300" height="600" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#1abc9c" stroke-width="2" rx="15"/>
+                    <foreignObject x="200" y="150" width="1200" height="500">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="html-formula8" style="font-size: 30px; padding: 30px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 9: 高阶导数概念 -->
+                <g id="scene9" style="display: none;">
+                    <rect x="150" y="100" width="1300" height="600" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#d35400" stroke-width="2" rx="15"/>
+                    <foreignObject x="200" y="150" width="1200" height="500">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="html-formula9" style="font-size: 30px; padding: 30px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 10: 切线方程求法 -->
+                <g id="scene10" style="display: none;">
+                    <foreignObject x="200" y="100" width="1200" height="600">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet10" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 11: 实际应用示例 -->
+                <g id="scene11" style="display: none;">
+                    <rect x="150" y="100" width="1300" height="600" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#34495e" stroke-width="2" rx="15"/>
+                    <text x="800" y="180" text-anchor="middle" fill="#2c3e50" font-size="32" font-weight="bold">
+                        实际应用示例
+                    </text>
+                    <text x="800" y="250" text-anchor="middle" fill="#2c3e50" font-size="30">
+                        1. 求抛物线y=x²在点(2,4)处的切线方程
+                    </text>
+                    <text x="800" y="320" text-anchor="middle" fill="#2c3e50" font-size="30">
+                        2. 求函数f(x)=sin(2x)的导数
+                    </text>
+                    <text x="800" y="390" text-anchor="middle" fill="#2c3e50" font-size="30">
+                        3. 求圆x²+y²=25在点(3,4)处的切线斜率
+                    </text>
+                </g>
+
+                <!-- Scene 12: 常见错误提醒 -->
+                <g id="scene12" style="display: none;">
+                    <rect x="150" y="100" width="1300" height="600" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#e74c3c" stroke-width="2" rx="15"/>
+                    <text x="800" y="180" text-anchor="middle" fill="#e74c3c" font-size="32" font-weight="bold">
+                        常见错误提醒
+                    </text>
+                    <text x="800" y="250" text-anchor="middle" fill="#2c3e50" font-size="30">
+                        • 忘记使用链式法则
+                    </text>
+                    <text x="800" y="320" text-anchor="middle" fill="#2c3e50" font-size="30">
+                        • 除法法则中忘记平方分母
+                    </text>
+                    <text x="800" y="390" text-anchor="middle" fill="#2c3e50" font-size="30">
+                        • 混淆幂函数与指数函数求导公式
+                    </text>
+                    <text x="800" y="460" text-anchor="middle" fill="#2c3e50" font-size="30">
+                        • 隐函数求导时忽略y是x的函数
+                    </text>
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <!-- 字幕容器 -->
+    <div class="subtitle-container">
+        <div class="subtitle" id="subtitle"></div>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="controls">
+        <button class="control-btn" id="playBtn" title="播放/暂停" disabled>
+            <span id="playIcon">▶</span>
+        </button>
+        <button class="control-btn" id="muteBtn" title="静音">
+            <span id="muteIcon">🔊</span>
+        </button>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-handle" id="progressHandle"></div>
+            </div>
+            <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+        </div>
+        <div class="scene-buttons" id="sceneButtons"></div>
+    </div>
+</div>
+
+<!-- 页脚 -->
+<div class="footer">
+    <a href="https://study11.ai">© 2025 study11 lab</a>
+</div>
+
+<!-- 音频容器 -->
+<div id="audioContainer"></div>
+
+<!-- 引入脚本 -->
+<script src="animation-player-utils.js"></script>
+<script src="player-control.js"></script>
+<script>
+    // ===== 完整的场景配置 =====
+    const allScenes = [
+        // Scene 1: 导数概念引入
+        {
+            title: "导数概念引入",
+            subtitle: "同学们好，今天我们要学习的是微积分中的重要概念：切线和导数。在几何学中，切线是与曲线相切的直线，它在切点处与曲线有相同的斜率。导数则是函数在某一点的瞬时变化率，它描述了函数值随自变量变化的快慢程度。理解切线和导数的关系是掌握微积分的基础。",
+            action: () => showScene(1, "导数概念引入")
+        },
+
+        // Scene 2: 切线的几何意义
+        {
+            title: "切线的几何意义",
+            subtitle: "让我们通过一个具体的函数图像来理解切线的概念。切线是通过曲线上某一点的直线，且在该点附近与曲线最接近。我们可以用割线逼近的方法来理解切线：当割线的两个端点无限接近时，割线就变成了切线。切线的斜率就是函数在该点的导数值。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet2',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 1200,
+                    "height": 600,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-3, 5, -2, 10);
+
+                        // 绘制函数 y = x^2
+                        api.evalCommand('f(x) = x^2');
+                        api.setColor('f', 52, 152, 219);
+                        api.setLineThickness('f', 3);
+
+                        // 切点
+                        api.evalCommand('A = (1, 1)');
+                        api.setColor('A', 231, 76, 60);
+                        api.setPointSize('A', 5);
+
+                        // 切线
+                        api.evalCommand('t(x) = 2x - 1');
+                        api.setColor('t', 231, 76, 60);
+                        api.setLineThickness('t', 3);
+
+                        // 割线点
+                        api.evalCommand('B = (2, 4)');
+                        api.setColor('B', 46, 204, 113);
+                        api.setPointSize('B', 4);
+
+                        // 割线
+                        api.evalCommand('s(x) = (4-1)/(2-1) * (x-1) + 1');
+                        api.setColor('s', 46, 204, 113);
+                        api.setLineThickness('s', 2);
+                        api.setLineStyle('s', 2);
+
+                        // 添加标签
+                        api.evalCommand('Text1 = Text("切点", (1.2, 1.2))');
+                        api.setColor('Text1', 231, 76, 60);
+
+                        api.evalCommand('Text2 = Text("割线点", (2.2, 4.2))');
+                        api.setColor('Text2', 46, 204, 113);
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet2');
+            },
+            action: () => showScene(2, "切线的几何意义")
+        },
+
+        // Scene 3: 导数的数学定义
+        {
+            title: "导数的数学定义",
+            subtitle: "导数的严格数学定义是通过极限来表达的。设函数y=f(x)，在点x₀处的导数定义为：f'(x₀)=lim(Δx→0)[f(x₀+Δx)-f(x₀)]/Δx。这个公式表示当自变量的增量趋近于零时，函数增量与自变量增量比值的极限。这就是导数的本质定义，也是我们计算导数的基础。",
+            action: () => showScene(3, "导数的数学定义")
+        },
+
+        // Scene 4: 基本求导公式
+        {
+            title: "基本求导公式",
+            subtitle: "为了便于计算，我们需要掌握一些基本的求导公式。常数函数的导数为零，即(c)'=0。幂函数的导数公式为(xⁿ)'=nx^(n-1)。三角函数的导数：(sin x)'=cos x，(cos x)'=-sin x。指数函数和对数函数的导数也需要记住，这些是求导运算的基础工具。",
+            action: () => showScene(4, "基本求导公式")
+        },
+
+        // Scene 5: 四则运算求导法则
+        {
+            title: "四则运算求导法则",
+            subtitle: "当函数进行加减乘除运算时，我们需要使用相应的求导法则。加法法则：[f(x)+g(x)]'=f'(x)+g'(x)。减法法则：[f(x)-g(x)]'=f'(x)-g'(x)。乘法法则：[f(x)·g(x)]'=f'(x)·g(x)+f(x)·g'(x)。除法法则：[f(x)/g(x)]'=[f'(x)·g(x)-f(x)·g'(x)]/[g(x)]²。",
+            action: () => showScene(5, "四则运算求导法则")
+        },
+
+        // Scene 6: 复合函数求导
+        {
+            title: "复合函数求导",
+            subtitle: "复合函数的求导需要用到链式法则，这是求导运算中的重要技巧。链式法则的公式为：[f(g(x))]'=f'(g(x))·g'(x)。也就是说，外函数的导数乘以内函数的导数。例如求sin(x²)的导数，外函数是sin u，内函数是u=x²，应用链式法则得到结果。",
+            action: () => showScene(6, "复合函数求导")
+        },
+
+        // Scene 7: 隐函数求导法
+        {
+            title: "隐函数求导法",
+            subtitle: "有些函数关系式不是显式表达的，而是以方程形式给出，这就是隐函数。对于隐函数F(x,y)=0，我们可以对等式两边同时求导。在求导过程中，y被视为x的函数，因此需要使用链式法则。例如对于x²+y²=1，两边对x求导可得切线斜率。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet7',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 1200,
+                    "height": 600,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-2, 2, -2, 2);
+
+                        // 绘制单位圆
+                        api.evalCommand('Circle((0,0), 1)');
+
+                        // 切点
+                        api.evalCommand('P = (0.6, 0.8)');
+                        api.setColor('P', 231, 76, 60);
+                        api.setPointSize('P', 5);
+
+                        // 切线
+                        api.evalCommand('t(x) = -0.75x + 1.25');
+                        api.setColor('t', 231, 76, 60);
+                        api.setLineThickness('t', 3);
+
+                        // 添加标签
+                        api.evalCommand('Text1 = Text("x² + y² = 1", (-1.5, 1.7))');
+                        api.evalCommand('Text2 = Text("切点P(0.6, 0.8)", (0.7, 1.0))');
+                        api.setColor('Text2', 231, 76, 60);
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet7');
+            },
+            action: () => showScene(7, "隐函数求导法")
+        },
+
+        // Scene 8: 参数方程求导
+        {
+            title: "参数方程求导",
+            subtitle: "当函数用参数方程表示时，求导需要特殊的方法。如果x=x(t)，y=y(t)，那么dy/dx=(dy/dt)/(dx/dt)。这个公式表明参数方程的导数等于y对参数的导数除以x对参数的导数。这种方法在处理曲线运动等问题时非常有用。",
+            action: () => showScene(8, "参数方程求导")
+        },
+
+        // Scene 9: 高阶导数概念
+        {
+            title: "高阶导数概念",
+            subtitle: "导数的导数称为二阶导数，记作f''(x)或d²y/dx²。二阶导数描述了函数斜率变化的快慢，也就是函数的凹凸性。类似地，我们可以定义三阶导数、四阶导数等高阶导数。高阶导数在物理和工程中有重要应用，比如加速度就是速度的导数。",
+            action: () => showScene(9, "高阶导数概念")
+        },
+
+        // Scene 10: 切线方程求法
+        {
+            title: "切线方程求法",
+            subtitle: "已知函数在某点的导数后，我们可以写出切线方程。切线方程的一般形式为：y-y₀=f'(x₀)(x-x₀)。这里(x₀,y₀)是切点坐标，f'(x₀)是切线斜率。例如对于f(x)=x²在点(1,1)处，f'(1)=2，因此切线方程为y-1=2(x-1)，即y=2x-1。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet10',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 1200,
+                    "height": 600,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-1, 3, -1, 5);
+
+                        // 绘制函数 y = x^2
+                        api.evalCommand('f(x) = x^2');
+                        api.setColor('f', 52, 152, 219);
+                        api.setLineThickness('f', 3);
+
+                        // 切点
+                        api.evalCommand('A = (1, 1)');
+                        api.setColor('A', 231, 76, 60);
+                        api.setPointSize('A', 5);
+
+                        // 切线
+                        api.evalCommand('t(x) = 2x - 1');
+                        api.setColor('t', 231, 76, 60);
+                        api.setLineThickness('t', 3);
+
+                        // 添加标签
+                        api.evalCommand('Text1 = Text("f(x) = x²", (2.2, 4.2))');
+                        api.evalCommand('Text2 = Text("切线: y = 2x - 1", (2.2, 3.5))');
+                        api.setColor('Text1', 52, 152, 219);
+                        api.setColor('Text2', 231, 76, 60);
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet10');
+            },
+            action: () => showScene(10, "切线方程求法")
+        },
+
+        // Scene 11: 实际应用示例
+        {
+            title: "实际应用示例",
+            subtitle: "让我们通过几个实际例子来巩固所学知识。第一个例子：求抛物线y=x²在点(2,4)处的切线方程。第二个例子：求函数f(x)=sin(2x)的导数。第三个例子：已知圆的方程x²+y²=25，求在点(3,4)处的切线斜率。这些例子涵盖了我们学到的各种求导方法。",
+            action: () => showScene(11, "实际应用示例")
+        },
+
+        // Scene 12: 常见错误提醒
+        {
+            title: "常见错误提醒",
+            subtitle: "在求导过程中，同学们容易犯一些常见错误。比如忘记链式法则，错误地认为(sin x)'=cos x而不考虑内函数。还有在除法法则中忘记平方分母。混淆幂函数和指数函数的求导公式也是常见问题。理解这些错误有助于我们更好地掌握正确的求导方法。",
+            action: () => showScene(12, "常见错误提醒")
+        }
+    ];
+
+    // 渲染公式
+    document.addEventListener('DOMContentLoaded', function() {
+        // Scene 3: 导数定义公式
+        katex.render("f'(x_0) = \\lim_{\\Delta x \\to 0} \\frac{f(x_0 + \\Delta x) - f(x_0)}{\\Delta x}",
+            document.getElementById('html-formula3'));
+
+        // Scene 4: 基本求导公式
+        const formula4 = `
+            <div>常数函数: $(c)' = 0$</div>
+            <div style="margin-top: 15px;">幂函数: $(x^n)' = nx^{n-1}$</div>
+            <div style="margin-top: 15px;">三角函数: $(\\sin x)' = \\cos x$, $(\\cos x)' = -\\sin x$</div>
+            <div style="margin-top: 15px;">指数函数: $(e^x)' = e^x$, $(a^x)' = a^x \\ln a$</div>
+            <div style="margin-top: 15px;">对数函数: $(\\ln x)' = \\frac{1}{x}$, $(\\log_a x)' = \\frac{1}{x \\ln a}$</div>
+        `;
+        document.getElementById('html-formula4').innerHTML = formula4;
+        renderMathInElement(document.getElementById('html-formula4'), {
+            delimiters: [
+                { left: "$", right: "$", display: false },
+                { left: "$$", right: "$$", display: true }
+            ]
+        });
+
+
+        // Scene 5: 四则运算法则
+        const formula5 = `
+            <div>加法法则: $[f(x) + g(x)]' = f'(x) + g'(x)$</div>
+            <div style="margin-top: 15px;">减法法则: $[f(x) - g(x)]' = f'(x) - g'(x)$</div>
+            <div style="margin-top: 15px;">乘法法则: $[f(x) \\cdot g(x)]' = f'(x) \\cdot g(x) + f(x) \\cdot g'(x)$</div>
+            <div style="margin-top: 15px;">除法法则: $\\left[\\frac{f(x)}{g(x)}\\right]' = \\frac{f'(x) \\cdot g(x) - f(x) \\cdot g'(x)}{[g(x)]^2}$</div>
+        `;
+        document.getElementById('html-formula5').innerHTML = formula5;
+        renderMathInElement(document.getElementById('html-formula5'), {
+            delimiters: [
+                { left: "$", right: "$", display: false },
+                { left: "$$", right: "$$", display: true }
+            ]
+        });
+
+        // Scene 6: 链式法则
+        const formula6 = `
+            <div>链式法则: $[f(g(x))]' = f'(g(x)) \\cdot g'(x)$</div>
+            <div style="margin-top: 20px;">例如: $(\\sin(x^2))' = \\cos(x^2) \\cdot 2x$</div>
+        `;
+        document.getElementById('html-formula6').innerHTML = formula6;
+        renderMathInElement(document.getElementById('html-formula6'), {
+            delimiters: [
+                { left: "$", right: "$", display: false },
+                { left: "$$", right: "$$", display: true }
+            ]
+        });
+
+        // Scene 8: 参数方程求导
+        katex.render("\\frac{dy}{dx} = \\frac{dy/dt}{dx/dt}",
+            document.getElementById('html-formula8'));
+
+        // Scene 9: 高阶导数
+        const formula9 = `
+            <div>二阶导数: $f''(x)$ 或 $\\frac{d^2y}{dx^2}$</div>
+            <div style="margin-top: 20px;">例如: 若 $f(x) = x^3$，则 $f'(x) = 3x^2$，$f''(x) = 6x$</div>
+            <div style="margin-top: 20px;">物理应用: 加速度 $a = \\frac{dv}{dt} = \\frac{d^2s}{dt^2}$</div>
+        `;
+        document.getElementById('html-formula9').innerHTML = formula9;
+        const formula9Divs = document.getElementById('html-formula9').children;
+        for (let i = 0; i < formula9Divs.length; i++) {
+            katex.render(formula9Divs[i].textContent, formula9Divs[i]);
+        }
+    });
+</script>
+</body>
+</html>

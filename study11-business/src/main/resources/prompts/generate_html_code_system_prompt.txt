@@ -63,6 +63,7 @@
 <!-- KaTeX (如需公式) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
 <!-- GeoGebra (如需交互式几何) -->
 <script src="https://www.geogebra.org/apps/deployggb.js"></script>
@@ -135,6 +136,24 @@ class="html-formula"必须设置
 </script>
 ```
 
+显示多行公式的方法如下,使用renderMathInElement函数
+```
+// Scene 4: 基本求导公式
+const formula4 = `
+    <div>常数函数: $(c)' = 0$</div>
+    <div style="margin-top: 15px;">幂函数: $(x^n)' = nx^{n-1}$</div>
+    <div style="margin-top: 15px;">三角函数: $(\\sin x)' = \\cos x$, $(\\cos x)' = -\\sin x$</div>
+    <div style="margin-top: 15px;">指数函数: $(e^x)' = e^x$, $(a^x)' = a^x \\ln a$</div>
+    <div style="margin-top: 15px;">对数函数: $(\\ln x)' = \\frac{1}{x}$, $(\\log_a x)' = \\frac{1}{x \\ln a}$</div>
+`;
+document.getElementById('html-formula4').innerHTML = formula4;
+renderMathInElement(document.getElementById('html-formula4'), {
+    delimiters: [
+        { left: "$", right: "$", display: false },
+        { left: "$$", right: "$$", display: true }
+    ]
+});
+```
 ---
 
 ## 10. GeoGebra（交互式几何）
