@@ -532,10 +532,12 @@
             <div style="margin-top: 20px;">物理应用: 加速度 $a = \\frac{dv}{dt} = \\frac{d^2s}{dt^2}$</div>
         `;
         document.getElementById('html-formula9').innerHTML = formula9;
-        const formula9Divs = document.getElementById('html-formula9').children;
-        for (let i = 0; i < formula9Divs.length; i++) {
-            katex.render(formula9Divs[i].textContent, formula9Divs[i]);
-        }
+        renderMathInElement(document.getElementById('html-formula9'), {
+            delimiters: [
+                { left: "$", right: "$", display: false },
+                { left: "$$", right: "$$", display: true }
+            ]
+        });
     });
 </script>
 </body>

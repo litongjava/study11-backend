@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>向量相关公式 - Study11</title>
+    <link rel="stylesheet" href="animation-player.css">
+
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <!-- GeoGebra -->
+    <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+</head>
+<body>
+<div class="main-container">
+    <!-- Loading 界面 -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">正在加载...</div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar">
+                <div class="loading-progress-fill" id="loadingProgressFill"></div>
+            </div>
+            <div class="loading-progress-text" id="loadingProgressText">进度: 0 / 0（0%）</div>
+        </div>
+    </div>
+
+    <!-- 动画容器 -->
+    <div class="animation-container">
+        <div class="cache-indicator" id="cacheIndicator">使用缓存音频</div>
+        <div class="scene-number" id="sceneNumber">1</div>
+
+        <!-- SVG 场景容器 -->
+        <svg class="vector-scene" viewBox="0 0 1600 800" style="background-color: white;">
+            <!-- 场景标题 -->
+            <text x="1600" y="50" text-anchor="middle" fill="#2c3e50" font-size="32" font-weight="300"
+                  class="scene-title" id="sceneTitle">向量基本概念
+            </text>
+
+            <g id="visualPanel">
+                <!-- Scene 1: 向量基本概念 -->
+                <g id="scene1">
+                    <line x1="400" y1="400" x2="700" y2="300" stroke="#3498db" stroke-width="4"
+                          marker-end="url(#arrowhead)"/>
+                    <circle cx="400" cy="400" r="5" fill="#3498db"/>
+                    <circle cx="700" cy="300" r="5" fill="#3498db"/>
+                    <text x="380" y="420" fill="#2c3e50" font-size="30">起点</text>
+                    <text x="710" y="290" fill="#2c3e50" font-size="30">终点</text>
+                    <text x="550" y="280" fill="#e74c3c" font-size="30">向量 $\vec{v}$</text>
+                    <text x="550" y="450" fill="#2c3e50" font-size="30">向量 = 大小 + 方向</text>
+                </g>
+
+                <!-- Scene 2: 向量模长公式 -->
+                <g id="scene2" style="display: none;">
+                    <foreignObject x="200" y="100" width="1200" height="350">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet2" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                    <rect x="150" y="500" width="1300" height="250" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#e74c3c" stroke-width="3" rx="15"/>
+                    <foreignObject x="200" y="520" width="1200" height="200">
+                        <div id="html-formula2" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 3: 向量加法公式 -->
+                <g id="scene3" style="display: none;">
+                    <foreignObject x="200" y="100" width="1200" height="350">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet3" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                    <rect x="150" y="500" width="1300" height="250" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#2ecc71" stroke-width="3" rx="15"/>
+                    <foreignObject x="200" y="520" width="1200" height="200">
+                        <div id="html-formula3" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 4: 向量减法公式 -->
+                <g id="scene4" style="display: none;">
+                    <foreignObject x="200" y="100" width="1200" height="350">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet4" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                    <rect x="150" y="500" width="1300" height="250" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#f39c12" stroke-width="3" rx="15"/>
+                    <foreignObject x="200" y="520" width="1200" height="200">
+                        <div id="html-formula4" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 5: 数量积公式 -->
+                <g id="scene5" style="display: none;">
+                    <foreignObject x="200" y="100" width="1200" height="350">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet5" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                    <rect x="150" y="500" width="1300" height="250" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#9b59b6" stroke-width="3" rx="15"/>
+                    <foreignObject x="200" y="520" width="1200" height="200">
+                        <div id="html-formula5" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 6: 向量夹角公式 -->
+                <g id="scene6" style="display: none;">
+                    <foreignObject x="200" y="100" width="1200" height="350">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet6" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                    <rect x="150" y="500" width="1300" height="250" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#3498db" stroke-width="3" rx="15"/>
+                    <foreignObject x="200" y="520" width="1200" height="200">
+                        <div id="html-formula6" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 7: 向量投影公式 -->
+                <g id="scene7" style="display: none;">
+                    <foreignObject x="200" y="100" width="1200" height="350">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet7" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                    <rect x="150" y="500" width="1300" height="250" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#1abc9c" stroke-width="3" rx="15"/>
+                    <foreignObject x="200" y="520" width="1200" height="200">
+                        <div id="html-formula7" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 8: 向量叉积公式 -->
+                <g id="scene8" style="display: none;">
+                    <foreignObject x="200" y="100" width="1200" height="350">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet8" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                    <rect x="150" y="500" width="1300" height="250" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#e74c3c" stroke-width="3" rx="15"/>
+                    <foreignObject x="200" y="520" width="1200" height="200">
+                        <div id="html-formula8" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 9: 叉积几何意义 -->
+                <g id="scene9" style="display: none;">
+                    <foreignObject x="200" y="100" width="1200" height="350">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet9" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                    <rect x="150" y="500" width="1300" height="250" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#f39c12" stroke-width="3" rx="15"/>
+                    <foreignObject x="200" y="520" width="1200" height="200">
+                        <div id="html-formula9" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 10: 单位向量公式 -->
+                <g id="scene10" style="display: none;">
+                    <foreignObject x="200" y="100" width="1200" height="350">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet10" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                    <rect x="150" y="500" width="1300" height="250" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#2ecc71" stroke-width="3" rx="15"/>
+                    <foreignObject x="200" y="520" width="1200" height="200">
+                        <div id="html-formula10" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 11: 向量线性组合 -->
+                <g id="scene11" style="display: none;">
+                    <foreignObject x="200" y="100" width="1200" height="350">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet11" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                    <rect x="150" y="500" width="1300" height="250" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#9b59b6" stroke-width="3" rx="15"/>
+                    <foreignObject x="200" y="520" width="1200" height="200">
+                        <div id="html-formula11" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 12: 向量共线条件 -->
+                <g id="scene12" style="display: none;">
+                    <foreignObject x="200" y="100" width="1200" height="350">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet12" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                    <rect x="150" y="500" width="1300" height="250" fill="rgba(236, 240, 241, 0.95)"
+                          stroke="#3498db" stroke-width="3" rx="15"/>
+                    <foreignObject x="200" y="520" width="1200" height="200">
+                        <div id="html-formula12" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
+                        </div>
+                    </foreignObject>
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <!-- 字幕容器 -->
+    <div class="subtitle-container">
+        <div class="subtitle" id="subtitle"></div>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="controls">
+        <button class="control-btn" id="playBtn" title="播放/暂停" disabled>
+            <span id="playIcon">▶</span>
+        </button>
+        <button class="control-btn" id="muteBtn" title="静音">
+            <span id="muteIcon">🔊</span>
+        </button>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-handle" id="progressHandle"></div>
+            </div>
+            <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+        </div>
+        <div class="scene-buttons" id="sceneButtons"></div>
+    </div>
+</div>
+
+<!-- 页脚 -->
+<div class="footer">
+    <a href="https://study11.ai">© 2025 study11 lab</a>
+</div>
+
+<!-- 音频容器 -->
+<div id="audioContainer"></div>
+
+<!-- 引入脚本 -->
+<script src="animation-player-utils.js"></script>
+<script src="player-control.js"></script>
+
+<script>
+    // ===== 完整的场景配置 =====
+    const allScenes = [
+        // Scene 1: 向量基本概念
+        {
+            title: "向量基本概念",
+            subtitle: "向量是既有大小又有方向的量，在数学和物理中都有重要应用。向量通常用带箭头的字母表示，如${\\bf v}$或$\\vec{v}$。在坐标系中，向量可以用坐标表示，例如二维向量${\\bf v} = (v_x, v_y)$。向量的模长表示其大小，记作$|{\\bf v}|$或$\\|\\vec{v}\\|$。理解向量的基本概念是学习向量公式的基础。",
+            action: () => showScene(1, "向量基本概念")
+        },
+
+        // Scene 2: 向量模长公式
+        {
+            title: "向量模长公式",
+            subtitle: "向量的模长是向量大小的度量，对于二维向量${\\bf v} = (v_x, v_y)$，其模长公式为$|{\\bf v}| = \\sqrt{v_x^2 + v_y^2}$。对于三维向量${\\bf v} = (v_x, v_y, v_z)$，模长公式为$|{\\bf v}| = \\sqrt{v_x^2 + v_y^2 + v_z^2}$。这个公式来源于勾股定理的推广。模长公式在物理学中用于计算力、速度等矢量的大小。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet2',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 1200,
+                    "height": 350,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "enableRightClick": false,
+                    "enableShiftDragZoom": true,
+                    "showResetIcon": true,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-5, 5, -5, 5);
+
+                        // 创建向量
+                        api.evalCommand('v = Vector((0,0), (3,4))');
+                        api.setColor('v', 231, 76, 60);
+                        api.setLineThickness('v', 4);
+
+                        // 显示向量坐标
+                        api.evalCommand('Text1 = Text("v = (3, 4)", (1, 4.5))');
+                        api.evalCommand('Text2 = Text("模长 |v| = √(3² + 4²) = 5", (1, 3.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet2');
+            },
+            action: () => {
+                showScene(2, "向量模长公式");
+                const formula2 = `
+                    <div>二维向量模长: $|{\\bf v}| = \\sqrt{v_x^2 + v_y^2}$</div>
+                    <div style="margin-top: 15px;">三维向量模长: $|{\\bf v}| = \\sqrt{v_x^2 + v_y^2 + v_z^2}$</div>
+                `;
+                document.getElementById('html-formula2').innerHTML = formula2;
+                renderMathInElement(document.getElementById('html-formula2'), {
+                    delimiters: [
+                        {left: "$", right: "$", display: false},
+                        {left: "$$", right: "$$", display: true}
+                    ]
+                });
+            }
+        },
+
+        // Scene 3: 向量加法公式
+        {
+            title: "向量加法公式",
+            subtitle: "向量加法遵循平行四边形法则和三角形法则，设有向量${\\bf a} = (a_x, a_y)$和${\\bf b} = (b_x, b_y)$。向量加法的坐标公式为${\\bf a} + {\\bf b} = (a_x + b_x, a_y + b_y)$。这个公式表明向量加法可以通过对应分量相加来实现。向量加法满足交换律和结合律，即${\\bf a} + {\\bf b} = {\\bf b} + {\\bf a}$。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet3',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 1200,
+                    "height": 350,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "enableRightClick": false,
+                    "enableShiftDragZoom": true,
+                    "showResetIcon": true,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-1, 8, -1, 6);
+
+                        // 创建向量
+                        api.evalCommand('a = Vector((0,0), (3,2))');
+                        api.evalCommand('b = Vector((0,0), (2,4))');
+                        api.evalCommand('c = Vector((0,0), (5,6))');
+                        api.setColor('a', 46, 204, 113);
+                        api.setColor('b', 52, 152, 219);
+                        api.setColor('c', 231, 76, 60);
+                        api.setLineThickness('a', 3);
+                        api.setLineThickness('b', 3);
+                        api.setLineThickness('c', 4);
+
+                        // 显示向量坐标
+                        api.evalCommand('Text1 = Text("a = (3, 2)", (0.5, 2.5))');
+                        api.evalCommand('Text2 = Text("b = (2, 4)", (2.5, 0.5))');
+                        api.evalCommand('Text3 = Text("a + b = (3+2, 2+4) = (5, 6)", (4, 4.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet3');
+            },
+            action: () => {
+                showScene(3, "向量加法公式");
+                const formula3 = `
+  <div>向量加法坐标公式: $\\mathbf{a} + \\mathbf{b} = (a_x + b_x, a_y + b_y)$</div>
+  <div style="margin-top: 15px;">交换律: $\\mathbf{a} + \\mathbf{b} = \\mathbf{b} + \\mathbf{a}$</div>
+  <div style="margin-top: 15px;">结合律: $(\\mathbf{a} + \\mathbf{b}) + \\mathbf{c} = \\mathbf{a} + (\\mathbf{b} + \\mathbf{c})$</div>
+`;
+
+                document.getElementById('html-formula3').innerHTML = formula3;
+                renderMathInElement(document.getElementById('html-formula3'), {
+                    delimiters: [
+                        {left: "$", right: "$", display: false},
+                        {left: "$$", right: "$$", display: true}
+                    ]
+                });
+            }
+        },
+
+        // Scene 4: 向量减法公式
+        {
+            title: "向量减法公式",
+            subtitle: "向量减法可以看作加法的逆运算，设有向量${\\bf a} = (a_x, a_y)$和${\\bf b} = (b_x, b_y)$。向量减法的坐标公式为${\\bf a} - {\\bf b} = (a_x - b_x, a_y - b_y)$。几何上，向量减法表示从一个向量终点指向另一个向量终点的向量。向量减法不满足交换律，但满足结合律。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet4',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 1200,
+                    "height": 350,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "enableRightClick": false,
+                    "enableShiftDragZoom": true,
+                    "showResetIcon": true,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-3, 6, -3, 6);
+
+                        // 创建向量
+                        api.evalCommand('a = Vector((0,0), (4,3))');
+                        api.evalCommand('b = Vector((0,0), (2,5))');
+                        api.evalCommand('c = Vector((2,5), (4,3))');
+                        api.setColor('a', 46, 204, 113);
+                        api.setColor('b', 52, 152, 219);
+                        api.setColor('c', 243, 156, 18);
+                        api.setLineThickness('a', 3);
+                        api.setLineThickness('b', 3);
+                        api.setLineThickness('c', 4);
+
+                        // 显示向量坐标
+                        api.evalCommand('Text1 = Text("a = (4, 3)", (0.5, 3.5))');
+                        api.evalCommand('Text2 = Text("b = (2, 5)", (2.5, 1.5))');
+                        api.evalCommand('Text3 = Text("a - b = (4-2, 3-5) = (2, -2)", (3, 4.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet4');
+            },
+            action: () => {
+                showScene(4, "向量减法公式");
+                const formula4 = `
+                    <div>向量减法坐标公式: ${\\bf a} - {\\bf b} = (a_x - b_x, a_y - b_y)$</div>
+                    <div style="margin-top: 15px;">几何意义: 从${\\bf b}$的终点指向${\\bf a}$的终点</div>
+                `;
+                document.getElementById('html-formula4').innerHTML = formula4;
+                renderMathInElement(document.getElementById('html-formula4'), {
+                    delimiters: [
+                        {left: "$", right: "$", display: false},
+                        {left: "$$", right: "$$", display: true}
+                    ]
+                });
+            }
+        },
+
+        // Scene 5: 数量积公式
+        {
+            title: "数量积公式",
+            subtitle: "向量的数量积也称为点积，是两个向量运算后得到一个标量的结果。设有向量${\\bf a} = (a_x, a_y)$和${\\bf b} = (b_x, b_y)$，数量积公式为${\\bf a} \\cdot {\\bf b} = a_x b_x + a_y b_y$。数量积还可以表示为${\\bf a} \\cdot {\\bf b} = |{\\bf a}||{\\bf b}|\\cos\\theta$。数量积在计算向量夹角和投影时非常有用。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet5',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 1200,
+                    "height": 350,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "enableRightClick": false,
+                    "enableShiftDragZoom": true,
+                    "showResetIcon": true,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-1, 7, -1, 5);
+
+                        // 创建向量
+                        api.evalCommand('a = Vector((0,0), (4,2))');
+                        api.evalCommand('b = Vector((0,0), (3,4))');
+                        api.setColor('a', 231, 76, 60);
+                        api.setColor('b', 52, 152, 219);
+                        api.setLineThickness('a', 4);
+                        api.setLineThickness('b', 4);
+
+                        // 显示向量坐标和数量积
+                        api.evalCommand('Text1 = Text("a = (4, 2)", (0.5, 2.5))');
+                        api.evalCommand('Text2 = Text("b = (3, 4)", (3.5, 0.5))');
+                        api.evalCommand('Text3 = Text("a·b = 4×3 + 2×4 = 20", (2, 4.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet5');
+            },
+            action: () => {
+                showScene(5, "数量积公式");
+                const formula5 = `
+                    <div>坐标计算公式: ${\\bf a} \\cdot {\\bf b} = a_x b_x + a_y b_y$</div>
+                    <div style="margin-top: 15px;">几何计算公式: ${\\bf a} \\cdot {\\bf b} = |{\\bf a}||{\\bf b}|\\cos\\theta$</div>
+                `;
+                document.getElementById('html-formula5').innerHTML = formula5;
+                renderMathInElement(document.getElementById('html-formula5'), {
+                    delimiters: [
+                        {left: "$", right: "$", display: false},
+                        {left: "$$", right: "$$", display: true}
+                    ]
+                });
+            }
+        },
+
+        // Scene 6: 向量夹角公式
+        {
+            title: "向量夹角公式",
+            subtitle: "通过数量积公式可以推导出两个向量夹角的计算方法。设向量${\\bf a}$和${\\bf b}$的夹角为$\\theta$，则有$\\cos\\theta = \\frac{{\\bf a} \\cdot {\\bf b}}{|{\\bf a}||{\\bf b}|}$。这个公式表明夹角的余弦值等于数量积除以两向量模长的乘积。当数量积为零时，两向量垂直，夹角为90度。当数量积等于模长乘积时，两向量平行且同向。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet6',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 1200,
+                    "height": 350,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "enableRightClick": false,
+                    "enableShiftDragZoom": true,
+                    "showResetIcon": true,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-1, 7, -1, 5);
+
+                        // 创建向量
+                        api.evalCommand('a = Vector((0,0), (4,2))');
+                        api.evalCommand('b = Vector((0,0), (2,4))');
+                        api.setColor('a', 231, 76, 60);
+                        api.setColor('b', 52, 152, 219);
+                        api.setLineThickness('a', 4);
+                        api.setLineThickness('b', 4);
+
+                        // 显示夹角
+                        api.evalCommand('Angle(a, b)');
+                        api.evalCommand('Text1 = Text("夹角 θ", (1.5, 1.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet6');
+            },
+            action: () => {
+                showScene(6, "向量夹角公式");
+                const formula6 = `
+                    <div>夹角计算公式: $\\cos\\theta = \\frac{{\\bf a} \\cdot {\\bf b}}{|{\\bf a}||{\\bf b}|}$</div>
+                    <div style="margin-top: 15px;">当${\\bf a} \\cdot {\\bf b} = 0$时，两向量垂直</div>
+                    <div style="margin-top: 15px;">当${\\bf a} \\cdot {\\bf b} = |{\\bf a}||{\\bf b}|$时，两向量平行且同向</div>
+                `;
+                document.getElementById('html-formula6').innerHTML = formula6;
+                renderMathInElement(document.getElementById('html-formula6'), {
+                    delimiters: [
+                        {left: "$", right: "$", display: false},
+                        {left: "$$", right: "$$", display: true}
+                    ]
+                });
+            }
+        },
+
+        // Scene 7: 向量投影公式
+        {
+            title: "向量投影公式",
+            subtitle: "向量${\\bf a}$在向量${\\bf b}$上的投影长度可以用数量积来计算。投影公式为${\\bf proj}_{\\bf b}{\\bf a} = \\frac{{\\bf a} \\cdot {\\bf b}}{|{\\bf b}|^2}{\\bf b}$。向量投影在物理学中用于分解力和计算功等概念。投影的几何意义是向量${\\bf a}$在向量${\\bf b}$方向上的分量。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet7',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 1200,
+                    "height": 350,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "enableRightClick": false,
+                    "enableShiftDragZoom": true,
+                    "showResetIcon": true,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-1, 7, -3, 5);
+
+                        // 创建向量
+                        api.evalCommand('a = Vector((0,0), (5,3))');
+                        api.evalCommand('b = Vector((0,0), (4,0))');
+                        api.evalCommand('proj = Vector((0,0), (5,0))');
+                        api.setColor('a', 231, 76, 60);
+                        api.setColor('b', 52, 152, 219);
+                        api.setColor('proj', 46, 204, 113);
+                        api.setLineThickness('a', 4);
+                        api.setLineThickness('b', 4);
+                        api.setLineThickness('proj', 4);
+
+                        // 显示投影
+                        api.evalCommand('PerpendicularLine((5,3), b)');
+                        api.evalCommand('Text1 = Text("向量 a", (2.5, 3.5))');
+                        api.evalCommand('Text2 = Text("向量 b", (2, -0.5))');
+                        api.evalCommand('Text3 = Text("a 在 b 上的投影", (2.5, 0.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet7');
+            },
+            action: () => {
+                showScene(7, "向量投影公式");
+                const formula7 = `
+                    <div>投影公式: ${\\bf proj}_{\\bf b}{\\bf a} = \\frac{{\\bf a} \\cdot {\\bf b}}{|{\\bf b}|^2}{\\bf b}$</div>
+                    <div style="margin-top: 15px;">投影长度: $|{\\bf proj}_{\\bf b}{\\bf a}| = \\frac{|{\\bf a} \\cdot {\\bf b}|}{|{\\bf b}|}$</div>
+                `;
+                document.getElementById('html-formula7').innerHTML = formula7;
+                renderMathInElement(document.getElementById('html-formula7'), {
+                    delimiters: [
+                        {left: "$", right: "$", display: false},
+                        {left: "$$", right: "$$", display: true}
+                    ]
+                });
+            }
+        },
+
+        // Scene 8: 向量叉积公式
+        {
+            title: "向量叉积公式",
+            subtitle: "向量叉积是三维空间中特有的运算，结果是一个垂直于两个原向量的新向量。设有三维向量${\\bf a} = (a_x, a_y, a_z)$和${\\bf b} = (b_x, b_y, b_z)$。叉积的坐标公式为${\\bf a} \\times {\\bf b} = (a_y b_z - a_z b_y, a_z b_x - a_x b_z, a_x b_y - a_y b_x)$。叉积的模长等于两向量模长乘积与夹角正弦值的乘积。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet8',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "3d",
+                    "width": 1200,
+                    "height": 350,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "enableRightClick": false,
+                    "enableShiftDragZoom": true,
+                    "showResetIcon": true,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        // 创建向量
+                        api.evalCommand('a = Vector((0,0,0), (3,0,0))');
+                        api.evalCommand('b = Vector((0,0,0), (0,4,0))');
+                        api.evalCommand('c = Cross(a, b)');
+                        api.setColor('a', 231, 76, 60);
+                        api.setColor('b', 52, 152, 219);
+                        api.setColor('c', 46, 204, 113);
+                        api.setLineThickness('a', 4);
+                        api.setLineThickness('b', 4);
+                        api.setLineThickness('c', 4);
+
+                        // 显示向量坐标
+                        api.evalCommand('Text1 = Text("a = (3, 0, 0)", (1.5, 0, 0.5))');
+                        api.evalCommand('Text2 = Text("b = (0, 4, 0)", (0, 2, 0.5))');
+                        api.evalCommand('Text3 = Text("a×b = (0, 0, 12)", (1.5, 2, 0.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet8');
+            },
+            action: () => {
+                showScene(8, "向量叉积公式");
+                const formula8 = `
+                    <div>叉积坐标公式: ${\\bf a} \\times {\\bf b} = (a_y b_z - a_z b_y, a_z b_x - a_x b_z, a_x b_y - a_y b_x)$</div>
+                    <div style="margin-top: 15px;">模长公式: $|{\\bf a} \\times {\\bf b}| = |{\\bf a}||{\\bf b}|\\sin\\theta$</div>
+                `;
+                document.getElementById('html-formula8').innerHTML = formula8;
+                renderMathInElement(document.getElementById('html-formula8'), {
+                    delimiters: [
+                        {left: "$", right: "$", display: false},
+                        {left: "$$", right: "$$", display: true}
+                    ]
+                });
+            }
+        },
+
+        // Scene 9: 叉积几何意义
+        {
+            title: "叉积几何意义",
+            subtitle: "向量叉积的模长等于由两个向量构成的平行四边形的面积。设向量${\\bf a}$和${\\bf b}$的夹角为$\\theta$，则叉积模长为$|{\\bf a} \\times {\\bf b}| = |{\\bf a}||{\\bf b}|\\sin\\theta$。叉积的方向遵循右手定则，垂直于原向量所在的平面。叉积在计算力矩、磁场力等物理量时有重要应用。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet9',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "3d",
+                    "width": 1200,
+                    "height": 350,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "enableRightClick": false,
+                    "enableShiftDragZoom": true,
+                    "showResetIcon": true,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        // 创建向量
+                        api.evalCommand('a = Vector((0,0,0), (3,1,0))');
+                        api.evalCommand('b = Vector((0,0,0), (1,4,0))');
+                        api.evalCommand('c = Cross(a, b)');
+                        api.setColor('a', 231, 76, 60);
+                        api.setColor('b', 52, 152, 219);
+                        api.setColor('c', 46, 204, 113);
+                        api.setLineThickness('a', 4);
+                        api.setLineThickness('b', 4);
+                        api.setLineThickness('c', 4);
+
+                        // 显示平行四边形
+                        api.evalCommand('Polygon((0,0,0), (3,1,0), (4,5,0), (1,4,0))');
+                        api.evalCommand('Text1 = Text("平行四边形面积 = |a×b|", (2, 2.5, 0))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet9');
+            },
+            action: () => {
+                showScene(9, "叉积几何意义");
+                const formula9 = `
+                    <div>叉积模长: $|{\\bf a} \\times {\\bf b}| = |{\\bf a}||{\\bf b}|\\sin\\theta$</div>
+                    <div style="margin-top: 15px;">平行四边形面积: $S = |{\\bf a} \\times {\\bf b}|$</div>
+                    <div style="margin-top: 15px;">三角形面积: $S = \\frac{1}{2}|{\\bf a} \\times {\\bf b}|$</div>
+                `;
+                document.getElementById('html-formula9').innerHTML = formula9;
+                renderMathInElement(document.getElementById('html-formula9'), {
+                    delimiters: [
+                        {left: "$", right: "$", display: false},
+                        {left: "$$", right: "$$", display: true}
+                    ]
+                });
+            }
+        },
+
+        // Scene 10: 单位向量公式
+        {
+            title: "单位向量公式",
+            subtitle: "单位向量是模长为1的向量，用于表示方向而不考虑大小。任何非零向量${\\bf v}$都可以通过除以其模长得到单位向量。单位向量公式为${\\bf \\hat{v}} = \\frac{{\\bf v}}{|{\\bf v}|}$。这个公式在向量标准化和方向计算中经常使用。单位向量在计算机图形学和物理模拟中应用广泛。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet10',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 1200,
+                    "height": 350,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "enableRightClick": false,
+                    "enableShiftDragZoom": true,
+                    "showResetIcon": true,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-1, 6, -1, 4);
+
+                        // 创建向量
+                        api.evalCommand('v = Vector((0,0), (3,4))');
+                        api.evalCommand('u = Vector((0,0), (0.6, 0.8))');
+                        api.setColor('v', 231, 76, 60);
+                        api.setColor('u', 46, 204, 113);
+                        api.setLineThickness('v', 4);
+                        api.setLineThickness('u', 4);
+
+                        // 显示向量信息
+                        api.evalCommand('Text1 = Text("v = (3, 4)", (1.5, 4.5))');
+                        api.evalCommand('Text2 = Text("|v| = 5", (1.5, 3.5))');
+                        api.evalCommand('Text3 = Text("û = v/|v| = (0.6, 0.8)", (3, 1.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet10');
+            },
+            action: () => {
+                showScene(10, "单位向量公式");
+                const formula10 = `
+                    <div>单位向量公式: ${\\bf \\hat{v}} = \\frac{{\\bf v}}{|{\\bf v}|}$</div>
+                    <div style="margin-top: 15px;">模长为1: $|{\\bf \\hat{v}}| = 1$</div>
+                `;
+                document.getElementById('html-formula10').innerHTML = formula10;
+                renderMathInElement(document.getElementById('html-formula10'), {
+                    delimiters: [
+                        {left: "$", right: "$", display: false},
+                        {left: "$$", right: "$$", display: true}
+                    ]
+                });
+            }
+        },
+
+        // Scene 11: 向量线性组合
+        {
+            title: "向量线性组合",
+            subtitle: "向量的线性组合是多个向量通过数量乘法和加法运算得到的新向量。设有向量${\\bf v_1}, {\\bf v_2}, ..., {\\bf v_n}$和标量$k_1, k_2, ..., k_n$。线性组合公式为${\\bf k_1 v_1 + k_2 v_2 + ... + k_n v_n}$。线性组合是向量空间理论的基础概念。通过线性组合可以表示向量的分解和合成。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet11',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 1200,
+                    "height": 350,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "enableRightClick": false,
+                    "enableShiftDragZoom": true,
+                    "showResetIcon": true,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-1, 7, -1, 5);
+
+                        // 创建基向量
+                        api.evalCommand('e1 = Vector((0,0), (1,0))');
+                        api.evalCommand('e2 = Vector((0,0), (0,1))');
+                        api.evalCommand('v = Vector((0,0), (3,2))');
+                        api.setColor('e1', 52, 152, 219);
+                        api.setColor('e2', 231, 76, 60);
+                        api.setColor('v', 46, 204, 113);
+                        api.setLineThickness('e1', 3);
+                        api.setLineThickness('e2', 3);
+                        api.setLineThickness('v', 4);
+
+                        // 显示线性组合
+                        api.evalCommand('Text1 = Text("e₁ = (1, 0)", (0.5, 0.5))');
+                        api.evalCommand('Text2 = Text("e₂ = (0, 1)", (-0.5, 0.5))');
+                        api.evalCommand('Text3 = Text("v = 3e₁ + 2e₂", (3.5, 2.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet11');
+            },
+            action: () => {
+                showScene(11, "向量线性组合");
+                const formula11 = `
+                    <div>线性组合公式: ${\\bf v} = k_1{\\bf v_1} + k_2{\\bf v_2} + ... + k_n{\\bf v_n}$</div>
+                    <div style="margin-top: 15px;">二维示例: ${\\bf v} = k_1{\\bf e_1} + k_2{\\bf e_2}$</div>
+                `;
+                document.getElementById('html-formula11').innerHTML = formula11;
+                renderMathInElement(document.getElementById('html-formula11'), {
+                    delimiters: [
+                        {left: "$", right: "$", display: false},
+                        {left: "$$", right: "$$", display: true}
+                    ]
+                });
+            }
+        },
+
+        // Scene 12: 向量共线条件
+        {
+            title: "向量共线条件",
+            subtitle: "两个向量共线意味着它们在同一条直线上或平行线上。向量${\\bf a}$和${\\bf b}$共线的充要条件是存在实数$k$使得${\\bf a} = k{\\bf b}$。在坐标表示下，二维向量$(a_x, a_y)$和$(b_x, b_y)$共线当且仅当$a_x b_y - a_y b_x = 0$。这个条件来源于叉积为零的性质。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet12',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 1200,
+                    "height": 350,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "enableRightClick": false,
+                    "enableShiftDragZoom": true,
+                    "showResetIcon": true,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-1, 7, -1, 5);
+
+                        // 创建共线向量
+                        api.evalCommand('a = Vector((0,0), (2,3))');
+                        api.evalCommand('b = Vector((0,0), (4,6))');
+                        api.setColor('a', 231, 76, 60);
+                        api.setColor('b', 52, 152, 219);
+                        api.setLineThickness('a', 4);
+                        api.setLineThickness('b', 4);
+
+                        // 显示共线条件
+                        api.evalCommand('Text1 = Text("a = (2, 3)", (1, 3.5))');
+                        api.evalCommand('Text2 = Text("b = (4, 6)", (4.5, 6))');
+                        api.evalCommand('Text3 = Text("b = 2a (共线)", (3, 1.5))');
+                        api.evalCommand('Text4 = Text("2×6 - 3×4 = 0", (5, 0.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet12');
+            },
+            action: () => {
+                showScene(12, "向量共线条件");
+                const formula12 = `
+                    <div>共线条件: ${\\bf a} = k{\\bf b}$ (存在实数k)</div>
+                    <div style="margin-top: 15px;">二维坐标条件: $a_x b_y - a_y b_x = 0$</div>
+                    <div style="margin-top: 15px;">三维坐标条件: ${\\bf a} \\times {\\bf b} = {\\bf 0}$</div>
+                `;
+                document.getElementById('html-formula12').innerHTML = formula12;
+                renderMathInElement(document.getElementById('html-formula12'), {
+                    delimiters: [
+                        {left: "$", right: "$", display: false},
+                        {left: "$$", right: "$$", display: true}
+                    ]
+                });
+            }
+        }
+    ];
+</script>
+</body>
+</html>

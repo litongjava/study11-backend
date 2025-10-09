@@ -25,7 +25,10 @@
 * **控制按钮位于字幕下方**，不能遮挡字幕。
 
 ### 界面排版要求：
-* 普通字体设置 font-size="30"
+* svg普通字体设置 font-size="30"
+```
+<text font-size="30">θ</text>
+``
 * 所有元素必须在容器内正确布局；
 * 避免层级冲突（z-fighting）、字幕重叠、错位等视觉错误；
 * 使用 **HTML + CSS + JS + SVG + GeoGebra**，**全部包含在一个 HTML 文件内**；
@@ -46,7 +49,7 @@
 示例：
 
 ```html
-<text x="1600" y="30" text-anchor="middle" fill="#2c3e50" font-size="24" font-weight="300" class="scene-title" id="sceneTitle">
+<text x="1600" y="30" text-anchor="middle" fill="#2c3e50" class="scene-title" id="sceneTitle">
   牛顿第一定律简介
 </text>
 ```
@@ -110,7 +113,7 @@ const allScenes = [...]
 
 ### 7. 向量符号
 
-使用 `→` 代替传统的向量符号，因为部分浏览器无法正确显示。
+必须使用 `→` 代替向量的方向符号，因为部分浏览器无法正确显示。
 
 ---
 
@@ -136,22 +139,29 @@ class="html-formula"必须设置
 </script>
 ```
 
-显示多行公式的方法如下,使用renderMathInElement函数
-```
-// Scene 4: 基本求导公式
-const formula4 = `
-    <div>常数函数: $(c)' = 0$</div>
-    <div style="margin-top: 15px;">幂函数: $(x^n)' = nx^{n-1}$</div>
-    <div style="margin-top: 15px;">三角函数: $(\\sin x)' = \\cos x$, $(\\cos x)' = -\\sin x$</div>
-    <div style="margin-top: 15px;">指数函数: $(e^x)' = e^x$, $(a^x)' = a^x \\ln a$</div>
-    <div style="margin-top: 15px;">对数函数: $(\\ln x)' = \\frac{1}{x}$, $(\\log_a x)' = \\frac{1}{x \\ln a}$</div>
-`;
-document.getElementById('html-formula4').innerHTML = formula4;
-renderMathInElement(document.getElementById('html-formula4'), {
-    delimiters: [
-        { left: "$", right: "$", display: false },
-        { left: "$$", right: "$$", display: true }
-    ]
+显示多行公式的方法如下,使用document.addEventListener和renderMathInElement渲染函数
+```html
+// 渲染公式
+document.addEventListener('DOMContentLoaded', function() {
+    // Scene 3: 导数定义公式
+    katex.render("f'(x_0) = \\lim_{\\Delta x \\to 0} \\frac{f(x_0 + \\Delta x) - f(x_0)}{\\Delta x}",
+        document.getElementById('html-formula3'));
+
+    // Scene 4: 基本求导公式
+    const formula4 = `
+        <div>常数函数: $(c)' = 0$</div>
+        <div style="margin-top: 15px;">幂函数: $(x^n)' = nx^{n-1}$</div>
+        <div style="margin-top: 15px;">三角函数: $(\\sin x)' = \\cos x$, $(\\cos x)' = -\\sin x$</div>
+        <div style="margin-top: 15px;">指数函数: $(e^x)' = e^x$, $(a^x)' = a^x \\ln a$</div>
+        <div style="margin-top: 15px;">对数函数: $(\\ln x)' = \\frac{1}{x}$, $(\\log_a x)' = \\frac{1}{x \\ln a}$</div>
+    `;
+    document.getElementById('html-formula4').innerHTML = formula4;
+    renderMathInElement(document.getElementById('html-formula4'), {
+        delimiters: [
+            { left: "$", right: "$", display: false },
+            { left: "$$", right: "$$", display: true }
+        ]
+    });
 });
 ```
 ---
