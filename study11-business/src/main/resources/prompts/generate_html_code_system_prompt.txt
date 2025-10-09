@@ -143,6 +143,12 @@ class="html-formula"必须设置.
 2.在document.addEventListener('DOMContentLoaded', function () { 中使用renderFormula 函数渲染公式
 示例代码如下
 ```javascript
+<foreignObject x="200" y="150" width="1200" height="500">
+  <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+    <div id="formula3" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
+   </div>
+</foreignObject>
+                    
     // 封装渲染函数
     function renderFormula(containerId, htmlContent) {
         const el = document.getElementById(containerId);
@@ -161,7 +167,7 @@ class="html-formula"必须设置.
             <div>链式法则: $[f(g(x))]' = f'(g(x)) \\cdot g'(x)$</div>
             <div style="margin-top: 20px;">例如: $(\\sin(x^2))' = \\cos(x^2) \\cdot 2x$</div>
         `;
-        renderFormula('html-formula3', formula3);
+        renderFormula('formula3', formula3);
     });
 ```
 
