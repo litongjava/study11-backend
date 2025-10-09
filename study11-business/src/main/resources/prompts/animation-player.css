@@ -361,3 +361,6 @@ body {
     }
 }
 
+.katex {
+  font-size: 1.4rem;
+}
