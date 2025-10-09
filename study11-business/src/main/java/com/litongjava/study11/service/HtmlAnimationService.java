@@ -51,7 +51,7 @@ public class HtmlAnimationService {
     SceneStoryboardInput sceneStoryboardInput = new SceneStoryboardInput(id, topic, language, 10, 15);
     UniChatRequest uniChatRequest = new UniChatRequest();
     uniChatRequest.setDomain(domain);
-    
+
     platformAndModelSetService.configPlatformAndModel(uniChatRequest);
 
     String plan = sceneStoryboardPlanService.planJson(sceneStoryboardInput, uniChatRequest);
@@ -60,7 +60,7 @@ public class HtmlAnimationService {
 
     String prompt = getSystemPrompt();
     log.info("start generate code of plan:{}", topic);
-    
+
     String html = genCode(prompt, plan, topic, language, domain, id);
     if (html == null) {
       return null;
@@ -138,6 +138,9 @@ public class HtmlAnimationService {
     String code = CodeBlockUtils.parseHtml(generatedText);
     if (code != null) {
       code = code.replaceAll("^(\\s*\\R)+", "").replaceAll("(\\R\\s*)+$", "");
+      
+      //latex
+      code = code.replace("${", "$({").replace("$<", "$<");
       code.trim();
       File htmlFolder = new File("html");
       if (!htmlFolder.exists()) {

@@ -1,0 +1,366 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>向量公式教学动画 - Study11</title>
+    <link rel="stylesheet" href="animation-player.css">
+
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <!-- GeoGebra -->
+    <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+</head>
+<body>
+<div class="main-container">
+    <!-- Loading 界面 -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">正在加载...</div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar">
+                <div class="loading-progress-fill" id="loadingProgressFill"></div>
+            </div>
+            <div class="loading-progress-text" id="loadingProgressText">进度: 0 / 0（0%）</div>
+        </div>
+    </div>
+
+    <!-- 动画容器 -->
+    <div class="animation-container">
+        <div class="cache-indicator" id="cacheIndicator">使用缓存音频</div>
+        <div class="scene-number" id="sceneNumber">1</div>
+
+        <!-- SVG 场景容器 -->
+        <svg class="trig-scene" viewBox="0 0 1600 800">
+            <!-- 渐变定义 -->
+            <defs>
+                <linearGradient id="vectorGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#3498db;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1"/>
+                </linearGradient>
+            </defs>
+
+            <!-- 场景标题 -->
+            <text x="1600" y="50" text-anchor="middle" fill="#2c3e50" font-size="32" font-weight="300"
+                  class="scene-title" id="sceneTitle">向量基本概念
+            </text>
+
+            <g id="visualPanel">
+                <!-- Scene 1: 向量基本概念 -->
+                <g id="scene1">
+                    <line x1="400" y1="400" x2="700" y2="250" stroke="#3498db" stroke-width="4" marker-end="url(#arrow)"/>
+                    <circle cx="400" cy="400" r="5" fill="#2c3e50"/>
+                    <circle cx="700" cy="250" r="5" fill="#2c3e50"/>
+                    <text x="380" y="420" fill="#2c3e50" font-size="30">起点</text>
+                    <text x="710" y="230" fill="#2c3e50" font-size="30">终点</text>
+                    <text x="550" y="200" fill="#e74c3c" font-size="30">向量 $({\bf v})$</text>
+
+                    <text x="900" y="300" fill="#2c3e50" font-size="30">二维向量: $({\bf v} = (v_x, v_y))$</text>
+                    <text x="900" y="350" fill="#2c3e50" font-size="30">三维向量: $({\bf v} = (v_x, v_y, v_z))$</text>
+                    <text x="900" y="400" fill="#2c3e50" font-size="30">向量模长: $|{\bf v}|$ 或 $\|{\bf v}\|)$</text>
+                </g>
+
+                <!-- Scene 2: 向量模长公式 -->
+                <g id="scene2" style="display: none;">
+                    <foreignObject x="200" y="150" width="1200" height="500">
+                        <div xmlns="http://www.w3.org/1999/xhtml" id="html-formula2" class="html-formula"></div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 3: 向量加法公式 -->
+                <g id="scene3" style="display: none;">
+                    <foreignObject x="200" y="150" width="1200" height="500">
+                        <div xmlns="http://www.w3.org/1999/xhtml" id="html-formula3" class="html-formula"></div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 4: 向量减法公式 -->
+                <g id="scene4" style="display: none;">
+                    <foreignObject x="200" y="150" width="1200" height="500">
+                        <div xmlns="http://www.w3.org/1999/xhtml" id="html-formula4" class="html-formula"></div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 5: 数量积公式 -->
+                <g id="scene5" style="display: none;">
+                    <foreignObject x="200" y="150" width="1200" height="500">
+                        <div xmlns="http://www.w3.org/1999/xhtml" id="html-formula5" class="html-formula"></div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 6: 向量夹角公式 -->
+                <g id="scene6" style="display: none;">
+                    <foreignObject x="200" y="150" width="1200" height="500">
+                        <div xmlns="http://www.w3.org/1999/xhtml" id="html-formula6" class="html-formula"></div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 7: 向量投影公式 -->
+                <g id="scene7" style="display: none;">
+                    <foreignObject x="200" y="150" width="1200" height="500">
+                        <div xmlns="http://www.w3.org/1999/xhtml" id="html-formula7" class="html-formula"></div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 8: 向量叉积公式 -->
+                <g id="scene8" style="display: none;">
+                    <foreignObject x="200" y="150" width="1200" height="500">
+                        <div xmlns="http://www.w3.org/1999/xhtml" id="html-formula8" class="html-formula"></div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 9: 叉积几何意义 -->
+                <g id="scene9" style="display: none;">
+                    <foreignObject x="200" y="150" width="1200" height="500">
+                        <div xmlns="http://www.w3.org/1999/xhtml" id="html-formula9" class="html-formula"></div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 10: 单位向量公式 -->
+                <g id="scene10" style="display: none;">
+                    <foreignObject x="200" y="150" width="1200" height="500">
+                        <div xmlns="http://www.w3.org/1999/xhtml" id="html-formula10" class="html-formula"></div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 11: 向量线性组合 -->
+                <g id="scene11" style="display: none;">
+                    <foreignObject x="200" y="150" width="1200" height="500">
+                        <div xmlns="http://www.w3.org/1999/xhtml" id="html-formula11" class="html-formula"></div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 12: 向量共线条件 -->
+                <g id="scene12" style="display: none;">
+                    <foreignObject x="200" y="150" width="1200" height="500">
+                        <div xmlns="http://www.w3.org/1999/xhtml" id="html-formula12" class="html-formula"></div>
+                    </foreignObject>
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <!-- 字幕容器 -->
+    <div class="subtitle-container">
+        <div class="subtitle" id="subtitle"></div>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="controls">
+        <button class="control-btn" id="playBtn" title="播放/暂停" disabled>
+            <span id="playIcon">▶</span>
+        </button>
+        <button class="control-btn" id="muteBtn" title="静音">
+            <span id="muteIcon">🔊</span>
+        </button>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-handle" id="progressHandle"></div>
+            </div>
+            <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+        </div>
+        <div class="scene-buttons" id="sceneButtons"></div>
+    </div>
+</div>
+
+<!-- 页脚 -->
+<div class="footer">
+    <a href="https://study11.ai">© 2025 study11 lab</a>
+</div>
+
+<!-- 音频容器 -->
+<div id="audioContainer"></div>
+
+<!-- 引入脚本 -->
+<script src="animation-player-utils.js"></script>
+<script src="player-control.js"></script>
+<script>
+    // 封装渲染函数
+    function renderFormula(containerId, htmlContent) {
+        const el = document.getElementById(containerId);
+        if (!el) return; // 防止容器不存在时报错
+        el.innerHTML = htmlContent;
+        renderMathInElement(el, {
+            delimiters: [
+                {left: "$", right: "$", display: false},
+                {left: "$$", right: "$$", display: true}
+            ]
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const formula2 = `
+                    <div>二维向量模长: $|{\\bf v}| = \\sqrt{v_x^2 + v_y^2})$</div>
+                    <div style="margin-top: 15px;">三维向量模长: $|{\\bf v}| = \\sqrt{v_x^2 + v_y^2 + v_z^2})$</div>
+                `;
+        renderFormula('html-formula2', formula2);
+
+        const formula3 = `
+                    <div>向量加法坐标公式: $\\bf a + \\bf b = (a_x + b_x, a_y + b_y))$</div>
+
+                    <div style="margin-top: 15px;">交换律: $\\bf a + \\bf b = \\bf b + \\bf a)$</div>
+                    <div style="margin-top: 15px;">结合律: $({\\bf a} + {\\bf b}) + {\\bf c} = {\\bf a} + ({\\bf b} + {\\bf c}))$</div>
+                `;
+        renderFormula('html-formula3', formula3);
+
+        const formula4 = `
+                    <div>向量减法坐标公式: $\\bf a - \\bf b = (a_x - b_x, a_y - b_y))$</div>
+
+                    <div style="margin-top: 15px;">几何意义: 从向量 $\\bf b$ 的终点指向向量 $\\bf a$ 的终点</div>
+                `;
+        renderFormula('html-formula4', formula4);
+
+        const formula5 = `
+                    <div>数量积定义: $\\bf a \\cdot \\bf b = |\\bf a||\\bf b|\\cos\\theta)$</div>
+
+                    <div style="margin-top: 15px;">坐标计算公式: $\\bf a \\cdot \\bf b = a_x b_x + a_y b_y)$</div>
+                `;
+        renderFormula('html-formula5', formula5);
+
+        const formula6 = `
+                    <div>向量夹角公式: $\\cos\\theta = \\frac{\\bf a \\cdot \\bf b}{|\\bf a||\\bf b|})$</div>
+
+                    <div style="margin-top: 15px;">当 $\\bf a \\cdot \\bf b = 0$ 时，两向量垂直</div>
+                    <div style="margin-top: 15px;">当 $\\bf a \\cdot \\bf b = |\\bf a||\\bf b|$ 时，两向量平行且同向</div>
+                `;
+        renderFormula('html-formula6', formula6);
+
+        const formula7 = `
+                    <div>向量投影公式: $({\\bf proj}_{\\bf b}{\\bf a} = \\frac{\\bf a \\cdot \\bf b}{|\\bf b|^2}{\\bf b})$</div>
+
+                    <div style="margin-top: 15px;">投影长度: $|{\\bf proj}_{\\bf b}{\\bf a}| = \\frac{|\\bf a \\cdot \\bf b|}{|\\bf b|})$</div>
+                `;
+        renderFormula('html-formula7', formula7);
+
+        const formula8 = `
+                    <div>三维向量叉积公式:</div>
+                    <div>$\\bf a \\times \\bf b = (a_y b_z - a_z b_y, a_z b_x - a_x b_z, a_x b_y - a_y b_x))$</div>
+                `;
+        renderFormula('html-formula8', formula8);
+
+        const formula9 = `
+                    <div>叉积模长: $|\\bf a \\times \\bf b| = |\\bf a||\\bf b|\\sin\\theta)$</div>
+
+                    <div style="margin-top: 15px;">几何意义: 平行四边形面积</div>
+                    <div style="margin-top: 15px;">方向: 遵循右手定则，垂直于两向量所在平面</div>
+                `;
+        renderFormula('html-formula9', formula9);
+
+        const formula10 = `
+                    <div>单位向量公式: $\\hat{\\bf v} = \\frac{\\bf v}{|\\bf v|})$</div>
+
+                    <div style="margin-top: 15px;">任何非零向量都可以标准化为单位向量</div>
+                `;
+        renderFormula('html-formula10', formula10);
+
+        const formula11 = `
+                    <div>向量线性组合:</div>
+                    <div>$k_1{\\bf v_1} + k_2{\\bf v_2} + \\cdots + k_n{\\bf v_n})$</div>
+
+                    <div style="margin-top: 15px;">其中 $k_1, k_2, \\ldots, k_n$ 是标量系数</div>
+                `;
+        renderFormula('html-formula11', formula11);
+
+        const formula12 = `
+                    <div>向量共线条件:</div>
+                    <div>存在实数 $k$ 使得 $\\bf a = k\\bf b)$</div>
+
+                    <div style="margin-top: 15px;">二维坐标形式: $a_x b_y - a_y b_x = 0)$</div>
+                `;
+        renderFormula('html-formula12', formula12);
+    });
+
+    // ===== 完整的场景配置 =====
+    const allScenes = [
+        // Scene 1: 向量基本概念
+        {
+            title: "向量基本概念",
+            subtitle: "向量是既有大小又有方向的量，在数学和物理中都有重要应用。向量通常用带箭头的字母表示，如向量v或向量a。在坐标系中，向量可以用坐标表示，例如二维向量v等于(vx,vy)。向量的模长表示其大小，记作|v|或||v||。理解向量的基本概念是学习向量公式的基础。",
+            action: () => showScene(1, "向量基本概念")
+        },
+
+        // Scene 2: 向量模长公式
+        {
+            title: "向量模长公式",
+            subtitle: "向量的模长是向量大小的度量，对于二维向量v等于(vx,vy)，其模长公式为|v|等于根号下vx平方加vy平方。对于三维向量v等于(vx,vy,vz)，模长公式为|v|等于根号下vx平方加vy平方加vz平方。这个公式来源于勾股定理的推广。模长公式在物理学中用于计算力、速度等矢量的大小。",
+            action: () => showScene(2, "向量模长公式")
+        },
+
+        // Scene 3: 向量加法公式
+        {
+            title: "向量加法公式",
+            subtitle: "向量加法遵循平行四边形法则和三角形法则，设有向量a等于(ax,ay)和向量b等于(bx,by)。向量加法的坐标公式为向量a加向量b等于(ax加bx,ay加by)。这个公式表明向量加法可以通过对应分量相加来实现。向量加法满足交换律和结合律，即向量a加向量b等于向量b加向量a。",
+            action: () => showScene(3, "向量加法公式")
+        },
+
+        // Scene 4: 向量减法公式
+        {
+            title: "向量减法公式",
+            subtitle: "向量减法可以看作加法的逆运算，设有向量a等于(ax,ay)和向量b等于(bx,by)。向量减法的坐标公式为向量a减向量b等于(ax减bx,ay减by)。几何上，向量减法表示从一个向量终点指向另一个向量终点的向量。向量减法不满足交换律，但满足结合律。",
+            action: () => showScene(4, "向量减法公式")
+        },
+
+        // Scene 5: 数量积公式
+        {
+            title: "数量积公式",
+            subtitle: "向量的数量积也称为点积，是两个向量运算后得到一个标量的结果。设有向量a等于(ax,ay)和向量b等于(bx,by)，数量积公式为向量a点乘向量b等于axbx加ayby。数量积还可以表示为向量a点乘向量b等于|a||b|cosθ。数量积在计算向量夹角和投影时非常有用。",
+            action: () => showScene(5, "数量积公式")
+        },
+
+        // Scene 6: 向量夹角公式
+        {
+            title: "向量夹角公式",
+            subtitle: "通过数量积公式可以推导出两个向量夹角的计算方法。设向量a和向量b的夹角为θ，则有cosθ等于向量a点乘向量b除以|a||b|。这个公式表明夹角的余弦值等于数量积除以两向量模长的乘积。当数量积为零时，两向量垂直，夹角为90度。当数量积等于模长乘积时，两向量平行且同向。",
+            action: () => showScene(6, "向量夹角公式")
+        },
+
+        // Scene 7: 向量投影公式
+        {
+            title: "向量投影公式",
+            subtitle: "向量a在向量b上的投影长度可以用数量积来计算。投影公式为projb a等于向量a点乘向量b除以|b|的平方再乘以向量b。向量投影在物理学中用于分解力和计算功等概念。投影的几何意义是向量a在向量b方向上的分量。",
+            action: () => showScene(7, "向量投影公式")
+        },
+
+        // Scene 8: 向量叉积公式
+        {
+            title: "向量叉积公式",
+            subtitle: "向量叉积是三维空间中特有的运算，结果是一个垂直于两个原向量的新向量。设有三维向量a等于(ax,ay,az)和向量b等于(bx,by,bz)。叉积的坐标公式为向量a叉乘向量b等于(aybz减azby,azbx减axbz,axby减aybx)。叉积的模长等于两向量模长乘积与夹角正弦值的乘积。",
+            action: () => showScene(8, "向量叉积公式")
+        },
+
+        // Scene 9: 叉积几何意义
+        {
+            title: "叉积几何意义",
+            subtitle: "向量叉积的模长等于由两个向量构成的平行四边形的面积。设向量a和向量b的夹角为θ，则叉积模长为|向量a叉乘向量b|等于|a||b|sinθ。叉积的方向遵循右手定则，垂直于原向量所在的平面。叉积在计算力矩、磁场力等物理量时有重要应用。",
+            action: () => showScene(9, "叉积几何意义")
+        },
+
+        // Scene 10: 单位向量公式
+        {
+            title: "单位向量公式",
+            subtitle: "单位向量是模长为1的向量，用于表示方向而不考虑大小。任何非零向量v都可以通过除以其模长得到单位向量。单位向量公式为v帽等于向量v除以|v|。这个公式在向量标准化和方向计算中经常使用。单位向量在计算机图形学和物理模拟中应用广泛。",
+            action: () => showScene(10, "单位向量公式")
+        },
+
+        // Scene 11: 向量线性组合
+        {
+            title: "向量线性组合",
+            subtitle: "向量的线性组合是多个向量通过数量乘法和加法运算得到的新向量。设有向量v1,v2,...,vn和标量k1,k2,...,kn。线性组合公式为k1v1加k2v2加...加knvn。线性组合是向量空间理论的基础概念。通过线性组合可以表示向量的分解和合成。",
+            action: () => showScene(11, "向量线性组合")
+        },
+
+        // Scene 12: 向量共线条件
+        {
+            title: "向量共线条件",
+            subtitle: "两个向量共线意味着它们在同一条直线上或平行线上。向量a和向量b共线的充要条件是存在实数k使得向量a等于k向量b。在坐标表示下，二维向量(ax,ay)和(bx,by)共线当且仅当axby减aybx等于0。这个条件来源于叉积为零的性质。",
+            action: () => showScene(12, "向量共线条件")
+        }
+    ];
+</script>
+</body>
+</html>

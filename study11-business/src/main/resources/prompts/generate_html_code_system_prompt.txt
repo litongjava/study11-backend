@@ -137,15 +137,16 @@ svg <text>不支持显示.
 </script>
 ```
 class="html-formula"必须设置.
-显示多行公式的方法如下,使用renderFormula渲染函数
-不要使用${ 因为 模板字符串（反引号 `…`）里 任何以 ${ 开头、以 } 结束的片段都会被 JavaScript 当成表达式插值去执行.
-或者使用$()的格式,示例代码如下
-
-```html
+显示多行公式的方法如下
+不要使用${ 因为 模板字符串（反引号 `…`）里 任何以 ${ 开头、以 } 结束的片段都会被 JavaScript 当成表达式插值去执行 或者使用$()的格式,
+1.封装renderFormula渲染函数.
+2.在document.addEventListener('DOMContentLoaded', function () { 中使用renderFormula 函数渲染公式
+示例代码如下
+```javascript
     // 封装渲染函数
     function renderFormula(containerId, htmlContent) {
         const el = document.getElementById(containerId);
-        if (!el) return; // 防止容器不存在时报错
+        if (!el) return;
         el.innerHTML = htmlContent;
         renderMathInElement(el, {
             delimiters: [
@@ -156,12 +157,6 @@ class="html-formula"必须设置.
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        const formula2 = `
-                    <div>二维向量模长: $|{\\bf v}| = \\sqrt{v_x^2 + v_y^2}$</div>
-                    <div style="margin-top: 15px;">三维向量模长: $|{\\bf v}| = \\sqrt{v_x^2 + v_y^2 + v_z^2}$</div>
-                `;
-        renderFormula('html-formula2', formula2);
-
         const formula3 = `
                     <div>向量加法坐标公式: $\\bf a + \\bf b = (a_x + b_x, a_y + b_y)$</div>
 
@@ -171,7 +166,7 @@ class="html-formula"必须设置.
         renderFormula('html-formula3', formula3);
     });
 ```
-如果公式有很多,你可以自定义一个renderMathInElement函数使用
+
 ---
 
 ## 10. GeoGebra（交互式几何）
