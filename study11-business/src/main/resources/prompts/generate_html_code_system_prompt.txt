@@ -139,8 +139,9 @@ class="html-formula"必须设置.
 
 
 显示多行公式的方法如下
-1.封装renderFormula公式渲染函数.
-2.在document.addEventListener('DOMContentLoaded', function () { 中使用renderFormula 函数渲染公式
+1.在svg的对应的场景中定义foreignObject
+2.封装renderFormula公式渲染函数.
+3.在document.addEventListener('DOMContentLoaded', function () { 中使用renderFormula 函数渲染公式
 示例代码如下
 ```javascript
 <foreignObject x="200" y="150" width="1200" height="500">
@@ -148,7 +149,8 @@ class="html-formula"必须设置.
     <div id="formula3" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
    </div>
 </foreignObject>
-                    
+
+<script>
     // 封装渲染函数
     function renderFormula(containerId, htmlContent) {
         const el = document.getElementById(containerId);
@@ -169,6 +171,7 @@ class="html-formula"必须设置.
         `;
         renderFormula('formula3', formula3);
     });
+</script>
 ```
 
 ---
