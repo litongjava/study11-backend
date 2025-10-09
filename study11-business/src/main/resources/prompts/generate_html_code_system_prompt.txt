@@ -123,15 +123,15 @@ const allScenes = [...]
 
 使用 KaTeX 进行公式渲染。
 通过 `<foreignObject>` 内嵌 HTML：
-id="html-formula"必须设置
+class="html-formula"必须设置
 ```html
 <foreignObject x="100" y="100" width="200" height="50">
-    <div id="html-formula" xmlns="http://www.w3.org/1999/xhtml">
-        <span id="formula1"></span>
+    <div id="formula" xmlns="http://www.w3.org/1999/xhtml" class="html-formula">
+
     </div>
 </foreignObject>
 <script>
-    katex.render("E = mc^2", document.getElementById('formula1'));
+    katex.render("E = mc^2", document.getElementById('formula'));
 </script>
 ```
 
