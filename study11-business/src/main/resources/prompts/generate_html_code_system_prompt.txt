@@ -221,6 +221,7 @@ GeoGebra最擅长绘制的类型
 
 **重要提醒：**
 * showToolBar,showAlgebraInput,showMenuBar必须这为false
+* 必须设置api.setPerspective('G');
 * 不得使用 `material_id` 引入外部 GeoGebra 资源；
 * 必须通过 `appletOnLoad` 回调用 API 命令创建内容；
 * 常用 GeoGebra API：
@@ -238,7 +239,9 @@ GeoGebra最擅长绘制的类型
 ---
 
 ## 完整示例
-示例中演示使用了GeoGebra
+1.学习如何使用GeoGebra
+2.学习场景2中的左右布局和GeoGebra的使用
+3.学习场景3,4,5的上下布局和GeoGebra的使用
 ```html
 #include("template.html")
 ```
