@@ -170,6 +170,7 @@ class AnimationPlayer {
         this.isPlaying = false;
         this.isMuted = false;
         this.isDragging = false;
+        this.hasUserInteracted = false; // 跟踪是否有过用户交互
 
         this.elements = config.elements || {};
         this.ttsManager = new TTSManager(config.apiUrl);
@@ -361,8 +362,11 @@ class AnimationPlayer {
         if (audio && !this.isMuted) {
             audio.currentTime = 0;
             audio.play().catch(e => {
-                console.log('音频播放失败:', e);
-                this.showInteractionRequired();
+                // 只在 NotAllowedError 且用户从未交互过时显示提示
+                if (e?.name === 'NotAllowedError' && !this.hasUserInteracted) {
+                    console.log('音频播放失败:', e);
+                    this.showInteractionRequired();
+                }
             });
 
             audio.onended = () => {
@@ -392,8 +396,11 @@ class AnimationPlayer {
         if (audio && !this.isMuted) {
             audio.currentTime = timeOffset / 1000;
             audio.play().catch(e => {
-                console.log('音频播放失败:', e);
-                this.showInteractionRequired();
+                // 只在 NotAllowedError 且用户从未交互过时显示提示
+                if (e?.name === 'NotAllowedError' && !this.hasUserInteracted) {
+                    console.log('音频播放失败:', e);
+                    this.showInteractionRequired();
+                }
             });
 
             audio.onended = () => {
@@ -467,6 +474,7 @@ class AnimationPlayer {
 
             document.getElementById('manualStartBtn').addEventListener('click', () => {
                 message.remove();
+                this.hasUserInteracted = true; // 标记用户已交互
                 try {
                     this.isPlaying = false;
                     this.play();
@@ -481,11 +489,12 @@ class AnimationPlayer {
         if (this.isPlaying) return;
 
         this.isPlaying = true;
+        this.hasUserInteracted = true; // 标记用户已交互
 
         const {playIcon} = this.elements;
         if (playIcon) playIcon.textContent = '⏸';
 
-        // 从当前场景开始播放，而不是总是从0开始
+        // 从当前场景开始播放,而不是总是从0开始
         const startScene = this.currentScene || 0;
         this.playScene(startScene);
         this.updateProgress();
@@ -580,6 +589,7 @@ class AnimationPlayer {
 
         if (playBtn) {
             playBtn.addEventListener('click', () => {
+                this.hasUserInteracted = true; // 标记用户已交互
                 if (this.isPlaying) {
                     this.pause();
                 } else {
@@ -589,15 +599,22 @@ class AnimationPlayer {
         }
 
         if (muteBtn) {
-            muteBtn.addEventListener('click', () => this.toggleMute());
+            muteBtn.addEventListener('click', () => {
+                this.hasUserInteracted = true; // 标记用户已交互
+                this.toggleMute();
+            });
         }
 
         if (progressBar) {
-            progressBar.addEventListener('click', this.handleProgressClick);
+            progressBar.addEventListener('click', (e) => {
+                this.hasUserInteracted = true; // 标记用户已交互
+                this.handleProgressClick(e);
+            });
         }
 
         if (progressHandle) {
             progressHandle.addEventListener('mousedown', () => {
+                this.hasUserInteracted = true; // 标记用户已交互
                 this.isDragging = true;
             });
         }
@@ -617,6 +634,8 @@ class AnimationPlayer {
             btn.textContent = String(idx + 1);
 
             btn.addEventListener('click', () => {
+                this.hasUserInteracted = true; // 标记用户已交互
+
                 if (this.isPlaying) {
                     this.jumpToScene(idx, 0);
                 } else {
