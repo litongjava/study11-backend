@@ -30,7 +30,8 @@ public class ExplanationVo {
   private String user_id;
   private String md5;
   private String domain;
-  
+  private String tableName = "ef_user_video";
+
   public ExplanationVo(String text) {
     this.question = text;
   }
