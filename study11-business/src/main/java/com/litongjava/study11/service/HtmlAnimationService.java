@@ -21,7 +21,6 @@ import com.litongjava.study11.consts.Study11TableName;
 import com.litongjava.study11.model.ExplanationVo;
 import com.litongjava.study11.model.SceneStoryboardInput;
 import com.litongjava.study11.utils.CoverSvgUtils;
-import com.litongjava.template.EnjoyEngine;
 import com.litongjava.template.PromptEngine;
 import com.litongjava.tio.utils.hutool.FileUtil;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
@@ -49,7 +48,7 @@ public class HtmlAnimationService {
     id = SnowflakeIdUtils.id();
     log.info("start with id:{}", id);
     log.info("start plan:{}", topic);
-    SceneStoryboardInput sceneStoryboardInput = new SceneStoryboardInput(id, topic, language, 10, 15);
+    SceneStoryboardInput sceneStoryboardInput = new SceneStoryboardInput(id, topic, language, 3, 15);
     UniChatRequest uniChatRequest = new UniChatRequest();
     uniChatRequest.setDomain(domain);
 
