@@ -1,0 +1,8 @@
+The user question is:#(question).
+The generated subtitles and narration must use the:#(language).
+he user scene plan is:#(storyboard)
+注意,下面是注意事项,不是主题的一部分
+禁止用 text的绝对定位给我图形添加标签 而是是用 javascript 根据 circle 的计算tex位置 
+禁止用 svg 的 path 路径 标记 角的弧度,而是根据 circle计算然后绘制.
+先确定一个或者两个点,其他点 的坐标值 根据角度值计算.
+Please only output the html code.

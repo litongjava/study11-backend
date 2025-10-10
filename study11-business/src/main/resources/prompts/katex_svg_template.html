@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+</head>
+<body>
+<svg class="trig-scene" viewBox="0 0 800 400">
+    <!--
+      foreignObject 的 x, y, width, height 定义了 HTML 内容的视窗
+    -->
+    <foreignObject x="10" y="10" width="380" height="80">
+        <!-- 这个 div 里的内容是标准的 HTML -->
+        <div id="html-formula" style="padding: 10px; font-size: 1.4rem;">
+            <!-- KaTeX 会在这里渲染 HTML -->
+        </div>
+    </foreignObject>
+</svg>
+
+<script>
+    const latexCode = "\\frac{\\partial u}{\\partial t} = k \\frac{\\partial^2 u}{\\partial x^2}";
+    const container = document.getElementById('html-formula');
+
+    // 使用 KaTeX 渲染为 HTML (默认输出)
+    katex.render(latexCode, container, {
+        throwOnError: false
+    });
+</script>
+
+</body>
+</html>

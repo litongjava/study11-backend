@@ -13,11 +13,17 @@ public class HtmlAnimationServiceTest {
     TioBootTest.runWith(AdminAppConfig.class);
     // String topic = "If two vectors have the same magnitude, do their components
     // have to be the same?";
-    //String topic = "为什么天空是蓝色?";
+    // String topic = "为什么天空是蓝色?";
     String topic = "什么是加密货币?";
     Long id = Aop.get(HtmlAnimationService.class).selectIdByTopic(topic);
-    if(id==null) {
+    if (id == null) {
       System.out.println("is is null");
     }
+  }
+
+  @Test
+  public void getUserPrompt() {
+    String userPrompt = Aop.get(HtmlAnimationService.class).getUserPrompt("什么是向量", "Chinese", "故事板");
+    System.out.println(userPrompt);
   }
 }

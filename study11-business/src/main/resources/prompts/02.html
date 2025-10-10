@@ -1,0 +1,295 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>太阳系行星运动演示</title>
+    <link rel="stylesheet" href="animation-player.css">
+    <script src="animation-player-utils.js"></script>
+    <script src="player-control.js"></script>
+    <style>
+        .planet-container {
+            position: relative;
+            width: 800px;
+            height: 400px;
+        }
+        .sun {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #ffd700, #ff8c00);
+            border-radius: 50%;
+            box-shadow: 0 0 20px #ff8c00;
+            left: 380px;
+            top: 180px;
+            z-index: 10;
+        }
+        .orbit {
+            position: absolute;
+            border: 1px solid rgba(100, 100, 150, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .label {
+            position: absolute;
+            font-size: 12px;
+            color: #2c3e50;
+            white-space: nowrap;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">加载中...</div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar">
+                <div class="loading-progress-fill" id="loadingProgressFill"></div>
+            </div>
+            <div class="loading-progress-text" id="loadingProgressText">进度: 0 / 0（0%）</div>
+        </div>
+    </div>
+    <div class="animation-container">
+        <div class="cache-indicator" id="cacheIndicator">使用缓存音频</div>
+        <div class="scene-number" id="sceneNumber">1</div>
+
+        <svg class="solar-system-scene" viewBox="0 0 800 400">
+            <text x="800" y="30" text-anchor="middle" fill="#2c3e50" font-size="24" font-weight="300"
+                  class="scene-title" id="sceneTitle">
+                太阳系概览
+            </text>
+            <g id="visualPanel">
+                <foreignObject x="0" y="0" width="800" height="400">
+                    <div xmlns="http://www.w3.org/1999/xhtml" class="planet-container">
+                        <div class="sun"></div>
+                        <div class="orbit" id="mercury-orbit"></div>
+                        <div class="planet" id="mercury"></div>
+                        <div class="label" id="mercury-label">水星</div>
+
+                        <div class="orbit" id="venus-orbit"></div>
+                        <div class="planet" id="venus"></div>
+                        <div class="label" id="venus-label">金星</div>
+
+                        <div class="orbit" id="earth-orbit"></div>
+                        <div class="planet" id="earth"></div>
+                        <div class="label" id="earth-label">地球</div>
+
+                        <div class="orbit" id="mars-orbit"></div>
+                        <div class="planet" id="mars"></div>
+                        <div class="label" id="mars-label">火星</div>
+
+                        <div class="orbit" id="jupiter-orbit"></div>
+                        <div class="planet" id="jupiter"></div>
+                        <div class="label" id="jupiter-label">木星</div>
+
+                        <div class="orbit" id="saturn-orbit"></div>
+                        <div class="planet" id="saturn"></div>
+                        <div class="label" id="saturn-label">土星</div>
+
+                        <div class="orbit" id="uranus-orbit"></div>
+                        <div class="planet" id="uranus"></div>
+                        <div class="label" id="uranus-label">天王星</div>
+
+                        <div class="orbit" id="neptune-orbit"></div>
+                        <div class="planet" id="neptune"></div>
+                        <div class="label" id="neptune-label">海王星</div>
+                    </div>
+                </foreignObject>
+            </g>
+        </svg>
+    </div>
+
+    <div class="subtitle-container">
+        <div class="subtitle" id="subtitle"></div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn" id="playBtn" title="播放" disabled>
+            <span id="playIcon">▶</span>
+        </button>
+        <button class="control-btn" id="muteBtn" title="静音">
+            <span id="muteIcon">🔊</span>
+        </button>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-handle" id="progressHandle"></div>
+            </div>
+            <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+        </div>
+        <div class="scene-buttons" id="sceneButtons"></div>
+    </div>
+</div>
+
+<div class="footer">
+    <a href="https://study11.ai">© 2023 https://study11.ai/</a>
+</div>
+
+<div id="audioContainer"></div>
+
+<script>
+    const allScenes = [
+        {
+            title: "太阳系概览",
+            subtitle: "欢迎来到太阳系行星运动的可视化演示。太阳系由太阳和围绕它运行的八大行星组成，这些行星按照各自的轨道规律运动。今天我们将使用foreignObject和HTML技术来模拟这种运动现象，帮助大家更直观地理解行星轨道运动的原理。",
+            action: () => showScene(1, "太阳系概览")
+        },
+        {
+            title: "运动基础概念",
+            subtitle: "行星运动遵循开普勒定律和牛顿万有引力定律。每个行星都沿着椭圆轨道绕太阳运行，太阳位于椭圆的一个焦点上。行星在轨道上的运动速度不是恒定的，而是根据距离太阳的远近而变化。这种运动可以用数学公式精确描述。",
+            action: () => showScene(2, "运动基础概念")
+        },
+        {
+            title: "坐标系统介绍",
+            subtitle: "为了准确模拟行星运动，我们需要建立一个二维坐标系统。太阳位于坐标原点(0,0)，行星的位置通过x和y坐标来确定。我们将使用极坐标系统来计算行星在不同时间点的位置，然后转换为直角坐标系进行显示。",
+            action: () => showScene(3, "坐标系统介绍")
+        },
+        {
+            title: "椭圆轨道原理",
+            subtitle: "行星轨道是椭圆形的，椭圆的参数包括半长轴、半短轴和离心率。半长轴决定了轨道的大小，离心率决定了轨道的扁平程度。通过椭圆方程，我们可以计算出任意角度下行星的精确位置。这个数学模型是整个演示的基础。",
+            action: () => showScene(4, "椭圆轨道原理")
+        },
+        {
+            title: "运动方程建立",
+            subtitle: "行星运动可以用参数方程来描述，其中时间是关键变量。根据开普勒第二定律，行星在相等时间内扫过的面积相等。我们需要建立角度随时间变化的方程，以及将极坐标转换为直角坐标的公式。这些方程将驱动我们的动画演示。",
+            action: () => showScene(5, "运动方程建立")
+        },
+        {
+            title: "HTML元素设计",
+            subtitle: "我们将使用HTML的div元素来代表太阳和各个行星。太阳用一个大的黄色圆形div表示，行星则用不同颜色和大小的圆形div表示。每个行星div将包含标签显示行星名称，同时设置适当的CSS样式来美化视觉效果。通过CSS的定位属性，我们可以精确控制元素在坐标系中的位置。",
+            action: () => showScene(6, "HTML元素设计")
+        },
+        {
+            title: "foreignObject集成",
+            subtitle: "foreignObject是SVG中的一个特殊元素，允许我们在SVG画布中嵌入HTML内容。我们将创建SVG容器，并在其中使用foreignObject来包含我们的HTML行星元素。通过设置foreignObject的x和y属性，我们可以将HTML元素放置在正确的位置。这种方法结合了SVG的矢量图形优势和HTML的灵活性。",
+            action: () => showScene(7, "foreignObject集成")
+        },
+        {
+            title: "水星轨道演示",
+            subtitle: "水星是距离太阳最近的行星，轨道半径最小，运动周期最短。我们将设置水星的轨道参数，包括半长轴0.39天文单位和公转周期88天。通过动画函数，水星将沿着其椭圆轨道快速移动，展示其独特的运动特征。观察水星的轨道偏心率相对较大，轨道较为椭圆。",
+            action: () => showScene(8, "水星轨道演示")
+        },
+        {
+            title: "金星轨道演示",
+            subtitle: "金星是第二颗行星，轨道半径比水星大，公转周期为225天。金星的轨道接近圆形，离心率很小，运动相对稳定。我们将演示金星的逆向自转特性，以及它在轨道上的规律运动。金星表面温度极高，但今天我们主要关注其轨道运动规律。",
+            action: () => showScene(9, "金星轨道演示")
+        },
+        {
+            title: "地球轨道演示",
+            subtitle: "地球是我们居住的行星，轨道半径定义为1天文单位，公转周期365天。地球轨道离心率很小，接近完美的圆形。我们将重点演示地球轨道的稳定性，以及它在宜居带中的特殊位置。地球的轨道运动是所有行星中最为规律和重要的。",
+            action: () => showScene(10, "地球轨道演示")
+        },
+        {
+            title: "火星轨道演示",
+            subtitle: "火星是地球外侧的第一颗行星，轨道半径1.52天文单位，公转周期687天。火星轨道的离心率比地球大，因此其运动速度变化更明显。我们将演示火星在近日点和远日点时的速度差异。火星因其红色外观被称为红色行星，但今天我们关注其轨道动力学。",
+            action: () => showScene(11, "火星轨道演示")
+        },
+        {
+            title: "木星轨道演示",
+            subtitle: "木星是太阳系中最大的行星，轨道半径5.20天文单位，公转周期约12年。尽管木星体积巨大，但其轨道运动遵循同样的物理定律。我们将演示木星缓慢而稳定的轨道运动，以及其作为气态巨行星的特征。木星的质量影响了整个太阳系的引力平衡。",
+            action: () => showScene(12, "木星轨道演示")
+        },
+        {
+            title: "土星轨道演示",
+            subtitle: "土星距离太阳约9.58天文单位，公转周期29年，以其美丽的光环系统而闻名。我们将模拟土星的轨道运动，并突出显示其独特的光环特征。土星的密度小于水，是太阳系中密度最小的行星。观察土星轨道的椭圆特性，以及其相对较慢的运动速度。",
+            action: () => showScene(13, "土星轨道演示")
+        },
+        {
+            title: "天王星轨道演示",
+            subtitle: "天王星轨道半径19.20天文单位，公转周期84年，具有独特的侧向自转特性。天王星的轨道倾角很大，几乎是躺着绕太阳运行的。我们将演示这种特殊的轨道运动模式，以及天王星作为冰巨星的特征。天王星的运动周期很长，需要耐心观察。",
+            action: () => showScene(14, "天王星轨道演示")
+        },
+        {
+            title: "海王星轨道演示",
+            subtitle: "海王星是距离太阳最远的行星，轨道半径30.05天文单位，公转周期165年。海王星的轨道运动最为缓慢，但同样遵循开普勒定律。我们将演示海王星在遥远轨道上的稳定运行，以及其作为最外侧行星的特殊地位。整个太阳系的行星运动演示到此完成，展现了宇宙的和谐规律。",
+            action: () => showScene(15, "海王星轨道演示")
+        }
+    ];
+
+    // 初始化行星轨道和样式
+    function initPlanets() {
+        const planets = [
+            { id: 'mercury', orbitId: 'mercury-orbit', labelId: 'mercury-label', color: '#8a8a8a', size: 6, orbitRadius: 60, period: 88 },
+            { id: 'venus', orbitId: 'venus-orbit', labelId: 'venus-label', color: '#e39e1c', size: 10, orbitRadius: 80, period: 225 },
+            { id: 'earth', orbitId: 'earth-orbit', labelId: 'earth-label', color: '#1976d2', size: 11, orbitRadius: 110, period: 365 },
+            { id: 'mars', orbitId: 'mars-orbit', labelId: 'mars-label', color: '#d32f2f', size: 8, orbitRadius: 140, period: 687 },
+            { id: 'jupiter', orbitId: 'jupiter-orbit', labelId: 'jupiter-label', color: '#f2711c', size: 25, orbitRadius: 190, period: 4333 },
+            { id: 'saturn', orbitId: 'saturn-orbit', labelId: 'saturn-label', color: '#e2c08d', size: 22, orbitRadius: 240, period: 10759 },
+            { id: 'uranus', orbitId: 'uranus-orbit', labelId: 'uranus-label', color: '#82b3d9', size: 16, orbitRadius: 290, period: 30687 },
+            { id: 'neptune', orbitId: 'neptune-orbit', labelId: 'neptune-label', color: '#4f7ca5', size: 15, orbitRadius: 340, period: 60190 }
+        ];
+
+        planets.forEach(planet => {
+            const orbit = document.getElementById(planet.orbitId);
+            const planetEl = document.getElementById(planet.id);
+            const label = document.getElementById(planet.labelId);
+
+            orbit.style.width = `${planet.orbitRadius * 2}px`;
+            orbit.style.height = `${planet.orbitRadius * 2}px`;
+            orbit.style.left = '400px';
+            orbit.style.top = '200px';
+
+            planetEl.style.width = `${planet.size}px`;
+            planetEl.style.height = `${planet.size}px`;
+            planetEl.style.backgroundColor = planet.color;
+            planetEl.style.left = `${400 + planet.orbitRadius}px`;
+            planetEl.style.top = '200px';
+
+            label.style.left = `${400 + planet.orbitRadius}px`;
+            label.style.top = '180px';
+        });
+    }
+
+    // 行星运动动画
+    function animatePlanets() {
+        const planets = [
+            { id: 'mercury', orbitRadius: 60, period: 88 },
+            { id: 'venus', orbitRadius: 80, period: 225 },
+            { id: 'earth', orbitRadius: 110, period: 365 },
+            { id: 'mars', orbitRadius: 140, period: 687 },
+            { id: 'jupiter', orbitRadius: 190, period: 4333 },
+            { id: 'saturn', orbitRadius: 240, period: 10759 },
+            { id: 'uranus', orbitRadius: 290, period: 30687 },
+            { id: 'neptune', orbitRadius: 340, period: 60190 }
+        ];
+
+        planets.forEach(planet => {
+            const planetEl = document.getElementById(planet.id);
+            const label = document.getElementById(`${planet.id}-label`);
+
+            let angle = 0;
+            const angularSpeed = 2 * Math.PI / planet.period; // 每天扫过的角度
+
+            function updatePosition() {
+                angle += angularSpeed;
+                const x = 400 + planet.orbitRadius * Math.cos(angle);
+                const y = 200 + planet.orbitRadius * Math.sin(angle);
+
+                planetEl.style.left = `${x}px`;
+                planetEl.style.top = `${y}px`;
+                label.style.left = `${x}px`;
+                label.style.top = `${y - 20}px`;
+
+                requestAnimationFrame(updatePosition);
+            }
+
+            updatePosition();
+        });
+    }
+
+    // 页面加载完成后初始化
+    window.addEventListener('load', () => {
+        initPlanets();
+        animatePlanets();
+    });
+</script>
+</body>
+</html>

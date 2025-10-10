@@ -21,6 +21,7 @@ import com.litongjava.study11.consts.Study11TableName;
 import com.litongjava.study11.model.ExplanationVo;
 import com.litongjava.study11.model.SceneStoryboardInput;
 import com.litongjava.study11.utils.CoverSvgUtils;
+import com.litongjava.template.EnjoyEngine;
 import com.litongjava.template.PromptEngine;
 import com.litongjava.tio.utils.hutool.FileUtil;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
@@ -101,10 +102,8 @@ public class HtmlAnimationService {
   public String genCode(String systemPrompt, String storyboard, String question, String language, String host,
       long id) {
     List<UniChatMessage> messages = new ArrayList<>();
-    question = "The user question is:" + question + " .The generated subtitles and narration must use the " + language;
-    storyboard = "The user scene plan is:" + storyboard;
 
-    String userMessage = question + ".\r\n" + storyboard + ".\r\n" + "Please only output the html code.";
+    String userMessage = getUserPrompt(question, language, storyboard);
 
     String prompt = systemPrompt + "\r\n" + userMessage;
     File file = new File("prompts");
@@ -138,8 +137,8 @@ public class HtmlAnimationService {
     String code = CodeBlockUtils.parseHtml(generatedText);
     if (code != null) {
       code = code.replaceAll("^(\\s*\\R)+", "").replaceAll("(\\R\\s*)+$", "");
-      
-      //latex
+
+      // latex
       code = code.replace("${", "$({").replace("$<", "$<");
       code.trim();
       File htmlFolder = new File("html");
@@ -157,6 +156,12 @@ public class HtmlAnimationService {
 
     }
     return code;
+  }
+
+  public String getUserPrompt(String question, String language, String storyboard) {
+    Kv kv = Kv.by("question", question).set("language", language).set("storyboard", storyboard);
+    String userMessage = PromptEngine.renderToString("generate_html_code_user_prompt.txt", kv);
+    return userMessage;
   }
 
   public Kv recommends(Integer pageNo, int pageSize, String sort_by, String host) {
