@@ -31,6 +31,7 @@ public class ExplanationVo {
   private String md5;
   private String domain;
   private String tableName = "ef_user_video";
+  private boolean useCache = true;
 
   public ExplanationVo(String text) {
     this.question = text;
