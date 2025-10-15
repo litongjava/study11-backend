@@ -44,7 +44,7 @@
 
 ### 1. 场景标题坐标
 
-所有场景标题的 `x` 坐标必须固定为 **1600**（居中显示）。
+scene-title的 `x` 坐标必须固定为 **1600**（居中显示）。
 
 示例：
 
@@ -52,6 +52,10 @@
 <text x="1600" y="30" text-anchor="middle" fill="#2c3e50" class="scene-title" id="sceneTitle">
   牛顿第一定律简介
 </text>
+```
+普通文本的x坐标设置成800是居中显示
+```html
+<text x="800" y="150" text-anchor="middle" fill="#2c3e50" font-size="30">向量值函数简介</text>
 ```
 
 ---

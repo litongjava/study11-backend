@@ -1,0 +1,836 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>向量值函数的微分与积分 - Study11</title>
+    <link rel="stylesheet" href="animation-player.css">
+
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <!-- GeoGebra -->
+    <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+</head>
+<body>
+<div class="main-container">
+    <!-- Loading 界面 -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">正在加载...</div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar">
+                <div class="loading-progress-fill" id="loadingProgressFill"></div>
+            </div>
+            <div class="loading-progress-text" id="loadingProgressText">进度: 0 / 0（0%）</div>
+        </div>
+    </div>
+
+    <!-- 动画容器 -->
+    <div class="animation-container">
+        <div class="cache-indicator" id="cacheIndicator">使用缓存音频</div>
+        <div class="scene-number" id="sceneNumber">1</div>
+
+        <!-- SVG 场景容器 -->
+        <svg class="trig-scene" viewBox="0 0 1600 800">
+            <!-- 渐变定义 -->
+            <defs>
+                <linearGradient id="sinGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1"/>
+                </linearGradient>
+                <linearGradient id="cosGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#2ecc71;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#27ae60;stop-opacity:1"/>
+                </linearGradient>
+                <linearGradient id="tanGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#f39c12;stop-opacity:1"/>
+                    <stop offset="100%" style="stop-color:#d35400;stop-opacity:1"/>
+                </linearGradient>
+            </defs>
+
+            <!-- 场景标题 -->
+            <text x="1600" y="50" text-anchor="middle" fill="#2c3e50" font-size="32" font-weight="300"
+                  class="scene-title" id="sceneTitle">向量值函数简介
+            </text>
+
+            <g id="visualPanel">
+                <!-- Scene 1: 向量值函数简介 -->
+                <g id="scene1">
+                    <text x="1600" y="150" text-anchor="middle" fill="#2c3e50" font-size="30">向量值函数简介</text>
+                    <text x="1600" y="200" text-anchor="middle" fill="#2c3e50" font-size="24">r(t) = ⟨f(t), g(t), h(t)⟩</text>
+                    <text x="1600" y="250" text-anchor="middle" fill="#2c3e50" font-size="24">或 r(t) = f(t)i + g(t)j + h(t)k</text>
+                    <text x="1600" y="300" text-anchor="middle" fill="#2c3e50" font-size="24">常用于描述质点运动轨迹</text>
+                </g>
+
+                <!-- Scene 2: 导数定义 -->
+                <g id="scene2" style="display: none;">
+                    <text x="1600" y="150" text-anchor="middle" fill="#2c3e50" font-size="30">向量值函数的导数定义</text>
+                    <foreignObject x="400" y="200" width="800" height="400">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet2" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 3: 导数计算示例 -->
+                <g id="scene3" style="display: none;">
+                    <text x="1600" y="150" text-anchor="middle" fill="#2c3e50" font-size="30">导数计算示例</text>
+                    <foreignObject x="400" y="200" width="800" height="400">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet3" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 4: 导数几何解释 -->
+                <g id="scene4" style="display: none;">
+                    <text x="1600" y="150" text-anchor="middle" fill="#2c3e50" font-size="30">导数的几何解释</text>
+                    <foreignObject x="400" y="200" width="800" height="400">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet4" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 5: 高阶导数 -->
+                <g id="scene5" style="display: none;">
+                    <text x="1600" y="150" text-anchor="middle" fill="#2c3e50" font-size="30">高阶导数概念</text>
+                    <foreignObject x="400" y="200" width="800" height="400">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet5" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 6: 积分定义 -->
+                <g id="scene6" style="display: none;">
+                    <text x="1600" y="150" text-anchor="middle" fill="#2c3e50" font-size="30">向量值函数积分定义</text>
+                    <foreignObject x="400" y="200" width="800" height="400">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet6" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 7: 不定积分计算 -->
+                <g id="scene7" style="display: none;">
+                    <text x="1600" y="150" text-anchor="middle" fill="#2c3e50" font-size="30">不定积分计算</text>
+                    <foreignObject x="400" y="200" width="800" height="400">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet7" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 8: 定积分应用 -->
+                <g id="scene8" style="display: none;">
+                    <text x="1600" y="150" text-anchor="middle" fill="#2c3e50" font-size="30">定积分应用示例</text>
+                    <foreignObject x="400" y="200" width="800" height="400">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet8" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 9: 微积分基本定理 -->
+                <g id="scene9" style="display: none;">
+                    <text x="1600" y="150" text-anchor="middle" fill="#2c3e50" font-size="30">微积分基本定理</text>
+                    <foreignObject x="400" y="200" width="800" height="400">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet9" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 10: 物理应用 -->
+                <g id="scene10" style="display: none;">
+                    <text x="1600" y="150" text-anchor="middle" fill="#2c3e50" font-size="30">物理应用实例</text>
+                    <foreignObject x="400" y="200" width="800" height="400">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet10" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 11: 常见函数导数 -->
+                <g id="scene11" style="display: none;">
+                    <text x="1600" y="150" text-anchor="middle" fill="#2c3e50" font-size="30">常见函数的导数</text>
+                    <foreignObject x="400" y="200" width="800" height="400">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet11" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+
+                <!-- Scene 12: 链式法则 -->
+                <g id="scene12" style="display: none;">
+                    <text x="1600" y="150" text-anchor="middle" fill="#2c3e50" font-size="30">链式法则应用</text>
+                    <foreignObject x="400" y="200" width="800" height="400">
+                        <div xmlns="http://www.w3.org/1999/xhtml" style="width: 100%; height: 100%;">
+                            <div id="ggbApplet12" style="width: 100%; height: 100%; border-radius: 10px;"></div>
+                        </div>
+                    </foreignObject>
+                </g>
+            </g>
+        </svg>
+    </div>
+
+    <!-- 字幕容器 -->
+    <div class="subtitle-container">
+        <div class="subtitle" id="subtitle"></div>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="controls">
+        <button class="control-btn" id="playBtn" title="播放/暂停" disabled>
+            <span id="playIcon">▶</span>
+        </button>
+        <button class="control-btn" id="muteBtn" title="静音">
+            <span id="muteIcon">🔊</span>
+        </button>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-handle" id="progressHandle"></div>
+            </div>
+            <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+        </div>
+        <div class="scene-buttons" id="sceneButtons"></div>
+    </div>
+</div>
+
+<!-- 页脚 -->
+<div class="footer">
+    <a href="https://study11.ai">© 2025 study11 lab</a>
+</div>
+
+<!-- 音频容器 -->
+<div id="audioContainer"></div>
+
+<!-- 引入脚本 -->
+<script src="animation-player-utils.js"></script>
+<script src="player-control.js"></script>
+<script>
+    // ===== 完整的场景配置 =====
+    const allScenes = [
+        // Scene 1: 向量值函数简介
+        {
+            title: "向量值函数简介",
+            subtitle: "向量值函数是将实数参数映射到向量空间的函数。这类函数通常表示为r(t) = ⟨f(t), g(t), h(t)⟩或r(t) = f(t)i + g(t)j + h(t)k的形式。向量值函数在物理学中有着重要应用，例如描述质点的运动轨迹。理解向量值函数是学习其微分和积分的基础。在本节中，我们将探讨如何对这类函数进行微分和积分运算。这些运算在工程和物理问题中具有实际意义。",
+            action: () => showScene(1, "向量值函数简介")
+        },
+
+        // Scene 2: 导数定义
+        {
+            title: "向量值函数的导数定义",
+            subtitle: "向量值函数的导数定义为r'(t) = lim(Δt→0) [r(t+Δt) - r(t)]/Δt。这个定义与标量函数的导数定义类似，但结果是一个向量。导数的几何意义表示函数在某点的切向量方向。如果r(t) = ⟨f(t), g(t), h(t)⟩，那么r'(t) = ⟨f'(t), g'(t), h'(t)⟩。这意味着向量值函数的导数可以通过对其分量函数分别求导得到。这种分量求导的方法大大简化了计算过程。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet2',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 800,
+                    "height": 400,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-2, 8, -2, 8);
+
+                        // 定义参数t
+                        api.evalCommand('t = 1');
+
+                        // 定义向量值函数
+                        api.evalCommand('r(t) = (t, t^2)');
+                        api.evalCommand('f(t) = t');
+                        api.evalCommand('g(t) = t^2');
+
+                        // 绘制曲线
+                        api.evalCommand('Curve = Curve(r(s), s, 0, 5)');
+                        api.setColor('Curve', 52, 152, 219);
+                        api.setLineThickness('Curve', 3);
+
+                        // 添加点
+                        api.evalCommand('P = r(t)');
+                        api.setColor('P', 231, 76, 60);
+                        api.setPointSize('P', 5);
+
+                        // 添加切向量
+                        api.evalCommand('rPrime(t) = (1, 2t)');
+                        api.evalCommand('TangentVector = Vector(P, P + rPrime(t))');
+                        api.setColor('TangentVector', 46, 204, 113);
+                        api.setLineThickness('TangentVector', 4);
+
+                        // 添加文本标签
+                        api.evalCommand('Text1 = Text("r(t) = ⟨t, t²⟩", (-1.5, 7))');
+                        api.evalCommand('Text2 = Text("r\'(t) = ⟨1, 2t⟩", (-1.5, 6.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet2');
+            },
+            action: () => showScene(2, "向量值函数的导数定义")
+        },
+
+        // Scene 3: 导数计算示例
+        {
+            title: "导数计算示例",
+            subtitle: "让我们考虑一个具体的例子：r(t) = ⟨t², sin(t), e^t⟩。为了求导数，我们需要对每个分量分别求导。第一个分量t²的导数是2t，第二个分量sin(t)的导数是cos(t)。第三个分量e^t的导数仍然是e^t。因此，r'(t) = ⟨2t, cos(t), e^t⟩。这个结果告诉我们，在任意时刻t，切向量的分量分别是2t、cos(t)和e^t。这种分步计算方法适用于所有向量值函数。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet3',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 800,
+                    "height": 400,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-1, 6, -2, 4);
+
+                        // 定义参数t
+                        api.evalCommand('t = 2');
+
+                        // 定义向量值函数
+                        api.evalCommand('r(t) = (t^2, sin(t), exp(t))');
+                        api.evalCommand('f(t) = t^2');
+                        api.evalCommand('g(t) = sin(t)');
+                        api.evalCommand('h(t) = exp(t)');
+
+                        // 绘制曲线
+                        api.evalCommand('Curve = Curve((s^2, sin(s)), s, 0, 5)');
+                        api.setColor('Curve', 52, 152, 219);
+                        api.setLineThickness('Curve', 3);
+
+                        // 添加点
+                        api.evalCommand('P = (t^2, sin(t))');
+                        api.setColor('P', 231, 76, 60);
+                        api.setPointSize('P', 5);
+
+                        // 添加切向量
+                        api.evalCommand('rPrime(t) = (2t, cos(t))');
+                        api.evalCommand('TangentVector = Vector(P, P + rPrime(t))');
+                        api.setColor('TangentVector', 46, 204, 113);
+                        api.setLineThickness('TangentVector', 4);
+
+                        // 添加文本标签
+                        api.evalCommand('Text1 = Text("r(t) = ⟨t², sin(t)⟩", (-0.5, 3.5))');
+                        api.evalCommand('Text2 = Text("r\'(t) = ⟨2t, cos(t)⟩", (-0.5, 3))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet3');
+            },
+            action: () => showScene(3, "导数计算示例")
+        },
+
+        // Scene 4: 导数几何解释
+        {
+            title: "导数的几何解释",
+            subtitle: "向量值函数的导数r'(t)在几何上表示曲线在点r(t)处的切向量。切向量的方向与曲线在该点的切线方向一致。切向量的长度表示参数变化时函数值变化的速率。当r'(t) = 0时，表示曲线在该点可能有尖点或拐点。单位切向量可以通过T(t) = r'(t)/|r'(t)|来计算。这个单位向量在研究曲线的几何性质时特别有用。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet4',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 800,
+                    "height": 400,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-2, 8, -2, 8);
+
+                        // 定义参数t
+                        api.evalCommand('t = 3');
+
+                        // 定义向量值函数
+                        api.evalCommand('r(t) = (t, t^2)');
+                        api.evalCommand('f(t) = t');
+                        api.evalCommand('g(t) = t^2');
+
+                        // 绘制曲线
+                        api.evalCommand('Curve = Curve(r(s), s, 0, 5)');
+                        api.setColor('Curve', 52, 152, 219);
+                        api.setLineThickness('Curve', 3);
+
+                        // 添加点
+                        api.evalCommand('P = r(t)');
+                        api.setColor('P', 231, 76, 60);
+                        api.setPointSize('P', 5);
+
+                        // 添加切向量
+                        api.evalCommand('rPrime(t) = (1, 2t)');
+                        api.evalCommand('TangentVector = Vector(P, P + rPrime(t))');
+                        api.setColor('TangentVector', 46, 204, 113);
+                        api.setLineThickness('TangentVector', 4);
+
+                        // 添加单位切向量
+                        api.evalCommand('unitTangent = rPrime(t) / sqrt(1^2 + (2t)^2)');
+                        api.evalCommand('UnitTangentVector = Vector(P, P + unitTangent)');
+                        api.setColor('UnitTangentVector', 243, 156, 18);
+                        api.setLineThickness('UnitTangentVector', 4);
+
+                        // 添加文本标签
+                        api.evalCommand('Text1 = Text("切向量: r\'(t)", (-1.5, 7))');
+                        api.evalCommand('Text2 = Text("单位切向量: T(t)", (-1.5, 6.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet4');
+            },
+            action: () => showScene(4, "导数的几何解释")
+        },
+
+        // Scene 5: 高阶导数
+        {
+            title: "高阶导数概念",
+            subtitle: "向量值函数的二阶导数定义为r''(t) = d/dt[r'(t)]。在物理学中，如果r(t)表示位置向量，那么r'(t)表示速度向量，r''(t)表示加速度向量。二阶导数的计算同样采用分量方法，即对每个分量求二阶导数。例如，若r(t) = ⟨t³, cos(t), ln(t)⟩，则r''(t) = ⟨6t, -cos(t), -1/t²⟩。高阶导数帮助我们理解函数的变化率的变化情况。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet5',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 800,
+                    "height": 400,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-1, 6, -3, 3);
+
+                        // 定义参数t
+                        api.evalCommand('t = 2');
+
+                        // 定义向量值函数
+                        api.evalCommand('r(t) = (t^3, cos(t), ln(t))');
+                        api.evalCommand('f(t) = t^3');
+                        api.evalCommand('g(t) = cos(t)');
+                        api.evalCommand('h(t) = ln(t)');
+
+                        // 绘制曲线
+                        api.evalCommand('Curve = Curve((s^3, cos(s)), s, 0.1, 5)');
+                        api.setColor('Curve', 52, 152, 219);
+                        api.setLineThickness('Curve', 3);
+
+                        // 添加点
+                        api.evalCommand('P = (t^3, cos(t))');
+                        api.setColor('P', 231, 76, 60);
+                        api.setPointSize('P', 5);
+
+                        // 添加一阶导数向量
+                        api.evalCommand('rPrime(t) = (3t^2, -sin(t))');
+                        api.evalCommand('VelocityVector = Vector(P, P + rPrime(t))');
+                        api.setColor('VelocityVector', 46, 204, 113);
+                        api.setLineThickness('VelocityVector', 4);
+
+                        // 添加二阶导数向量
+                        api.evalCommand('rDoublePrime(t) = (6t, -cos(t))');
+                        api.evalCommand('AccelerationVector = Vector(P, P + rDoublePrime(t))');
+                        api.setColor('AccelerationVector', 243, 156, 18);
+                        api.setLineThickness('AccelerationVector', 4);
+
+                        // 添加文本标签
+                        api.evalCommand('Text1 = Text("r(t) = ⟨t³, cos(t)⟩", (-0.5, 2.5))');
+                        api.evalCommand('Text2 = Text("r\'(t) = ⟨3t², -sin(t)⟩", (-0.5, 2))');
+                        api.evalCommand('Text3 = Text("r\'\'(t) = ⟨6t, -cos(t)⟩", (-0.5, 1.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet5');
+            },
+            action: () => showScene(5, "高阶导数概念")
+        },
+
+        // Scene 6: 积分定义
+        {
+            title: "向量值函数积分定义",
+            subtitle: "向量值函数的不定积分定义为∫r(t)dt = ⟨∫f(t)dt, ∫g(t)dt, ∫h(t)dt⟩。这意味着我们可以对每个分量分别进行积分运算。定积分的定义类似：∫[a,b] r(t)dt = ⟨∫[a,b] f(t)dt, ∫[a,b] g(t)dt, ∫[a,b] h(t)dt⟩。积分常数也是一个向量，通常表示为C = ⟨C₁, C₂, C₃⟩。这种分量积分的方法使得向量值函数的积分计算变得简单直接。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet6',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 800,
+                    "height": 400,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-1, 6, -2, 4);
+
+                        // 定义向量值函数
+                        api.evalCommand('r(t) = (t, t^2, 1)');
+                        api.evalCommand('f(t) = t');
+                        api.evalCommand('g(t) = t^2');
+                        api.evalCommand('h(t) = 1');
+
+                        // 绘制曲线
+                        api.evalCommand('Curve = Curve((s, s^2), s, 0, 5)');
+                        api.setColor('Curve', 52, 152, 219);
+                        api.setLineThickness('Curve', 3);
+
+                        // 添加积分区域
+                        api.evalCommand('IntegralRegion = Surface((u, v), u, 0, 3, v, 0, u^2)');
+                        api.setColor('IntegralRegion', 231, 76, 60, 0.3);
+                        api.setFilling('IntegralRegion', 0.3);
+
+                        // 添加文本标签
+                        api.evalCommand('Text1 = Text("∫r(t)dt = ⟨∫f(t)dt, ∫g(t)dt, ∫h(t)dt⟩", (-0.5, 3.5))');
+                        api.evalCommand('Text2 = Text("∫[0,3] r(t)dt = ⟨∫[0,3] t dt, ∫[0,3] t² dt, ∫[0,3] 1 dt⟩", (-0.5, 3))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet6');
+            },
+            action: () => showScene(6, "向量值函数积分定义")
+        },
+
+        // Scene 7: 不定积分计算
+        {
+            title: "不定积分计算",
+            subtitle: "考虑函数r(t) = ⟨2t, 3t², sin(t)⟩的不定积分。我们分别对每个分量积分：∫2t dt = t² + C₁，∫3t² dt = t³ + C₂，∫sin(t) dt = -cos(t) + C₃。因此，∫r(t)dt = ⟨t² + C₁, t³ + C₂, -cos(t) + C₃⟩。这可以写成⟨t², t³, -cos(t)⟩ + C的形式，其中C是积分常向量。这种方法适用于所有可积的向量值函数。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet7',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 800,
+                    "height": 400,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-1, 6, -3, 3);
+
+                        // 定义向量值函数
+                        api.evalCommand('r(t) = (2t, 3t^2, sin(t))');
+                        api.evalCommand('f(t) = 2t');
+                        api.evalCommand('g(t) = 3t^2');
+                        api.evalCommand('h(t) = sin(t)');
+
+                        // 绘制曲线
+                        api.evalCommand('Curve = Curve((2s, 3s^2), s, 0, 3)');
+                        api.setColor('Curve', 52, 152, 219);
+                        api.setLineThickness('Curve', 3);
+
+                        // 添加积分曲线
+                        api.evalCommand('IntegralCurve = Curve((s^2, s^3), s, 0, 3)');
+                        api.setColor('IntegralCurve', 231, 76, 60);
+                        api.setLineThickness('IntegralCurve', 3);
+
+                        // 添加文本标签
+                        api.evalCommand('Text1 = Text("r(t) = ⟨2t, 3t², sin(t)⟩", (-0.5, 2.5))');
+                        api.evalCommand('Text2 = Text("∫r(t)dt = ⟨t², t³, -cos(t)⟩ + C", (-0.5, 2))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet7');
+            },
+            action: () => showScene(7, "不定积分计算")
+        },
+
+        // Scene 8: 定积分应用
+        {
+            title: "定积分应用示例",
+            subtitle: "让我们计算r(t) = ⟨t, t², 1⟩在区间[0,2]上的定积分。∫[0,2] r(t)dt = ⟨∫[0,2] t dt, ∫[0,2] t² dt, ∫[0,2] 1 dt⟩。分别计算得：∫[0,2] t dt = [t²/2]₀² = 2，∫[0,2] t² dt = [t³/3]₀² = 8/3，∫[0,2] 1 dt = [t]₀² = 2。因此，∫[0,2] r(t)dt = ⟨2, 8/3, 2⟩。这个结果在物理学中可能表示位移、动量等向量量。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet8',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 800,
+                    "height": 400,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-1, 3, -1, 5);
+
+                        // 定义向量值函数
+                        api.evalCommand('r(t) = (t, t^2, 1)');
+                        api.evalCommand('f(t) = t');
+                        api.evalCommand('g(t) = t^2');
+                        api.evalCommand('h(t) = 1');
+
+                        // 绘制曲线
+                        api.evalCommand('Curve = Curve((s, s^2), s, 0, 2)');
+                        api.setColor('Curve', 52, 152, 219);
+                        api.setLineThickness('Curve', 3);
+
+                        // 添加积分区域
+                        api.evalCommand('IntegralRegion = Surface((u, v), u, 0, 2, v, 0, u^2)');
+                        api.setColor('IntegralRegion', 231, 76, 60, 0.3);
+                        api.setFilling('IntegralRegion', 0.3);
+
+                        // 添加文本标签
+                        api.evalCommand('Text1 = Text("r(t) = ⟨t, t², 1⟩", (-0.5, 4.5))');
+                        api.evalCommand('Text2 = Text("∫[0,2] r(t)dt = ⟨2, 8/3, 2⟩", (-0.5, 4))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet8');
+            },
+            action: () => showScene(8, "定积分应用示例")
+        },
+
+        // Scene 9: 微积分基本定理
+        {
+            title: "微积分基本定理",
+            subtitle: "向量值函数的微积分基本定理表述为：如果r(t)连续，则d/dt[∫[a,t] r(u)du] = r(t)。这个定理建立了微分和积分之间的逆运算关系。它表明向量值函数的积分的导数等于原函数本身。这个定理在解决微分方程和物理问题中非常重要。通过这个定理，我们可以验证积分计算的正确性。它也是许多高级应用的理论基础。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet9',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 800,
+                    "height": 400,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-1, 6, -2, 4);
+
+                        // 定义参数t
+                        api.evalCommand('t = 3');
+
+                        // 定义向量值函数
+                        api.evalCommand('r(t) = (t, t^2)');
+                        api.evalCommand('f(t) = t');
+                        api.evalCommand('g(t) = t^2');
+
+                        // 绘制曲线
+                        api.evalCommand('Curve = Curve(r(s), s, 0, 5)');
+                        api.setColor('Curve', 52, 152, 219);
+                        api.setLineThickness('Curve', 3);
+
+                        // 添加积分曲线
+                        api.evalCommand('IntegralCurve = Curve((s, s^3/3), s, 0, 5)');
+                        api.setColor('IntegralCurve', 231, 76, 60);
+                        api.setLineThickness('IntegralCurve', 3);
+
+                        // 添加点
+                        api.evalCommand('P = r(t)');
+                        api.setColor('P', 231, 76, 60);
+                        api.setPointSize('P', 5);
+
+                        // 添加导数向量
+                        api.evalCommand('rPrime(t) = (1, 2t)');
+                        api.evalCommand('DerivativeVector = Vector(P, P + rPrime(t))');
+                        api.setColor('DerivativeVector', 46, 204, 113);
+                        api.setLineThickness('DerivativeVector', 4);
+
+                        // 添加文本标签
+                        api.evalCommand('Text1 = Text("d/dt[∫[a,t] r(u)du] = r(t)", (-0.5, 3.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet9');
+            },
+            action: () => showScene(9, "微积分基本定理")
+        },
+
+        // Scene 10: 物理应用
+        {
+            title: "物理应用实例",
+            subtitle: "假设一个质点的位置向量为r(t) = ⟨t², t³, 2t⟩，其中t表示时间。速度向量v(t) = r'(t) = ⟨2t, 3t², 2⟩。加速度向量a(t) = r''(t) = ⟨2, 6t, 0⟩。如果要计算从t=0到t=1的位移，我们需要计算∫[0,1] v(t)dt = ∫[0,1] r'(t)dt = r(1) - r(0) = ⟨1, 1, 2⟩ - ⟨0, 0, 0⟩ = ⟨1, 1, 2⟩。这展示了微积分在运动学中的实际应用。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet10',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 800,
+                    "height": 400,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-1, 3, -1, 3);
+
+                        // 定义参数t
+                        api.evalCommand('t = 1');
+
+                        // 定义位置向量
+                        api.evalCommand('r(t) = (t^2, t^3, 2t)');
+                        api.evalCommand('PositionCurve = Curve((s^2, s^3), s, 0, 2)');
+                        api.setColor('PositionCurve', 52, 152, 219);
+                        api.setLineThickness('PositionCurve', 3);
+
+                        // 添加点
+                        api.evalCommand('P = (t^2, t^3)');
+                        api.setColor('P', 231, 76, 60);
+                        api.setPointSize('P', 5);
+
+                        // 添加速度向量
+                        api.evalCommand('v(t) = (2t, 3t^2)');
+                        api.evalCommand('VelocityVector = Vector(P, P + v(t))');
+                        api.setColor('VelocityVector', 46, 204, 113);
+                        api.setLineThickness('VelocityVector', 4);
+
+                        // 添加加速度向量
+                        api.evalCommand('a(t) = (2, 6t)');
+                        api.evalCommand('AccelerationVector = Vector(P, P + a(t))');
+                        api.setColor('AccelerationVector', 243, 156, 18);
+                        api.setLineThickness('AccelerationVector', 4);
+
+                        // 添加文本标签
+                        api.evalCommand('Text1 = Text("位置: r(t) = ⟨t², t³, 2t⟩", (-0.5, 2.5))');
+                        api.evalCommand('Text2 = Text("速度: v(t) = ⟨2t, 3t², 2⟩", (-0.5, 2))');
+                        api.evalCommand('Text3 = Text("加速度: a(t) = ⟨2, 6t, 0⟩", (-0.5, 1.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet10');
+            },
+            action: () => showScene(10, "物理应用实例")
+        },
+
+        // Scene 11: 常见函数导数
+        {
+            title: "常见函数的导数",
+            subtitle: "对于常向量a，有d/dt[a] = 0。对于线性函数r(t) = ta + b，有r'(t) = a。对于r(t) = ⟨cos(t), sin(t), t⟩，导数为r'(t) = ⟨-sin(t), cos(t), 1⟩。指数函数r(t) = ⟨e^t, e^(-t), te^t⟩的导数需要使用乘积法则。掌握这些基本导数公式有助于快速计算复杂函数的导数。熟练运用这些公式是解决实际问题的关键。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet11',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 800,
+                    "height": 400,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-2, 8, -2, 8);
+
+                        // 定义参数t
+                        api.evalCommand('t = π/4');
+
+                        // 定义向量值函数
+                        api.evalCommand('r(t) = (cos(t), sin(t), t)');
+                        api.evalCommand('Curve = Curve((cos(s), sin(s)), s, 0, 2π)');
+                        api.setColor('Curve', 52, 152, 219);
+                        api.setLineThickness('Curve', 3);
+
+                        // 添加点
+                        api.evalCommand('P = (cos(t), sin(t))');
+                        api.setColor('P', 231, 76, 60);
+                        api.setPointSize('P', 5);
+
+                        // 添加导数向量
+                        api.evalCommand('rPrime(t) = (-sin(t), cos(t))');
+                        api.evalCommand('DerivativeVector = Vector(P, P + rPrime(t))');
+                        api.setColor('DerivativeVector', 46, 204, 113);
+                        api.setLineThickness('DerivativeVector', 4);
+
+                        // 添加文本标签
+                        api.evalCommand('Text1 = Text("r(t) = ⟨cos(t), sin(t), t⟩", (-1.5, 7))');
+                        api.evalCommand('Text2 = Text("r\'(t) = ⟨-sin(t), cos(t), 1⟩", (-1.5, 6.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet11');
+            },
+            action: () => showScene(11, "常见函数的导数")
+        },
+
+        // Scene 12: 链式法则
+        {
+            title: "链式法则应用",
+            subtitle: "当向量值函数的参数本身是另一个函数时，需要使用链式法则。如果r(t) = ⟨f(u(t)), g(u(t)), h(u(t))⟩，则dr/dt = ⟨f'(u(t))u'(t), g'(u(t))u'(t), h'(u(t))u'(t)⟩。例如，r(t) = ⟨sin(t²), cos(t²), t²⟩的导数为r'(t) = ⟨2t cos(t²), -2t sin(t²), 2t⟩。链式法则在处理参数化曲线和复杂物理模型时非常有用。正确应用链式法则是高级计算的基础。",
+            isGeoGebra: true,
+            ggbAppletId: 'ggbApplet12',
+            setupGeoGebra: () => {
+                const parameters = {
+                    "appName": "classic",
+                    "width": 800,
+                    "height": 400,
+                    "showToolBar": false,
+                    "showAlgebraInput": false,
+                    "showMenuBar": false,
+                    "language": "zh_CN",
+                    "appletOnLoad": function (api) {
+                        api.setPerspective('G');
+                        api.setAxesVisible(true, true);
+                        api.setGridVisible(true);
+                        api.setCoordSystem(-2, 8, -2, 8);
+
+                        // 定义参数t
+                        api.evalCommand('t = 1');
+
+                        // 定义向量值函数
+                        api.evalCommand('u(t) = t^2');
+                        api.evalCommand('r(t) = (sin(u(t)), cos(u(t)), u(t))');
+                        api.evalCommand('Curve = Curve((sin(s^2), cos(s^2)), s, 0, 2)');
+                        api.setColor('Curve', 52, 152, 219);
+                        api.setLineThickness('Curve', 3);
+
+                        // 添加点
+                        api.evalCommand('P = (sin(t^2), cos(t^2))');
+                        api.setColor('P', 231, 76, 60);
+                        api.setPointSize('P', 5);
+
+                        // 添加导数向量
+                        api.evalCommand('rPrime(t) = (2t*cos(t^2), -2t*sin(t^2))');
+                        api.evalCommand('DerivativeVector = Vector(P, P + rPrime(t))');
+                        api.setColor('DerivativeVector', 46, 204, 113);
+                        api.setLineThickness('DerivativeVector', 4);
+
+                        // 添加文本标签
+                        api.evalCommand('Text1 = Text("r(t) = ⟨sin(t²), cos(t²), t²⟩", (-1.5, 7))');
+                        api.evalCommand('Text2 = Text("r\'(t) = ⟨2t cos(t²), -2t sin(t²), 2t⟩", (-1.5, 6.5))');
+                    }
+                };
+                const applet = new GGBApplet(parameters, true);
+                applet.inject('ggbApplet12');
+            },
+            action: () => showScene(12, "链式法则应用")
+        }
+    ];
+</script>
+</body>
+</html>
