@@ -18,6 +18,7 @@ import lombok.experimental.Accessors;
 //"language": "english",
 public class ExplanationVo {
   private String question;
+  private String quality;
   // 0 scene by scene 1 all scene at once
   private Long id;
   private int generate_type;
@@ -32,6 +33,7 @@ public class ExplanationVo {
   private String domain;
   private String tableName = "ef_user_video";
   private boolean useCache = true;
+  
 
   public ExplanationVo(String text) {
     this.question = text;
