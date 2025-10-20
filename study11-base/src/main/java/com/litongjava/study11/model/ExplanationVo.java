@@ -17,10 +17,11 @@ import lombok.experimental.Accessors;
 //"voice_id": "default_voice",
 //"language": "english",
 public class ExplanationVo {
+  private Long id;
   private String question;
   private String quality;
+  private Integer maxScene;
   // 0 scene by scene 1 all scene at once
-  private Long id;
   private int generate_type;
   private String voice_provider = "openai";
   private String voice_id = "default_voice";
@@ -33,7 +34,6 @@ public class ExplanationVo {
   private String domain;
   private String tableName = "ef_user_video";
   private boolean useCache = true;
-  
 
   public ExplanationVo(String text) {
     this.question = text;
