@@ -6,6 +6,7 @@
     <version>1.0.0</version>
   </parent>
   <artifactId>study11-business</artifactId>
+  <name>study11-business</name>
   <properties>
     <!-- 版本属性 -->
     <lombok-version>1.18.30</lombok-version>
