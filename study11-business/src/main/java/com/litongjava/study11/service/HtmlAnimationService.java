@@ -10,13 +10,10 @@ import com.litongjava.chat.UniChatClient;
 import com.litongjava.chat.UniChatMessage;
 import com.litongjava.chat.UniChatRequest;
 import com.litongjava.chat.UniChatResponse;
-import com.litongjava.db.SqlPara;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.exception.GenerateException;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.model.body.RespBodyVo;
-import com.litongjava.model.page.Page;
 import com.litongjava.study11.consts.Study11TableName;
 import com.litongjava.study11.model.ExplanationVo;
 import com.litongjava.study11.model.SceneStoryboardInput;
@@ -27,6 +24,9 @@ import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 import com.litongjava.utils.CodeBlockUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import nexus.io.db.SqlPara;
+import nexus.io.model.body.RespBodyVo;
+import nexus.io.model.page.Page;
 
 @Slf4j
 public class HtmlAnimationService {

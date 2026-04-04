@@ -2,7 +2,6 @@ package com.litongjava.study11.controller;
 
 import java.net.URL;
 
-import com.litongjava.annotation.RequestPath;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.study11.service.HtmlAnimationService;
 import com.litongjava.tio.boot.http.TioRequestContext;
@@ -11,6 +10,8 @@ import com.litongjava.tio.http.common.MimeType;
 import com.litongjava.tio.http.server.util.Resps;
 import com.litongjava.tio.utils.hutool.FileUtil;
 import com.litongjava.tio.utils.hutool.ResourceUtil;
+
+import nexus.io.annotation.RequestPath;
 
 @RequestPath("/preview")
 public class HtmlPreviewController {

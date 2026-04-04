@@ -1,10 +1,11 @@
 package com.litongjava.study11.controller;
 
-import com.litongjava.annotation.RequestPath;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.study11.service.K12QuestionTestService;
 import com.litongjava.tio.utils.thread.TioThreadUtils;
+
+import nexus.io.annotation.RequestPath;
+import nexus.io.model.body.RespBodyVo;
 
 @RequestPath("/k12")
 public class K12Controller {

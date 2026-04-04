@@ -1,10 +1,11 @@
 package com.litongjava.study11.service;
 
-import com.litongjava.db.DbJsonObject;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.study11.consts.StudyBaseTableName;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
+
+import nexus.io.db.DbJsonObject;
 
 public class SceneStoryboardService {
 

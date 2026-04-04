@@ -9,9 +9,10 @@ import com.litongjava.enhance.buffer.GlobalScheduler;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.core.ChannelContext;
 import com.litongjava.tio.core.Tio;
-import com.litongjava.tio.http.common.sse.SsePacket;
 import com.litongjava.tio.utils.json.FastJson2Utils;
 import com.litongjava.tio.utils.lock.SetWithLock;
+
+import nexus.io.http.common.sse.SsePacket;
 
 public class Study11HeartbeatSender {
 
