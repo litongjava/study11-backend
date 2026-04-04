@@ -2,14 +2,15 @@ package com.litongjava.study11.service;
 
 import org.junit.Test;
 
-import com.litongjava.chat.UniChatRequest;
-import com.litongjava.consts.ModelPlatformName;
-import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.openai.ChatProvider;
-import com.litongjava.openrouter.OpenRouterModels;
 import com.litongjava.study11.config.AdminAppConfig;
 import com.litongjava.study11.model.SceneStoryboardInput;
-import com.litongjava.tio.boot.testing.TioBootTest;
+
+import nexus.io.chat.UniChatRequest;
+import nexus.io.consts.ModelPlatformName;
+import nexus.io.jfinal.aop.Aop;
+import nexus.io.openai.ChatProvider;
+import nexus.io.openrouter.OpenRouterModels;
+import nexus.io.tio.boot.testing.TioBootTest;
 
 public class StoryboardPlanServiceTest {
 

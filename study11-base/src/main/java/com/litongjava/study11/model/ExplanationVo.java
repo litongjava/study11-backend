@@ -2,12 +2,11 @@ package com.litongjava.study11.model;
 
 import java.util.List;
 
-import com.litongjava.consts.ModelPlatformName;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import nexus.io.consts.ModelPlatformName;
 
 @Data
 @NoArgsConstructor

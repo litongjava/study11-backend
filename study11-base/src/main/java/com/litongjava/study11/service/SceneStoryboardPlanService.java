@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.chat.UniChatClient;
-import com.litongjava.chat.UniChatMessage;
-import com.litongjava.chat.UniChatRequest;
-import com.litongjava.chat.UniChatResponse;
-import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.openai.ChatProvider;
-import com.litongjava.openai.chat.ChatResponseFormatType;
 import com.litongjava.study11.model.SceneStoryboardInput;
-import com.litongjava.template.PromptEngine;
 import com.litongjava.tio.utils.crypto.Md5Utils;
 import com.litongjava.tio.utils.json.FastJson2Utils;
-import com.litongjava.utils.CodeBlockUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import nexus.io.chat.UniChatClient;
+import nexus.io.chat.UniChatMessage;
+import nexus.io.chat.UniChatRequest;
+import nexus.io.chat.UniChatResponse;
+import nexus.io.jfinal.aop.Aop;
+import nexus.io.openai.ChatProvider;
+import nexus.io.openai.chat.ChatResponseFormatType;
+import nexus.io.template.PromptEngine;
+import nexus.io.utils.CodeBlockUtils;
 
 @Slf4j
 public class SceneStoryboardPlanService {

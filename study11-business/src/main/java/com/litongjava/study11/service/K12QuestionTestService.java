@@ -6,16 +6,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.litongjava.consts.ModelPlatformName;
-import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Row;
-import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.openrouter.OpenRouterModels;
 import com.litongjava.study11.consts.Study11TableName;
 import com.litongjava.study11.model.ExplanationVo;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import nexus.io.consts.ModelPlatformName;
+import nexus.io.db.activerecord.Db;
+import nexus.io.db.activerecord.Row;
+import nexus.io.jfinal.aop.Aop;
+import nexus.io.openrouter.OpenRouterModels;
 
 @Slf4j
 public class K12QuestionTestService {

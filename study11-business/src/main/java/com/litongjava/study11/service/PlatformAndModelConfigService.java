@@ -1,13 +1,13 @@
 package com.litongjava.study11.service;
 
-import com.litongjava.bailian.BaiLianAiModels;
-import com.litongjava.chat.UniChatRequest;
-import com.litongjava.consts.ModelPlatformName;
-import com.litongjava.openai.ChatProvider;
-import com.litongjava.openrouter.OpenRouterModels;
 import com.litongjava.study11.consts.Study11DomainConst;
 
 import lombok.extern.slf4j.Slf4j;
+import nexus.io.bailian.BaiLianAiModels;
+import nexus.io.chat.UniChatRequest;
+import nexus.io.consts.ModelPlatformName;
+import nexus.io.openai.ChatProvider;
+import nexus.io.openrouter.OpenRouterModels;
 
 @Slf4j
 public class PlatformAndModelConfigService {

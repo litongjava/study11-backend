@@ -2,10 +2,11 @@ package com.litongjava.study11.service;
 
 import org.junit.Test;
 
-import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.study11.config.AdminAppConfig;
 import com.litongjava.study11.model.ExplanationVo;
-import com.litongjava.tio.boot.testing.TioBootTest;
+
+import nexus.io.jfinal.aop.Aop;
+import nexus.io.tio.boot.testing.TioBootTest;
 
 public class HtmlAnimationQuesitonTest {
 

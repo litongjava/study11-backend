@@ -1,9 +1,9 @@
 package com.litongjava.study11;
 
 import com.litongjava.manim.task.Study11HeartbeatSender;
-import com.litongjava.tio.boot.TioApplication;
 
 import nexus.io.annotation.AComponentScan;
+import nexus.io.tio.boot.TioApplication;
 
 @AComponentScan
 public class Stduy11AdminApp {

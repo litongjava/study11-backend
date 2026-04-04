@@ -6,27 +6,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.chat.UniChatClient;
-import com.litongjava.chat.UniChatMessage;
-import com.litongjava.chat.UniChatRequest;
-import com.litongjava.chat.UniChatResponse;
-import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Row;
-import com.litongjava.exception.GenerateException;
-import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.study11.consts.Study11TableName;
 import com.litongjava.study11.model.ExplanationVo;
 import com.litongjava.study11.model.SceneStoryboardInput;
 import com.litongjava.study11.utils.CoverSvgUtils;
-import com.litongjava.template.PromptEngine;
 import com.litongjava.tio.utils.hutool.FileUtil;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
-import com.litongjava.utils.CodeBlockUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import nexus.io.chat.UniChatClient;
+import nexus.io.chat.UniChatMessage;
+import nexus.io.chat.UniChatRequest;
+import nexus.io.chat.UniChatResponse;
 import nexus.io.db.SqlPara;
+import nexus.io.db.activerecord.Db;
+import nexus.io.db.activerecord.Row;
+import nexus.io.exception.GenerateException;
+import nexus.io.jfinal.aop.Aop;
 import nexus.io.model.body.RespBodyVo;
 import nexus.io.model.page.Page;
+import nexus.io.template.PromptEngine;
+import nexus.io.utils.CodeBlockUtils;
 
 @Slf4j
 public class HtmlAnimationService {

@@ -4,10 +4,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.litongjava.consts.ModelPlatformName;
-import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Row;
-import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.study11.consts.Study11TableName;
 import com.litongjava.study11.model.ExplanationVo;
 import com.litongjava.tio.utils.hutool.FileUtil;
@@ -15,6 +11,10 @@ import com.litongjava.tio.utils.hutool.ResourceUtil;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import nexus.io.consts.ModelPlatformName;
+import nexus.io.db.activerecord.Db;
+import nexus.io.db.activerecord.Row;
+import nexus.io.jfinal.aop.Aop;
 
 @Slf4j
 public class QuestionBatchTestService {
