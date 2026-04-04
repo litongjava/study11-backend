@@ -4,9 +4,8 @@ import java.net.URL;
 
 import org.junit.Test;
 
-import com.litongjava.tio.utils.hutool.FileUtil;
-import com.litongjava.tio.utils.hutool.ResourceUtil;
-
+import nexus.io.tio.utils.hutool.FileUtil;
+import nexus.io.tio.utils.hutool.ResourceUtil;
 import nexus.io.utils.CodeBlockUtils;
 
 public class HtmlCodeUtilsTest {

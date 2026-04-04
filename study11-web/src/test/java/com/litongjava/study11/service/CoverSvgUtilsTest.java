@@ -5,7 +5,8 @@ import java.io.File;
 import org.junit.Test;
 
 import com.litongjava.study11.utils.CoverSvgUtils;
-import com.litongjava.tio.utils.hutool.FileUtil;
+
+import nexus.io.tio.utils.hutool.FileUtil;
 
 public class CoverSvgUtilsTest {
 

@@ -4,7 +4,6 @@ import com.jfinal.kit.Kv;
 import com.litongjava.study11.model.ExplanationVo;
 import com.litongjava.study11.service.HtmlAnimationService;
 import com.litongjava.study11.service.QuestionBatchTestService;
-import com.litongjava.tio.utils.thread.TioThreadUtils;
 
 import nexus.io.annotation.EnableCORS;
 import nexus.io.annotation.RequestPath;
@@ -12,6 +11,7 @@ import nexus.io.consts.ModelPlatformName;
 import nexus.io.jfinal.aop.Aop;
 import nexus.io.model.body.RespBodyVo;
 import nexus.io.tio.http.common.HttpRequest;
+import nexus.io.tio.utils.thread.TioThreadUtils;
 
 @EnableCORS
 @RequestPath("/api/v1/html")

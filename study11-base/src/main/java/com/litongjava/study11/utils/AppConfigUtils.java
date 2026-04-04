@@ -1,6 +1,6 @@
 package com.litongjava.study11.utils;
 
-import com.litongjava.tio.utils.environment.EnvUtils;
+import nexus.io.tio.utils.environment.EnvUtils;
 
 public class AppConfigUtils {
   public static final int app_area_code = EnvUtils.getInt("app_area_code");

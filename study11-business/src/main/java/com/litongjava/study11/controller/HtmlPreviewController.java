@@ -3,8 +3,6 @@ package com.litongjava.study11.controller;
 import java.net.URL;
 
 import com.litongjava.study11.service.HtmlAnimationService;
-import com.litongjava.tio.utils.hutool.FileUtil;
-import com.litongjava.tio.utils.hutool.ResourceUtil;
 
 import nexus.io.annotation.RequestPath;
 import nexus.io.jfinal.aop.Aop;
@@ -12,6 +10,8 @@ import nexus.io.tio.boot.http.TioRequestContext;
 import nexus.io.tio.http.common.HttpResponse;
 import nexus.io.tio.http.common.MimeType;
 import nexus.io.tio.http.server.util.Resps;
+import nexus.io.tio.utils.hutool.FileUtil;
+import nexus.io.tio.utils.hutool.ResourceUtil;
 
 @RequestPath("/preview")
 public class HtmlPreviewController {

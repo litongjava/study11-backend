@@ -1,12 +1,11 @@
 package com.litongjava.study11.service;
 
-import com.litongjava.tio.utils.json.JsonUtils;
-
 import lombok.extern.slf4j.Slf4j;
 import nexus.io.gemini.GeminiChatRequest;
 import nexus.io.gemini.GeminiChatResponse;
 import nexus.io.gemini.GeminiClient;
 import nexus.io.gemini.GoogleModels;
+import nexus.io.tio.utils.json.JsonUtils;
 
 @Slf4j
 public class GeminiService {

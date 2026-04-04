@@ -8,7 +8,6 @@ import java.util.List;
 
 import com.litongjava.study11.consts.Study11TableName;
 import com.litongjava.study11.model.ExplanationVo;
-import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import nexus.io.consts.ModelPlatformName;
@@ -16,6 +15,7 @@ import nexus.io.db.activerecord.Db;
 import nexus.io.db.activerecord.Row;
 import nexus.io.jfinal.aop.Aop;
 import nexus.io.openrouter.OpenRouterModels;
+import nexus.io.tio.utils.snowflake.SnowflakeIdUtils;
 
 @Slf4j
 public class K12QuestionTestService {
