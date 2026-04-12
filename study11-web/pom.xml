@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.litongjava</groupId>
+    <groupId>nexus.io</groupId>
     <artifactId>study11-backend</artifactId>
     <version>1.0.0</version>
   </parent>
@@ -23,14 +23,14 @@
 
     <!-- 应用程序属性 -->
     <final.name>web-hello</final.name>
-    <main.class>com.litongjava.study11.Stduy11AdminApp</main.class>
+    <main.class>nexus.io.study11.Stduy11AdminApp</main.class>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>com.litongjava</groupId>
+      <groupId>nexus.io</groupId>
       <artifactId>study11-business</artifactId>
-      <version>1.0.0</version>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>

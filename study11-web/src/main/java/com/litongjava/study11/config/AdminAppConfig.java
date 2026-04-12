@@ -2,11 +2,11 @@ package com.litongjava.study11.config;
 
 import com.litongjava.study11.handler.ExplanationHtmlHandler;
 import com.litongjava.study11.handler.HtmlPageHandler;
-import com.litongjava.tio.boot.admin.config.TioAdminDbConfiguration;
-import com.litongjava.tio.boot.admin.config.TioAdminEnjoyEngineConfig;
 
 import nexus.io.annotation.AConfiguration;
 import nexus.io.annotation.Initialization;
+import nexus.io.tio.boot.admin.config.TioAdminDbConfiguration;
+import nexus.io.tio.boot.admin.config.TioAdminEnjoyEngineConfig;
 import nexus.io.tio.boot.server.TioBootServer;
 import nexus.io.tio.http.server.router.HttpRequestRouter;
 
