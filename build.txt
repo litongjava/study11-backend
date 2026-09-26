@@ -3,5 +3,5 @@ set JAVA_HOME=D:\java\jdk-21.0.6
 
 [win.build]
 
-mvn clean package -DskipTests -Pproduction
-mvn install -DskipTests
+mvn clean package -DskipTests -Dgpg.skip -Pproduction
+mvn install -DskipTests -Dgpg.skip
