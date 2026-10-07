@@ -2,6 +2,12 @@
 set JAVA_HOME=D:\java\jdk-21.0.6
 
 [win.build]
-
 mvn clean package -DskipTests -Dgpg.skip -Pproduction
+mvn install -DskipTests -Dgpg.skip
+
+[linux.env]
+set JAVA_HOME=/usr/java/jdk-21.0.6
+
+[linux.build]
+mvn clean package -DskipTests -Pproduction
 mvn install -DskipTests -Dgpg.skip
