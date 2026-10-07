@@ -27,6 +27,13 @@ public class ExplanationVo {
   private String language = "english";
   private String provider = ModelPlatformName.ANTHROPIC;;
   private String model;
+  /**
+   * Generation mode: fast / thinking / expert. The server maps it to a platform and a model.
+   *
+   * <p>Relationship with {@link #model}: mode is the three-way choice shown to the user,
+   * while model stays authoritative when it is set explicitly. A blank mode means fast.
+   */
+  private String mode;
   private List<Long> imageIds;
   private String user_id;
   private String md5;
